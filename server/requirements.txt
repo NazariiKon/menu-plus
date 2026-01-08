@@ -1,0 +1,10 @@
+fastapi
+uvicorn
+python-multipart
+pydantic[email-validator]
+python-dotenv 
+psycopg2-binary 
+qrcode[pil]
+"psycopg[binary]"
+sqlalchemy[asyncio]
+asyncpg
