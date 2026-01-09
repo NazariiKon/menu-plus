@@ -1,7 +1,6 @@
 from fastapi import Depends, FastAPI, HTTPException, status
 from pydantic import BaseModel
 import uvicorn
-from sqlalchemy.ext.asyncio import AsyncSession
 from fastapi.middleware.cors import CORSMiddleware
 
 from src.api.main import api_router

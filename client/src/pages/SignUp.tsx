@@ -1,44 +1,15 @@
-import { useState } from "react";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useNavigate } from "react-router-dom";
 import { ArrowRight, Loader2 } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { z } from "zod";
-import type { RegisterRequest } from "@/types/api";
-import { signup } from "@/api/user";
+import { useSignup } from "@/hooks/useSignup";
+import { useNavigate } from 'react-router-dom';
+import { FormRootError } from "@/components/ui/form-root-error";
 
-const formSchema = z.object({
-    email: z.email("Invalid email"),
-    password: z.string().min(6, "Password must be at least 6 characters")
-});
-
-export default function AuthForm() {
+export default function SignUp() {
     const navigate = useNavigate();
-    const [loading, setLoading] = useState(false);
-    const form = useForm<z.infer<typeof formSchema>>({
-        resolver: zodResolver(formSchema),
-        defaultValues: { email: "", password: "" }
-    });
-
-    type FormData = z.infer<typeof formSchema> & RegisterRequest;
-
-    const onSubmit = async (values: FormData) => {
-        setLoading(true);
-        const { email, password } = values;
-        const result = await signup({ email, password });
-        setLoading(false);
-
-        if (result.success) {
-            navigate('/');
-        } else {
-            form.setError("root", { message: result.error });
-        }
-    };
-
+    const { form, loading, onSubmit } = useSignup();
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 flex items-center justify-center p-8">
@@ -80,12 +51,13 @@ export default function AuthForm() {
                                     </FormItem>
                                 )}
                             />
+                            <FormRootError />
 
                             <Button type="submit" className="w-full" disabled={loading}>
                                 {loading ? (
                                     <>
                                         <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                                        Creating your cafe...
+                                        Creating your account..
                                     </>
                                 ) : (
                                     <>
@@ -93,8 +65,10 @@ export default function AuthForm() {
                                     </>
                                 )}
                             </Button>
+                            { }
                         </form>
                     </Form>
+
                     <div className="text-center text-sm text-slate-500 pt-4 border-t">
                         Already have an account?{" "}
                         <button onClick={() => navigate("/login")} className="text-blue-600 hover:underline font-medium">

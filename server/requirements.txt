@@ -8,3 +8,5 @@ qrcode[pil]
 "psycopg[binary]"
 sqlalchemy[asyncio]
 asyncpg
+pydantic[email]
+python-jose[cryptography]

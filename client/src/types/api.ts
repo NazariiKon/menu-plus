@@ -3,8 +3,10 @@
  * Do not make direct changes to the file.
  */
 
+import type { User } from "@supabase/supabase-js";
+
 export interface paths {
-    "/register": {
+    "/auth/register": {
         parameters: {
             query?: never;
             header?: never;
@@ -14,14 +16,31 @@ export interface paths {
         get?: never;
         put?: never;
         /** Register */
-        post: operations["register_register_post"];
+        post: operations["register_auth_register_post"];
         delete?: never;
         options?: never;
         head?: never;
         patch?: never;
         trace?: never;
     };
-    "/verify-signup": {
+    "/auth/login": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Sign In */
+        post: operations["sign_in_auth_login_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/auth/verify-signup": {
         parameters: {
             query?: never;
             header?: never;
@@ -31,7 +50,7 @@ export interface paths {
         get?: never;
         put?: never;
         /** Verify Signup */
-        post: operations["verify_signup_verify_signup_post"];
+        post: operations["verify_signup_auth_verify_signup_post"];
         delete?: never;
         options?: never;
         head?: never;
@@ -127,6 +146,16 @@ export interface components {
             /** Detail */
             detail?: components["schemas"]["ValidationError"][];
         };
+        /** Login */
+        Login: {
+            /**
+             * Email
+             * Format: email
+             */
+            email: string;
+            /** Password */
+            password: string;
+        };
         /** Register */
         Register: {
             /** Email */
@@ -152,7 +181,7 @@ export interface components {
 }
 export type $defs = Record<string, never>;
 export interface operations {
-    register_register_post: {
+    register_auth_register_post: {
         parameters: {
             query?: never;
             header?: never;
@@ -185,7 +214,40 @@ export interface operations {
             };
         };
     };
-    verify_signup_verify_signup_post: {
+    sign_in_auth_login_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["Login"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    verify_signup_auth_verify_signup_post: {
         parameters: {
             query: {
                 email: string;
@@ -325,8 +387,15 @@ export interface operations {
     };
 }
 
+
 export type ApiComponents = components;
 
 export type RegisterRequest = ApiComponents['schemas']['Register'];
+export type LoginRequest = ApiComponents['schemas']['Login'];
 export type Dish = ApiComponents['schemas']['Dish'];
 export type HTTPValidationError = ApiComponents['schemas']['HTTPValidationError'];
+export interface Response {
+    success: boolean;
+    error?: string;
+    user?: User;
+}

@@ -11,4 +11,4 @@ router = APIRouter(prefix="/database", tags=["Database"])
 async def migrate(db: AsyncSession = Depends(get_db)):
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
-    return {"status": "Tables created if not exists"}
+    return {"status": status.HTTP_200_OK}
