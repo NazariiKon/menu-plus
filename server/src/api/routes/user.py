@@ -1,7 +1,7 @@
 from fastapi import APIRouter, HTTPException, Depends, Security, status
 from fastapi.security import APIKeyHeader, HTTPBearer
 from pydantic import BaseModel, EmailStr
-from supabase import create_client, Client
+from supabase import AuthApiError, create_client, Client
 from dotenv import load_dotenv
 from jose import JWTError, jwt
 import requests
@@ -54,38 +54,41 @@ async def get_me(user: dict = Depends(get_current_user)):
         "profile": profile
     }
 
-
 class Register(BaseModel):
     email: str
     password: str
 
 @router.post("/register")
 async def register(reg: Register):
-    signup_res = supabase.auth.sign_up({
-        "email": reg.email,
-        "password": reg.password,
-    })
-    
-    if not signup_res.user:
-        raise HTTPException(status.HTTP_400_BAD_REQUEST, "Registration failed")
-    
-    if not signup_res.user.identities:
-        raise HTTPException(status.HTTP_409_CONFLICT, "Account already exists. Please Sign In")
-    
-    login_res = supabase.auth.sign_in_with_password({
-        "email": reg.email,
-        "password": reg.password,
-    })
-    
-    if login_res.session:
+    try:
+        signup_res = supabase.auth.sign_up({
+            "email": reg.email,
+            "password": reg.password,
+        })
+        
+        if not signup_res.user:
+            raise HTTPException(400, "Registration failed")
+        
+        user = {
+            "id": str(signup_res.user.id),
+            "email": signup_res.user.email,
+            "email_verified": getattr(signup_res.user, 'email_confirmed_at') is not None,
+            "created_at": signup_res.user.created_at.isoformat() if signup_res.user.created_at else None,
+        }
+        
         return {
             "success": True,
-            "user_id": str(signup_res.user.id),
-            "access_token": login_res.session.access_token,
-            "refresh_token": login_res.session.refresh_token
+            "user": user
         }
-    
-    raise HTTPException(status.HTTP_400_BAD_REQUEST, "Login after signup failed")
+        
+    except AuthApiError as e:
+        error_msg = str(e).lower()
+        if "already registered" in error_msg or "already exists" in error_msg:
+            raise HTTPException(status.HTTP_409_CONFLICT, "Account already exists. Please Sign In")
+        if "too many requests" in error_msg or "rate limit" in error_msg:
+            raise HTTPException(status.HTTP_429_TOO_MANY_REQUESTS, "Too many requests. Wait 60 seconds")
+        raise HTTPException(status.HTTP_400_BAD_REQUEST, str(e))
+
 
 class Login(BaseModel):
     email: EmailStr
@@ -93,32 +96,36 @@ class Login(BaseModel):
 
 @router.post("/login")
 async def sign_in(login: Login):
-    signin_res = supabase.auth.sign_in_with_password({
-        "email": login.email,
-        "password": login.password,
-    })
+    try:
+        signin_res = supabase.auth.sign_in_with_password({
+            "email": login.email,
+            "password": login.password,
+        })
     
-    if not signin_res.user:
-        raise HTTPException(status.HTTP_401_UNAUTHORIZED, "Invalid credentials")
+        user = {
+            "id": str(signin_res.user.id),
+            "email": signin_res.user.email,
+            "email_verified": getattr(signin_res.user, 'email_confirmed_at') is not None,
+            "created_at": signin_res.user.created_at.isoformat() if signin_res.user.created_at else None,
+        }
+        
+        return {
+            "success": True,
+            "user": user,
+            "access_token": signin_res.session.access_token,
+            "refresh_token": signin_res.session.refresh_token
+        }
     
-    if not signin_res.session:
-        raise HTTPException(status.HTTP_400_BAD_REQUEST, "Sign in failed")
+    except AuthApiError as e:
+        error_msg = str(e).lower()
+        if any(x in error_msg for x in ["invalid login credentials", "invalid email or password"]):
+            raise HTTPException(status.HTTP_401_UNAUTHORIZED, "Invalid email or password")
+        if "too many requests" in error_msg or "rate limit" in error_msg:
+            raise HTTPException(status.HTTP_429_TOO_MANY_REQUESTS, "Too many requests. Wait 60 seconds")
+        if "email not confirmed" in error_msg:
+            raise HTTPException(status.HTTP_403_FORBIDDEN, "Please verify your email first")
+        raise HTTPException(status.HTTP_400_BAD_REQUEST, str(e))
     
-    user = {
-        "id": str(signin_res.user.id),
-        "email": signin_res.user.email,
-        "email_verified": getattr(signin_res.user, 'email_confirmed_at') is not None,
-        "created_at": signin_res.user.created_at.isoformat() if signin_res.user.created_at else None,
-    }
-    
-    return {
-        "success": True,
-        "user": user,
-        "access_token": signin_res.session.access_token,
-        "refresh_token": signin_res.session.refresh_token
-    }
-
-
 
 @router.post("/verify-signup")
 async def verify_signup(email: str, token: str):

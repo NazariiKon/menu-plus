@@ -25,7 +25,6 @@ const userSlice = createSlice({
         clearUser: (state) => {
             state.currentUser = null;
             state.isAuthenticated = false;
-
         },
         setLoading: (state, action) => {
             state.isLoading = action.payload

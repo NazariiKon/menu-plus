@@ -1,8 +1,6 @@
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import Home from '../pages/Home'
 import SignUp from '../pages/SignUp'
-import PublicMenu from '../pages/PublicMenu'
-import CafeAdmin from '../pages/CafeAdmin'
 import AuthCallback from '@/pages/AuthCallback'
 import SignIn from '@/pages/SignIn'
 import WithNavbarLayout from '@/layout/WithNavbar'
@@ -11,6 +9,8 @@ import type { AppDispatch } from '@/store/store'
 import { setUser, setLoading } from '@/store/userSlice'
 import { supabase } from '@/lib/supabase'
 import { useDispatch } from 'react-redux';
+import AuthGuard from '@/components/AuthGuard'
+import AdminHome from '@/pages/AdminHome'
 
 export default function AppRouter() {
     const dispatch = useDispatch<AppDispatch>();
@@ -61,12 +61,23 @@ export default function AppRouter() {
                 <Route element={<WithNavbarLayout />}>
                     <Route path="/" element={<Home />} />
                 </Route>
+                <Route path="/login" element={
+                    <AuthGuard>
+                        <SignIn />
+                    </AuthGuard>
+                } />
+                <Route path="/signup" element={
+                    <AuthGuard>
+                        <SignUp />
+                    </AuthGuard>
+                } />
+                <Route path="/admin" element={<AdminHome />} />
 
-                <Route path="/signup" element={<SignUp />} />
-                <Route path="/login" element={<SignIn />} />
-                <Route path="/:slug" element={<PublicMenu />} />
-                <Route path="/:slug/admin/*" element={<CafeAdmin />} />
+                {/* <Route path="/:slug" element={<PublicMenu />} />
+                <Route path="/:slug/admin/*" element={<CafeAdmin />} /> */}
                 <Route path="/auth/callback" element={<AuthCallback />} />
+
+
 
             </Routes>
         </BrowserRouter>

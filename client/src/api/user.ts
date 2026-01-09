@@ -10,7 +10,7 @@ export async function signup(data: RegisterRequest): Promise<Response> {
 
         const result = await response.json();
         return response.ok
-            ? { success: true }
+            ? { success: true, user: result.user }
             : { success: false, error: result.detail || "Unknown error" };
     } catch (error) {
         console.error("Signup error:", error);

@@ -12,6 +12,7 @@ import { useSelector } from 'react-redux'
 import type { AppDispatch, RootState } from '@/store/store'
 import { useDispatch } from 'react-redux';
 import { clearUser } from '@/store/userSlice'
+import { supabase } from '@/lib/supabase'
 
 export default function Navbar() {
     const location = useLocation()
@@ -102,32 +103,45 @@ export default function Navbar() {
                 </div>
 
                 <div className="flex items-center gap-2">
-                    {currentUser ? (
-                        <Button
-                            onClick={() => {
-                                localStorage.removeItem('access_token');
-                                localStorage.removeItem('refresh_token');
-                                dispatch(clearUser());
-                            }}
-                        >
-                            Logout
-                        </Button>
+                    <div className="gap-2 md:flex sm:gap-2">
+                        {currentUser ? (
+                            <>
+                                <Button
+                                    onClick={async () => {
+                                        dispatch(clearUser());
 
+                                        localStorage.removeItem('access_token');
+                                        localStorage.removeItem('refresh_token');
 
-                    ) : (
-                        <div className="hidden gap-2 md:flex">
-                            <Link to="/login">
-                                <Button variant="ghost" className="h-10 px-6 text-slate-700 hover:text-slate-900 font-medium transition-all duration-200 hover:shadow-sm">
-                                    Sign In
+                                        await supabase.auth.signOut();
+                                    }}
+                                    variant="ghost"
+                                    className="h-10 px-6 text-slate-700 hover:text-slate-900 font-medium transition-all duration-200 hover:shadow-sm"
+                                >
+                                    Logout
                                 </Button>
-                            </Link>
-                            <Link to="/signup">
-                                <Button className="h-10 px-6 bg-gradient-to-r from-blue-600 to-slate-700 hover:from-blue-700 hover:to-slate-800 text-white font-medium shadow-lg hover:shadow-xl transition-all duration-200">
-                                    Get Started <ArrowRight className="ml-2 h-4 w-4" />
-                                </Button>
-                            </Link>
-                        </div>
-                    )}
+
+                                <Link to="/admin">
+                                    <Button className="h-10 px-6 bg-gradient-to-r from-blue-600 to-slate-700 hover:from-blue-700 hover:to-slate-800 text-white font-medium shadow-lg hover:shadow-xl transition-all duration-200">
+                                        Admin Panel
+                                    </Button>
+                                </Link>
+                            </>
+                        ) : (
+                            <>
+                                <Link to="/login">
+                                    <Button variant="ghost" className="h-10 px-6 text-slate-700 hover:text-slate-900 font-medium transition-all duration-200 hover:shadow-sm">
+                                        Sign In
+                                    </Button>
+                                </Link>
+                                <Link to="/signup">
+                                    <Button className="h-10 px-6 bg-gradient-to-r from-blue-600 to-slate-700 hover:from-blue-700 hover:to-slate-800 text-white font-medium shadow-lg hover:shadow-xl transition-all duration-200">
+                                        Get Started <ArrowRight className="ml-2 h-4 w-4" />
+                                    </Button>
+                                </Link>
+                            </>
+                        )}
+                    </div>
                 </div>
             </div>
         </header>

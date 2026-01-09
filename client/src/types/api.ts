@@ -397,5 +397,6 @@ export type HTTPValidationError = ApiComponents['schemas']['HTTPValidationError'
 export interface Response {
     success: boolean;
     error?: string;
+    message?: string;
     user?: User;
 }

@@ -4,6 +4,11 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useNavigate } from 'react-router-dom';
 import { z } from 'zod';
 import { signup } from '@/api/user';
+import { useDispatch } from 'react-redux';
+import type { AppDispatch } from '@/store/store';
+import { setUser } from '@/store/userSlice';
+import type { Response } from '../types/api';
+
 
 const formSchema = z.object({
     email: z.email("Invalid email"),
@@ -12,23 +17,23 @@ const formSchema = z.object({
 
 export const useSignup = () => {
     const navigate = useNavigate();
+    const dispatch = useDispatch<AppDispatch>();
+
     const [loading, setLoading] = useState(false);
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: { email: '', password: '' }
     });
 
-    interface SignupResponse {
-        success: boolean;
-        error?: string;
-    }
-
     const onSubmit = async (values: z.infer<typeof formSchema>) => {
         setLoading(true);
         try {
-            const result: SignupResponse = await signup(values);
-            if (result.success) {
-                navigate('/', { replace: true });
+            const result: Response = await signup(values);
+            console.log(result)
+            if (result.success && result.user) {
+                console.log(result.user);
+                dispatch(setUser(result.user));
+                navigate('/create-cafe', { replace: true });
             } else {
                 form.setError('root', {
                     type: 'server',
