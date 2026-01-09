@@ -12,6 +12,16 @@ cd menu-plus
 ### Backend (Server)
 
 ```bash
+# Create venv
+python3 -m venv venv
+
+# Activate venv
+# Windows:
+venv\Scripts\activate
+# Linux/macOS:
+source venv/bin/activate
+
+
 cd server
 pip install -r requirements.txt
 uvicorn src.main:app --reload

@@ -12,14 +12,11 @@ import { useSelector } from 'react-redux'
 import type { AppDispatch, RootState } from '@/store/store'
 import { useDispatch } from 'react-redux';
 import { clearUser } from '@/store/userSlice'
-import { supabase } from '@/lib/supabase'
 
 export default function Navbar() {
     const location = useLocation()
     const dispatch = useDispatch<AppDispatch>();
     const currentUser = useSelector((state: RootState) => state.user.currentUser);
-
-
 
     const navItems = [
         { path: '/', label: 'Home', icon: Home },
@@ -30,7 +27,7 @@ export default function Navbar() {
     { currentUser && <span>{currentUser?.email}</span> }
 
     return (
-        <header className="sticky top-0 z-50 w-full border-b border-slate-200 bg-white/95 backdrop-blur-xl supports-[backdrop-filter:blur(20px)]:bg-white/80 shadow-sm">
+        <header className="z-50 w-full border-b border-slate-200 bg-white/95 backdrop-blur-xl supports-[backdrop-filter:blur(20px)]:bg-white/80 shadow-sm">
             <div className="flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6 lg:px-8 mx-auto w-full">
                 <div className="flex items-center gap-2">
                     <Link to="/" className="flex items-center space-x-2 font-bold text-xl bg-gradient-to-r from-blue-600 via-blue-600 to-slate-700 bg-clip-text text-transparent transition-all hover:scale-105">
