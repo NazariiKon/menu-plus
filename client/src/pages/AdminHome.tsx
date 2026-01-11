@@ -1,120 +1,160 @@
 import { useSelector } from "react-redux";
 import type { RootState } from "@/store/store";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Mail, Zap, Menu, BarChart3 } from "lucide-react";
-import { Link } from "react-router-dom";
-
-type User = {
-    id: string;
-    email: string;
-    email_verified?: boolean;
-};
+import { Building2, Edit, ChevronRight } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Skeleton } from "@/components/ui/skeleton";
+import type { User } from "@supabase/supabase-js";
+import Verification from "@/components/ui/verification";
+import type { VenueRead } from "@/types/types";
+import { get_my_venues } from "@/api/venue";
 
 export default function Admin() {
+    const navigate = useNavigate();
     const currentUser = useSelector((state: RootState) => state.user.currentUser) as User | null;
+    const [venues, setVenues] = useState<VenueRead[]>([]);
+    const [loading, setLoading] = useState(true);
 
-    if (!currentUser) {
-        return <div>Not logged in</div>;
-    }
+    useEffect(() => {
+        if (!currentUser) {
+            navigate("/login");
+            return;
+        }
 
-    if (!currentUser.email_verified) {
-        return (
-            <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50 py-20 px-4 flex items-center justify-center">
-                <Card className="max-w-md w-full mx-auto shadow-2xl border-0 bg-white/80 backdrop-blur-xl">
-                    <CardHeader className="text-center space-y-4">
-                        <div className="w-24 h-24 bg-gradient-to-br from-emerald-500 to-indigo-500 rounded-3xl flex items-center justify-center mx-auto shadow-2xl">
-                            <Mail className="w-12 h-12 text-white" />
-                        </div>
-                        <CardTitle className="text-3xl font-black text-gray-900">
-                            Confirm Your Email
-                        </CardTitle>
-                    </CardHeader>
-                    <CardContent className="space-y-6 p-8">
-                        <p className="text-xl text-gray-600 text-center leading-relaxed">
-                            We sent a verification link to <strong>{currentUser.email}</strong>
-                        </p>
-                        <div className="space-y-3 text-center text-sm text-gray-500">
-                            <p>✅ Check your inbox (including spam/promotions)</p>
-                            <p>✅ Click the verification link</p>
-                            <p>✅ Return here to manage your menu</p>
-                        </div>
-                        <div className="flex flex-col items-center gap-3 pt-4">
-                            <Button
-                                variant="outline"
-                                className="w-full sm:w-auto px-8"
-                                asChild
-                            >
-                                <Link to="/register">Resend Email</Link>
-                            </Button>
-                            <Button className="w-full sm:w-auto px-8 bg-gradient-to-r from-emerald-600 to-indigo-600">
-                                Refresh Status
-                            </Button>
-                        </div>
+        const getVenues = async () => {
+            setLoading(true);
+            const result = await get_my_venues();
 
-                    </CardContent>
-                </Card>
-            </div>
-        );
+            console.log(result);
+
+            if (result.success && result.data) {
+                setVenues(result.data);
+            } else {
+                console.error(result.error);
+            }
+
+            setLoading(false);
+        };
+
+        getVenues();
+    }, [currentUser]);
+
+    if (!currentUser) return <div className="min-h-screen flex items-center justify-center">Loading...</div>;
+
+    if (!currentUser.confirmation_sent_at && currentUser.email) {
+        <Verification email={currentUser.email} />
     }
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50 py-20 px-4">
+        <div className="min-h-screen bg-gradient-to-br from-slate-50 to-indigo-50 py-12 px-4 sm:px-6 lg:px-8">
             <div className="max-w-4xl mx-auto">
-                <div className="text-center mb-20 space-y-6">
-                    <h1 className="text-5xl md:text-6xl font-black bg-gradient-to-r from-gray-900 via-emerald-900 to-gray-900 bg-clip-text text-transparent">
-                        Cafe Admin
-                    </h1>
-                    <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-                        Manage your digital menu, generate QR codes, track analytics
-                    </p>
+                <div className="text-center mb-12 lg:mb-20">
+                    <div className="flex items-center justify-center gap-4 mb-6">
+                        <div className="w-16 h-16 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-2xl flex items-center justify-center shadow-xl">
+                            <Building2 className="w-8 h-8 text-white" />
+                        </div>
+                        <div>
+                            <h1 className="text-3xl lg:text-5xl font-black text-gray-900 leading-tight">
+                                Your Venues
+                            </h1>
+                            <p className="text-lg text-gray-600 mt-2">Manage your locations</p>
+                        </div>
+                    </div>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    <Card className="group bg-white/80 backdrop-blur-xl shadow-2xl hover:shadow-3xl hover:-translate-y-2 transition-all border-0">
-                        <CardContent className="p-10 text-center">
-                            <div className="w-20 h-20 bg-gradient-to-br from-emerald-500 to-green-500 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-2xl group-hover:scale-110 transition-all">
-                                <Menu className="w-10 h-10 text-white" />
-                            </div>
-                            <h3 className="text-2xl font-bold text-gray-900 mb-4 group-hover:text-emerald-600">
-                                Manage Dishes
-                            </h3>
-                            <p className="text-gray-600 mb-6">Add, edit, delete menu items</p>
-                            <Button className="w-full" asChild>
-                                <Link to="/admin/dishes">Open Menu Editor</Link>
-                            </Button>
-                        </CardContent>
-                    </Card>
+                <div className="flex justify-end mb-8">
+                    <Button
+                        size="lg"
+                        className="px-8 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white shadow-xl hover:shadow-2xl transition-all font-semibold rounded-xl"
+                        onClick={() => navigate("/admin/venues/new")}
+                    >
+                        <Building2 className="w-5 h-5 mr-2" />
+                        New Venue
+                    </Button>
+                </div>
 
-                    <Card className="group bg-white/80 backdrop-blur-xl shadow-2xl hover:shadow-3xl hover:-translate-y-2 transition-all border-0">
-                        <CardContent className="p-10 text-center">
-                            <div className="w-20 h-20 bg-gradient-to-br from-indigo-500 to-blue-500 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-2xl group-hover:scale-110 transition-all">
-                                <Zap className="w-10 h-10 text-white" />
-                            </div>
-                            <h3 className="text-2xl font-bold text-gray-900 mb-4 group-hover:text-indigo-600">
-                                Generate QR Codes
-                            </h3>
-                            <p className="text-gray-600 mb-6">Print table QR codes instantly</p>
-                            <Button variant="outline" className="w-full" asChild>
-                                <Link to="/admin/qr">Print QR Codes</Link>
+                <div className="space-y-4">
+                    {loading ? (
+                        <div className="space-y-4 ">
+                            {Array.from({ length: 3 }).map((_, i) => (
+                                <Skeleton key={i} className="h-48 w-full rounded-2xl bg-gray-200" />
+                            ))}
+                        </div>
+                    ) : venues.length === 0 ? (
+                        <Card className="border-0 bg-white/60 backdrop-blur-xl text-center p-20 rounded-3xl shadow-xl">
+                            <Building2 className="w-20 h-20 text-gray-300 mx-auto mb-6" />
+                            <h3 className="text-2xl font-bold text-gray-900 mb-2">No venues yet</h3>
+                            <p className="text-gray-600 mb-8">Create your first venue to get started</p>
+                            <Button
+                                size="lg"
+                                className="px-12 py-6 bg-gradient-to-r from-emerald-600 to-indigo-600 text-white shadow-2xl rounded-xl font-bold text-lg"
+                                onClick={() => navigate("/admin/venues/new")}
+                            >
+                                Create First Venue
                             </Button>
-                        </CardContent>
-                    </Card>
+                        </Card>
+                    ) : (
+                        venues.map((venue) => (
+                            <Card
+                                key={venue.id}
+                                className="border-0 bg-white/80 backdrop-blur-xl hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 hover:bg-white/95 rounded-3xl overflow-hidden shadow-lg group"
+                            >
+                                <CardContent className="p-0">
+                                    <div className="p-6 lg:p-8 flex flex-col lg:flex-row lg:items-center lg:gap-8">
+                                        <div className="flex items-start lg:items-center gap-2 flex-1 mb-6 lg:mb-0">
+                                            <div className="w-20 h-20 bg-gradient-to-br from-gray-100 to-gray-200 rounded-2xl flex items-center justify-center p-4 shadow-md group-hover:shadow-xl transition-shadow flex-shrink-0">
+                                                <img
+                                                    src={`/logos/${venue.logo}`}
+                                                    alt={venue.name}
+                                                    className="w-16 h-16 object-cover rounded-xl group-hover:scale-105 transition-transform"
+                                                    onError={(e) => {
+                                                        e.currentTarget.src = '/logos/default.png';
+                                                    }}
+                                                />
+                                            </div>
+                                            <div className="min-w-0 flex-1">
+                                                <Link
+                                                    to={`/admin/venues/${venue.slug}`}
+                                                    className="block hover:text-indigo-600 transition-colors font-bold text-xl lg:text-2xl leading-tight line-clamp-2"
+                                                >
+                                                    {venue.name}
+                                                </Link>
+                                                <div className="text-sm font-mono text-indigo-600 bg-indigo-100/50 px-3 py-1 rounded-full mt-3 w-fit">
+                                                    /{venue.slug}
+                                                </div>
+                                            </div>
+                                        </div>
 
-                    <Card className="group bg-white/80 backdrop-blur-xl shadow-2xl hover:shadow-3xl hover:-translate-y-2 transition-all border-0">
-                        <CardContent className="p-10 text-center">
-                            <div className="w-20 h-20 bg-gradient-to-br from-purple-500 to-pink-500 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-2xl group-hover:scale-110 transition-all">
-                                <BarChart3 className="w-10 h-10 text-white" />
-                            </div>
-                            <h3 className="text-2xl font-bold text-gray-900 mb-4 group-hover:text-purple-600">
-                                View Analytics
-                            </h3>
-                            <p className="text-gray-600 mb-6">See popular dishes and views</p>
-                            <Button variant="outline" className="w-full" asChild>
-                                <Link to="/admin/analytics">See Insights</Link>
-                            </Button>
-                        </CardContent>
-                    </Card>
+                                        <div className="flex items-center gap-2 ml-auto lg:ml-0">
+                                            <Button
+                                                variant="outline"
+                                                size="lg"
+                                                className="px-6 h-12 border-gray-200 hover:border-indigo-400 hover:bg-indigo-50 rounded-xl font-medium"
+                                                asChild
+                                            >
+                                                <Link to={`/admin/venues/${venue.slug}/edit`}>
+                                                    <Edit className="w-4 h-4 mr-2" />
+                                                    Edit
+                                                </Link>
+                                            </Button>
+                                            <Button
+                                                asChild
+                                                size="lg"
+                                                className="px-8 h-12 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white rounded-xl shadow-lg hover:shadow-xl font-semibold"
+                                            >
+                                                <Link to={`/${venue.slug}`}>
+                                                    Open Menu
+                                                    <ChevronRight className="w-4 h-4 ml-2 transition-transform group-hover:translate-x-1" />
+                                                </Link>
+                                            </Button>
+                                        </div>
+                                    </div>
+                                </CardContent>
+                            </Card>
+                        ))
+                    )}
                 </div>
             </div>
         </div>

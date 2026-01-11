@@ -1,4 +1,4 @@
-import { Link, useLocation } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { Button } from '@/components/ui/button'
 import {
     Sheet,
@@ -7,7 +7,7 @@ import {
     SheetTitle,
     SheetDescription
 } from '@/components/ui/sheet'
-import { Menu, ArrowRight, Home, Sparkles, DollarSign } from 'lucide-react'
+import { Menu, ArrowRight, Home, Sparkles, DollarSign, LogIn, LogOut } from 'lucide-react'
 import { useSelector } from 'react-redux'
 import type { AppDispatch, RootState } from '@/store/store'
 import { useDispatch } from 'react-redux';
@@ -15,14 +15,26 @@ import { clearUser } from '@/store/userSlice'
 import { supabase } from '@/lib/supabase'
 
 export default function Navbar() {
-    const location = useLocation()
+    const location = useLocation();
+    const navigate = useNavigate();
     const dispatch = useDispatch<AppDispatch>();
     const currentUser = useSelector((state: RootState) => state.user.currentUser);
 
+    async function onClickLogout() {
+        dispatch(clearUser());
+
+        localStorage.removeItem('access_token');
+        localStorage.removeItem('refresh_token');
+        await supabase.auth.signOut();
+        navigate("/");
+    }
+
     const navItems = [
-        { path: '/', label: 'Home', icon: Home },
-        { path: '/features', label: 'Features', icon: Sparkles },
-        { path: '/pricing', label: 'Pricing', icon: DollarSign },
+        { path: '/', label: 'Home', icon: Home, hiden: false },
+        { path: '/features', label: 'Features', icon: Sparkles, hiden: false },
+        { path: '/pricing', label: 'Pricing', icon: DollarSign, hiden: false },
+        { path: '/login', label: 'Sign In', icon: LogIn, hiden: true },
+        { path: '/', label: 'Log out', icon: LogOut, onClick: onClickLogout, hiden: true },
     ]
 
     { currentUser && <span>{currentUser?.email}</span> }
@@ -61,12 +73,14 @@ export default function Navbar() {
                                 </Link>
 
                                 {navItems.map((item) => {
+                                    if (item.label === "Log out" && !currentUser || item.label === "Sign In" && currentUser) return;
                                     const Icon = item.icon
-                                    const isActive = location.pathname === item.path
+                                    const isActive = location.pathname === item.path && !item.hiden
                                     return (
                                         <Link
-                                            key={item.path}
+                                            key={item.label}
                                             to={item.path}
+                                            onClick={item.onClick}
                                             className={`group flex items-center space-x-3 rounded-xl p-3 font-medium transition-all duration-200 ${isActive
                                                 ? 'bg-blue-50 text-blue-700 border border-blue-200 shadow-sm'
                                                 : 'text-slate-700 hover:bg-slate-100/80 hover:text-slate-900 hover:shadow-md'
@@ -84,11 +98,12 @@ export default function Navbar() {
 
                 <div className="hidden items-center gap-2 md:flex lg:gap-4">
                     {navItems.map((item) => {
+                        if (item.hiden) return;
                         const Icon = item.icon
                         const isActive = location.pathname === item.path
                         return (
                             <Link
-                                key={item.path}
+                                key={item.label}
                                 to={item.path}
                                 className={`inline-flex items-center space-x-1 rounded-full px-4 py-2 font-medium transition-all duration-200 ${isActive
                                     ? 'bg-blue-100 text-blue-700 shadow-md'
@@ -103,34 +118,28 @@ export default function Navbar() {
                 </div>
 
                 <div className="flex items-center gap-2">
-                    <div className="gap-2 md:flex sm:gap-2">
+                    <div className="flex items-center gap-2 flex-wrap">
                         {currentUser ? (
                             <>
                                 <Button
-                                    onClick={async () => {
-                                        dispatch(clearUser());
-
-                                        localStorage.removeItem('access_token');
-                                        localStorage.removeItem('refresh_token');
-
-                                        await supabase.auth.signOut();
-                                    }}
+                                    onClick={() => { onClickLogout() }}
                                     variant="ghost"
-                                    className="h-10 px-6 text-slate-700 hover:text-slate-900 font-medium transition-all duration-200 hover:shadow-sm"
+                                    className="min-[400px]:flex hidden h-10 px-6 text-slate-700 hover:text-slate-900 font-medium transition-all duration-200 hover:shadow-sm"
                                 >
                                     Logout
                                 </Button>
-
-                                <Link to="/admin">
-                                    <Button className="h-10 px-6 bg-gradient-to-r from-blue-600 to-slate-700 hover:from-blue-700 hover:to-slate-800 text-white font-medium shadow-lg hover:shadow-xl transition-all duration-200">
-                                        Admin Panel
-                                    </Button>
-                                </Link>
+                                {location.pathname !== "/admin" &&
+                                    <Link to="/admin">
+                                        <Button className="h-10 px-6 bg-gradient-to-r from-blue-600 to-slate-700 hover:from-blue-700 hover:to-slate-800 text-white font-medium shadow-lg hover:shadow-xl transition-all duration-200">
+                                            Admin Panel
+                                        </Button>
+                                    </Link>
+                                }
                             </>
                         ) : (
                             <>
                                 <Link to="/login">
-                                    <Button variant="ghost" className="h-10 px-6 text-slate-700 hover:text-slate-900 font-medium transition-all duration-200 hover:shadow-sm">
+                                    <Button variant="ghost" className="min-[400px]:flex hidden h-10 px-6 text-slate-700 hover:text-slate-900 font-medium transition-all duration-200 hover:shadow-sm">
                                         Sign In
                                     </Button>
                                 </Link>

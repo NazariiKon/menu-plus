@@ -7,7 +7,8 @@ import { login } from '@/api/user';
 import { useDispatch } from 'react-redux';
 import type { AppDispatch } from '@/store/store';
 import { setUser } from '@/store/userSlice';
-import type { Response } from '../types/api';
+import type { ApiResponse } from "@/types/types";
+import type { User } from '@supabase/supabase-js';
 
 const formSchema = z.object({
     email: z.email("Invalid email"),
@@ -26,10 +27,9 @@ export const useSignin = () => {
     const onSubmit = async (values: z.infer<typeof formSchema>) => {
         setLoading(true);
         try {
-            const result: Response = await login(values);
-            if (result.success && result.user) {
-                console.log(result.user);
-                dispatch(setUser(result.user));
+            const result: ApiResponse<User> = await login(values);
+            if (result.success && result.data) {
+                dispatch(setUser(result.data));
                 navigate('/', { replace: true });
             } else {
                 form.setError('root', {

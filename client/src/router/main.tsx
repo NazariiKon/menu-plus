@@ -60,6 +60,7 @@ export default function AppRouter() {
             <Routes>
                 <Route element={<WithNavbarLayout />}>
                     <Route path="/" element={<Home />} />
+                    <Route path="/admin" element={<AdminHome />} />
                 </Route>
                 <Route path="/login" element={
                     <AuthGuard>
@@ -71,10 +72,8 @@ export default function AppRouter() {
                         <SignUp />
                     </AuthGuard>
                 } />
-                <Route path="/admin" element={<AdminHome />} />
 
-                {/* <Route path="/:slug" element={<PublicMenu />} />
-                <Route path="/:slug/admin/*" element={<CafeAdmin />} /> */}
+                {/* <Route path="/:slug" element={<PublicMenu />} /> */}
                 <Route path="/auth/callback" element={<AuthCallback />} />
 
 

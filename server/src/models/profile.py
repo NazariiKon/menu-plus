@@ -1,10 +1,10 @@
 from typing import Optional
-from sqlalchemy import Boolean, String, text
+from sqlalchemy import String
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from src.database import Base
-from src.models import Cafe
+from src.models import Venue
 
 
 class Profile(Base):
@@ -13,4 +13,4 @@ class Profile(Base):
     name: Mapped[str] = mapped_column(String(100))
     phone: Mapped[Optional[str]] = mapped_column(String(20))
     
-    cafe: Mapped["Cafe"] = relationship(back_populates="owner")
+    establishments: Mapped["Venue"] = relationship("Venues", back_populates="owner")

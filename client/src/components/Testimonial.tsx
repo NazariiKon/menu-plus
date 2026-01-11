@@ -40,7 +40,7 @@ export default function Testimonials() {
         {/* Header */}
         <div className="text-center mb-24 space-y-6">
           <h2 className="text-4xl md:text-5xl lg:text-6xl font-black bg-gradient-to-r from-gray-900 via-emerald-900 to-gray-900 bg-clip-text text-transparent leading-tight">
-            Loved by Cafe Owners Worldwide
+            Trusted by Venue Owners Worldwide
           </h2>
           <p className="text-xl md:text-2xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
             Join 5,000+ small businesses boosting orders with Menu+
@@ -52,7 +52,7 @@ export default function Testimonials() {
           <div className="space-y-3 p-6 rounded-2xl bg-white/70 backdrop-blur-sm shadow-xl hover:shadow-2xl transition-all">
             <Users className="w-16 h-16 text-emerald-500 mx-auto" />
             <div className="text-4xl font-black text-gray-900">5K+</div>
-            <div className="text-lg font-semibold text-gray-600">Cafes Using</div>
+            <div className="text-lg font-semibold text-gray-600">Venues Using</div>
           </div>
           <div className="space-y-3 p-6 rounded-2xl bg-white/70 backdrop-blur-sm shadow-xl hover:shadow-2xl transition-all">
             <Zap className="w-16 h-16 text-indigo-500 mx-auto" />

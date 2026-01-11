@@ -1,6 +1,7 @@
-import type { RegisterRequest, LoginRequest, Response } from '../types/api';
+import type { LoginRequest, RegisterRequest, ApiResponse } from "@/types/types";
+import type { User } from "@supabase/supabase-js";
 
-export async function signup(data: RegisterRequest): Promise<Response> {
+export async function signup(data: RegisterRequest): Promise<ApiResponse<User>> {
     try {
         const response = await fetch(`${import.meta.env.VITE_API_URL}/auth/register`, {
             method: "POST",
@@ -10,7 +11,7 @@ export async function signup(data: RegisterRequest): Promise<Response> {
 
         const result = await response.json();
         return response.ok
-            ? { success: true, user: result.user }
+            ? { success: true, data: result.user }
             : { success: false, error: result.detail || "Unknown error" };
     } catch (error) {
         console.error("Signup error:", error);
@@ -18,7 +19,7 @@ export async function signup(data: RegisterRequest): Promise<Response> {
     }
 }
 
-export async function login(data: LoginRequest): Promise<Response> {
+export async function login(data: LoginRequest): Promise<ApiResponse<User>> {
     try {
         const response = await fetch(`${import.meta.env.VITE_API_URL}/auth/login`, {
             method: "POST",
@@ -35,7 +36,7 @@ export async function login(data: LoginRequest): Promise<Response> {
                     localStorage.setItem('refresh_token', result.refresh_token);
                 }
             }
-            return { success: true, user: result.user };
+            return { success: true, data: result.user };
         } else {
             return { success: false, error: result.detail || "Unknown error" };
         }

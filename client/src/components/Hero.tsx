@@ -11,7 +11,7 @@ export default function Hero() {
                         QR Menu in <span className="text-6xl md:text-8xl">2</span> Minutes
                     </h1>
                     <p className="text-xl md:text-2xl text-gray-600 max-w-2xl mx-auto lg:mx-0 leading-relaxed">
-                        Ditch paper menus. Create beautiful digital QR menus for your cafe.
+                        Ditch paper menus. Create beautiful digital QR menus for your restaurant, cafe or bar.
                         Edit online, track what customers view, boost orders instantly.
                     </p>
 

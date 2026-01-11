@@ -10,7 +10,7 @@ export default function Features() {
                         Everything You Need, Nothing You Don't
                     </h2>
                     <p className="text-xl md:text-2xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
-                        Simple, powerful tools built for small cafes. No complexity, just results.
+                        Simple, powerful tools built for small hospitality businesses. No complexity, just results.
                     </p>
                 </div>
 
@@ -67,7 +67,7 @@ export default function Features() {
                             Smart Analytics
                         </h3>
                         <p className="text-xl text-gray-600 leading-relaxed text-center max-w-lg mx-auto">
-                            See exactly what customers view most. <strong>Optimize your menu</strong>
+                            See exactly what customers view most. <strong>Optimize your menu </strong>
                             based on real data, boost profits automatically.
                         </p>
                     </div>

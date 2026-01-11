@@ -3,8 +3,6 @@
  * Do not make direct changes to the file.
  */
 
-import type { User } from "@supabase/supabase-js";
-
 export interface paths {
     "/auth/register": {
         parameters: {
@@ -74,6 +72,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/profiles/my-venues": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get My Venues */
+        get: operations["get_my_venues_profiles_my_venues_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/": {
         parameters: {
             query?: never;
@@ -91,56 +106,10 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/cafes/{cafe_id}/dishes": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /** Add Dish */
-        post: operations["add_dish_cafes__cafe_id__dishes_post"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/cafes/{cafe_id}/menu": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Get Menu */
-        get: operations["get_menu_cafes__cafe_id__menu_get"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
-        /** Dish */
-        Dish: {
-            /** Name */
-            name: string;
-            /** Price */
-            price: number;
-            /**
-             * Description
-             * @default
-             */
-            description: string;
-        };
         /** HTTPValidationError */
         HTTPValidationError: {
             /** Detail */
@@ -151,9 +120,13 @@ export interface components {
             /**
              * Email
              * Format: email
+             * @default nazar.konechniy2@gmail.com
              */
             email: string;
-            /** Password */
+            /**
+             * Password
+             * @default nazar.konechniy2@gmail.com
+             */
             password: string;
         };
         /** Register */
@@ -171,6 +144,44 @@ export interface components {
             msg: string;
             /** Error Type */
             type: string;
+        };
+        /** VenueRead */
+        VenueRead: {
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /** Slug */
+            slug: string;
+            /** Name */
+            name: string;
+            /**
+             * Logo
+             * @default default.png
+             */
+            logo: string;
+            /** Phone */
+            phone?: string | null;
+            /** Address */
+            address?: string | null;
+            /**
+             * Max Tables
+             * @default 20
+             */
+            max_tables: number | null;
+            /** Created At */
+            created_at?: string | null;
+            /**
+             * Currency
+             * @default USD
+             */
+            currency: string;
+            /**
+             * Language
+             * @default English
+             */
+            language: string;
         };
     };
     responses: never;
@@ -299,6 +310,26 @@ export interface operations {
             };
         };
     };
+    get_my_venues_profiles_my_venues_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["VenueRead"][];
+                };
+            };
+        };
+    };
     root__get: {
         parameters: {
             query?: never;
@@ -319,84 +350,4 @@ export interface operations {
             };
         };
     };
-    add_dish_cafes__cafe_id__dishes_post: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                cafe_id: string;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["Dish"];
-            };
-        };
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": unknown;
-                };
-            };
-            /** @description Validation Error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
-                };
-            };
-        };
-    };
-    get_menu_cafes__cafe_id__menu_get: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                cafe_id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": unknown;
-                };
-            };
-            /** @description Validation Error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
-                };
-            };
-        };
-    };
-}
-
-
-export type ApiComponents = components;
-
-export type RegisterRequest = ApiComponents['schemas']['Register'];
-export type LoginRequest = ApiComponents['schemas']['Login'];
-export type Dish = ApiComponents['schemas']['Dish'];
-export type HTTPValidationError = ApiComponents['schemas']['HTTPValidationError'];
-export interface Response {
-    success: boolean;
-    error?: string;
-    message?: string;
-    user?: User;
 }

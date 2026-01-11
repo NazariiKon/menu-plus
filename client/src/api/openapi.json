@@ -159,6 +159,38 @@
                                                                        }
                                                      }
                                         },
+                  "/profiles/my-venues":  {
+                                              "get":  {
+                                                          "tags":  [
+                                                                       "Profiles"
+                                                                   ],
+                                                          "summary":  "Get My Venues",
+                                                          "operationId":  "get_my_venues_profiles_my_venues_get",
+                                                          "responses":  {
+                                                                            "200":  {
+                                                                                        "description":  "Successful Response",
+                                                                                        "content":  {
+                                                                                                        "application/json":  {
+                                                                                                                                 "schema":  {
+                                                                                                                                                "items":  {
+                                                                                                                                                              "$ref":  "#/components/schemas/VenueRead"
+                                                                                                                                                          },
+                                                                                                                                                "type":  "array",
+                                                                                                                                                "title":  "Response Get My Venues Profiles My Venues Get"
+                                                                                                                                            }
+                                                                                                                             }
+                                                                                                    }
+                                                                                    }
+                                                                        },
+                                                          "security":  [
+                                                                           {
+                                                                               "APIKeyHeader":  [
+
+                                                                                                ]
+                                                                           }
+                                                                       ]
+                                                      }
+                                          },
                   "/":  {
                             "get":  {
                                         "summary":  "Root",
@@ -176,121 +208,10 @@
                                                                   }
                                                       }
                                     }
-                        },
-                  "/cafes/{cafe_id}/dishes":  {
-                                                  "post":  {
-                                                               "summary":  "Add Dish",
-                                                               "operationId":  "add_dish_cafes__cafe_id__dishes_post",
-                                                               "parameters":  [
-                                                                                  {
-                                                                                      "name":  "cafe_id",
-                                                                                      "in":  "path",
-                                                                                      "required":  true,
-                                                                                      "schema":  {
-                                                                                                     "type":  "string",
-                                                                                                     "title":  "Cafe Id"
-                                                                                                 }
-                                                                                  }
-                                                                              ],
-                                                               "requestBody":  {
-                                                                                   "required":  true,
-                                                                                   "content":  {
-                                                                                                   "application/json":  {
-                                                                                                                            "schema":  {
-                                                                                                                                           "$ref":  "#/components/schemas/Dish"
-                                                                                                                                       }
-                                                                                                                        }
-                                                                                               }
-                                                                               },
-                                                               "responses":  {
-                                                                                 "200":  {
-                                                                                             "description":  "Successful Response",
-                                                                                             "content":  {
-                                                                                                             "application/json":  {
-                                                                                                                                      "schema":  {
-
-                                                                                                                                                 }
-                                                                                                                                  }
-                                                                                                         }
-                                                                                         },
-                                                                                 "422":  {
-                                                                                             "description":  "Validation Error",
-                                                                                             "content":  {
-                                                                                                             "application/json":  {
-                                                                                                                                      "schema":  {
-                                                                                                                                                     "$ref":  "#/components/schemas/HTTPValidationError"
-                                                                                                                                                 }
-                                                                                                                                  }
-                                                                                                         }
-                                                                                         }
-                                                                             }
-                                                           }
-                                              },
-                  "/cafes/{cafe_id}/menu":  {
-                                                "get":  {
-                                                            "summary":  "Get Menu",
-                                                            "operationId":  "get_menu_cafes__cafe_id__menu_get",
-                                                            "parameters":  [
-                                                                               {
-                                                                                   "name":  "cafe_id",
-                                                                                   "in":  "path",
-                                                                                   "required":  true,
-                                                                                   "schema":  {
-                                                                                                  "type":  "string",
-                                                                                                  "title":  "Cafe Id"
-                                                                                              }
-                                                                               }
-                                                                           ],
-                                                            "responses":  {
-                                                                              "200":  {
-                                                                                          "description":  "Successful Response",
-                                                                                          "content":  {
-                                                                                                          "application/json":  {
-                                                                                                                                   "schema":  {
-
-                                                                                                                                              }
-                                                                                                                               }
-                                                                                                      }
-                                                                                      },
-                                                                              "422":  {
-                                                                                          "description":  "Validation Error",
-                                                                                          "content":  {
-                                                                                                          "application/json":  {
-                                                                                                                                   "schema":  {
-                                                                                                                                                  "$ref":  "#/components/schemas/HTTPValidationError"
-                                                                                                                                              }
-                                                                                                                               }
-                                                                                                      }
-                                                                                      }
-                                                                          }
-                                                        }
-                                            }
+                        }
               },
     "components":  {
                        "schemas":  {
-                                       "Dish":  {
-                                                    "properties":  {
-                                                                       "name":  {
-                                                                                    "type":  "string",
-                                                                                    "title":  "Name"
-                                                                                },
-                                                                       "price":  {
-                                                                                     "type":  "integer",
-                                                                                     "title":  "Price"
-                                                                                 },
-                                                                       "description":  {
-                                                                                           "type":  "string",
-                                                                                           "title":  "Description",
-                                                                                           "default":  ""
-                                                                                       }
-                                                                   },
-                                                    "type":  "object",
-                                                    "required":  [
-                                                                     "name",
-                                                                     "price"
-                                                                 ],
-                                                    "title":  "Dish"
-                                                },
                                        "HTTPValidationError":  {
                                                                    "properties":  {
                                                                                       "detail":  {
@@ -309,18 +230,16 @@
                                                                         "email":  {
                                                                                       "type":  "string",
                                                                                       "format":  "email",
-                                                                                      "title":  "Email"
+                                                                                      "title":  "Email",
+                                                                                      "default":  "nazar.konechniy2@gmail.com"
                                                                                   },
                                                                         "password":  {
                                                                                          "type":  "string",
-                                                                                         "title":  "Password"
+                                                                                         "title":  "Password",
+                                                                                         "default":  "nazar.konechniy2@gmail.com"
                                                                                      }
                                                                     },
                                                      "type":  "object",
-                                                     "required":  [
-                                                                      "email",
-                                                                      "password"
-                                                                  ],
                                                      "title":  "Login"
                                                  },
                                        "Register":  {
@@ -373,7 +292,99 @@
                                                                                 "type"
                                                                             ],
                                                                "title":  "ValidationError"
-                                                           }
-                                   }
+                                                           },
+                                       "VenueRead":  {
+                                                         "properties":  {
+                                                                            "id":  {
+                                                                                       "type":  "string",
+                                                                                       "format":  "uuid",
+                                                                                       "title":  "Id"
+                                                                                   },
+                                                                            "slug":  {
+                                                                                         "type":  "string",
+                                                                                         "title":  "Slug"
+                                                                                     },
+                                                                            "name":  {
+                                                                                         "type":  "string",
+                                                                                         "title":  "Name"
+                                                                                     },
+                                                                            "logo":  {
+                                                                                         "type":  "string",
+                                                                                         "title":  "Logo",
+                                                                                         "default":  "default.png"
+                                                                                     },
+                                                                            "phone":  {
+                                                                                          "anyOf":  [
+                                                                                                        {
+                                                                                                            "type":  "string"
+                                                                                                        },
+                                                                                                        {
+                                                                                                            "type":  "null"
+                                                                                                        }
+                                                                                                    ],
+                                                                                          "title":  "Phone"
+                                                                                      },
+                                                                            "address":  {
+                                                                                            "anyOf":  [
+                                                                                                          {
+                                                                                                              "type":  "string"
+                                                                                                          },
+                                                                                                          {
+                                                                                                              "type":  "null"
+                                                                                                          }
+                                                                                                      ],
+                                                                                            "title":  "Address"
+                                                                                        },
+                                                                            "max_tables":  {
+                                                                                               "anyOf":  [
+                                                                                                             {
+                                                                                                                 "type":  "integer"
+                                                                                                             },
+                                                                                                             {
+                                                                                                                 "type":  "null"
+                                                                                                             }
+                                                                                                         ],
+                                                                                               "title":  "Max Tables",
+                                                                                               "default":  20
+                                                                                           },
+                                                                            "created_at":  {
+                                                                                               "anyOf":  [
+                                                                                                             {
+                                                                                                                 "type":  "string",
+                                                                                                                 "format":  "date-time"
+                                                                                                             },
+                                                                                                             {
+                                                                                                                 "type":  "null"
+                                                                                                             }
+                                                                                                         ],
+                                                                                               "title":  "Created At"
+                                                                                           },
+                                                                            "currency":  {
+                                                                                             "type":  "string",
+                                                                                             "title":  "Currency",
+                                                                                             "default":  "USD"
+                                                                                         },
+                                                                            "language":  {
+                                                                                             "type":  "string",
+                                                                                             "title":  "Language",
+                                                                                             "default":  "English"
+                                                                                         }
+                                                                        },
+                                                         "type":  "object",
+                                                         "required":  [
+                                                                          "id",
+                                                                          "slug",
+                                                                          "name"
+                                                                      ],
+                                                         "title":  "VenueRead"
+                                                     }
+                                   },
+                       "securitySchemes":  {
+                                               "APIKeyHeader":  {
+                                                                    "type":  "apiKey",
+                                                                    "in":  "header",
+                                                                    "name":  "Authorization"
+                                                                }
+                                           }
                    }
 }

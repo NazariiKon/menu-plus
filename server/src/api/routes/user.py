@@ -1,84 +1,27 @@
-from fastapi import APIRouter, HTTPException, Depends, Security, status
-from fastapi.security import APIKeyHeader, HTTPBearer
+from fastapi import APIRouter, HTTPException, Depends, status
 from pydantic import BaseModel, EmailStr
-from supabase import AuthApiError, create_client, Client
-from dotenv import load_dotenv
-from jose import JWTError, jwt
-import requests
-from functools import lru_cache
-import os
+from supabase import AuthApiError, Client
 
-from src.models.profile import Profile
+from src.api.dependencies import get_current_user, get_supabase_client
 
 
 router = APIRouter(prefix="/auth", tags=["Auth"])
-
-load_dotenv()
-SUPABASE_URL = os.getenv("SUPABASE_URL")
-supabase: Client = create_client(SUPABASE_URL, os.getenv("SUPABASE_ANON_KEY"))
-JWT_SECRET = os.getenv("SUPABASE_JWT_SECRET")
-ALGORITHM = "HS256"
-AUDIENCE = "authenticated"
-
-security = HTTPBearer()
-
-security_scheme = APIKeyHeader(
-    name="Authorization",
-    auto_error=False
-)
-
-@lru_cache()
-def get_jwks():
-    return requests.get(f"{SUPABASE_URL}/auth/v1/.well-known/jwks.json").json()
-
-async def get_current_user(authorization: str = Security(security_scheme)):
-    if not authorization: raise HTTPException(status.HTTP_401_UNAUTHORIZED, "UNAUTHORIZED")
-    scheme, token = authorization.split(" ", 1)
-    if scheme.lower() != "bearer":
-        raise HTTPException(401)
-    try:
-        jwk = get_jwks()['keys'][0]
-        payload = jwt.decode(token, jwk, algorithms=["ES256"], audience="authenticated")
-        return payload
-    except JWTError:
-        raise HTTPException(status.HTTP_401_UNAUTHORIZED, "Invalid token")
-
-@router.get("/me")
-async def get_me(user: dict = Depends(get_current_user)):
-    data = supabase.table("profiles").select("*").eq("id", user["sub"]).maybe_single().execute()
-    
-    profile = Profile(**data.data) if data else None
-    
-    return {
-        "email": user["email"],
-        "profile": profile
-    }
 
 class Register(BaseModel):
     email: str
     password: str
 
 @router.post("/register")
-async def register(reg: Register):
+async def register(reg: Register, supabase: Client = Depends(get_supabase_client)):
     try:
         signup_res = supabase.auth.sign_up({
             "email": reg.email,
             "password": reg.password,
         })
         
-        if not signup_res.user:
-            raise HTTPException(400, "Registration failed")
-        
-        user = {
-            "id": str(signup_res.user.id),
-            "email": signup_res.user.email,
-            "email_verified": getattr(signup_res.user, 'email_confirmed_at') is not None,
-            "created_at": signup_res.user.created_at.isoformat() if signup_res.user.created_at else None,
-        }
-        
         return {
             "success": True,
-            "user": user
+            "user": signup_res.user
         }
         
     except AuthApiError as e:
@@ -91,27 +34,20 @@ async def register(reg: Register):
 
 
 class Login(BaseModel):
-    email: EmailStr
-    password: str
+    email: EmailStr = "nazar.konechniy2@gmail.com"
+    password: str = "nazar.konechniy2@gmail.com"
 
 @router.post("/login")
-async def sign_in(login: Login):
+async def sign_in(login: Login, supabase: Client = Depends(get_supabase_client)):
     try:
         signin_res = supabase.auth.sign_in_with_password({
             "email": login.email,
             "password": login.password,
         })
     
-        user = {
-            "id": str(signin_res.user.id),
-            "email": signin_res.user.email,
-            "email_verified": getattr(signin_res.user, 'email_confirmed_at') is not None,
-            "created_at": signin_res.user.created_at.isoformat() if signin_res.user.created_at else None,
-        }
-        
         return {
             "success": True,
-            "user": user,
+            "user": signin_res.user,
             "access_token": signin_res.session.access_token,
             "refresh_token": signin_res.session.refresh_token
         }
@@ -128,7 +64,7 @@ async def sign_in(login: Login):
     
 
 @router.post("/verify-signup")
-async def verify_signup(email: str, token: str):
+async def verify_signup(email: str, token: str, supabase: Client = Depends(get_supabase_client)):
     res = supabase.auth.verify_otp({
         "email": email, 
         "token": token, 

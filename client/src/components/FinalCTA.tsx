@@ -11,7 +11,7 @@ export default function FinalCTA() {
                     Ready to Ditch Paper Menus?
                 </h2>
                 <p className="text-2xl md:text-3xl text-indigo-100/90 mb-12 max-w-2xl mx-auto leading-relaxed">
-                    Join 5K+ cafes. Create your first QR menu in 2 minutes — completely free.
+                    Join 5K+ venues. Create your first QR menu in 2 minutes — completely free.
                 </p>
 
                 <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 justify-center items-center">

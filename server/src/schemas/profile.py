@@ -1,7 +1,13 @@
+from pydantic import BaseModel, Field
 from typing import Optional
 
-from pydantic import BaseModel
+class ProfileBase(BaseModel):
+    name: str = Field(..., max_length=100)
+    phone: Optional[str] = Field(None, max_length=20)
 
-class Profile(BaseModel):
+class ProfileCreate(ProfileBase):
+    pass
+
+class ProfileUpdate(ProfileBase):
     name: Optional[str] = None
     phone: Optional[str] = None

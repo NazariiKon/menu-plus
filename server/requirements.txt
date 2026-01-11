@@ -10,3 +10,4 @@ sqlalchemy[asyncio]
 asyncpg
 pydantic[email]
 python-jose[cryptography]
+pydantic-settings
