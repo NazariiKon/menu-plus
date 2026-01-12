@@ -29,9 +29,17 @@ class VenueService:
             .execute()
         )
         return response.data
-
-
-
+    
+    async def get_venue_menu_by_slug(self, slug: str, owner_id: str) -> dict:
+        response = (
+            self.supabase
+            .table("venues")
+            .select("""*, menus (*, categories (*, items ( * )))""")
+            .eq("slug", slug)
+            .eq("owner_id", owner_id)
+            .execute()
+        )
+        return response.data
 
     
     async def create_venue(self, owner_id: str, data: VenueBase) -> dict:

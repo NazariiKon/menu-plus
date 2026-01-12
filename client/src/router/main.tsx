@@ -11,6 +11,7 @@ import { supabase } from '@/lib/supabase'
 import { useDispatch } from 'react-redux';
 import AuthGuard from '@/components/AuthGuard'
 import AdminHome from '@/pages/AdminHome'
+import PublicMenu from '@/pages/PublicMenu'
 
 export default function AppRouter() {
     const dispatch = useDispatch<AppDispatch>();
@@ -73,7 +74,7 @@ export default function AppRouter() {
                     </AuthGuard>
                 } />
 
-                {/* <Route path="/:slug" element={<PublicMenu />} /> */}
+                <Route path="/p/:slug" element={<PublicMenu />} />
                 <Route path="/auth/callback" element={<AuthCallback />} />
 
 
