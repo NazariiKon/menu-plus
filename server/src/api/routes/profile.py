@@ -1,5 +1,3 @@
-from typing import List
-from uuid import UUID
 from fastapi import APIRouter, Depends, HTTPException, status
 
 from src.services.venue_service import VenueService
@@ -17,7 +15,5 @@ async def get_my_venues(
 ):
     venues, total = await vs.get_my_venues(current_user["sub"])
 
-    if not venues:
-        raise HTTPException(status.HTTP_404_NOT_FOUND, "No venues found")
     return {"success": True, "data": venues, "total": total} 
     

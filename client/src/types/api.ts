@@ -72,7 +72,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/profiles/my-venues": {
+    "/profile/my-venues": {
         parameters: {
             query?: never;
             header?: never;
@@ -80,9 +80,26 @@ export interface paths {
             cookie?: never;
         };
         /** Get My Venues */
-        get: operations["get_my_venues_profiles_my_venues_get"];
+        get: operations["get_my_venues_profile_my_venues_get"];
         put?: never;
         post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/venues/create-venue": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Create Venue */
+        post: operations["create_venue_venues_create_venue_post"];
         delete?: never;
         options?: never;
         head?: never;
@@ -110,10 +127,64 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
+        /** ApiResponse */
+        ApiResponse: {
+            /** Success */
+            success: boolean;
+            /**
+             * Data
+             * @default []
+             */
+            data: components["schemas"]["VenueRead"][];
+            /** Total */
+            total: number;
+        };
+        /** CategoryRead */
+        CategoryRead: {
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /**
+             * Menu Id
+             * Format: uuid
+             */
+            menu_id: string;
+            /** Name */
+            name: string;
+            /** Desc */
+            desc?: string | null;
+            /** Image */
+            image?: string | null;
+            /** Items */
+            items?: components["schemas"]["ItemRead"][];
+        };
         /** HTTPValidationError */
         HTTPValidationError: {
             /** Detail */
             detail?: components["schemas"]["ValidationError"][];
+        };
+        /** ItemRead */
+        ItemRead: {
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /**
+             * Category Id
+             * Format: uuid
+             */
+            category_id: string;
+            /** Name */
+            name: string;
+            /** Desc */
+            desc?: string | null;
+            /** Price */
+            price?: string | null;
+            /** Weight G */
+            weight_g?: number | null;
         };
         /** Login */
         Login: {
@@ -129,11 +200,40 @@ export interface components {
              */
             password: string;
         };
+        /** MenuRead */
+        MenuRead: {
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /**
+             * Venue Id
+             * Format: uuid
+             */
+            venue_id: string;
+            /** Name */
+            name: string;
+            /** Categories */
+            categories?: components["schemas"]["CategoryRead"][];
+        };
         /** Register */
         Register: {
-            /** Email */
+            /**
+             * Name
+             * @default Nazarii
+             */
+            name: string;
+            /**
+             * Email
+             * Format: email
+             * @default nazar.konechniy2@gmail.com
+             */
             email: string;
-            /** Password */
+            /**
+             * Password
+             * @default nazar.konechniy2@gmail.com
+             */
             password: string;
         };
         /** ValidationError */
@@ -145,33 +245,41 @@ export interface components {
             /** Error Type */
             type: string;
         };
-        /** VenueRead */
-        VenueRead: {
+        /** VenueBase */
+        VenueBase: {
             /**
-             * Id
-             * Format: uuid
+             * Name
+             * @default Jopa Caffe
              */
-            id: string;
-            /** Slug */
-            slug: string;
-            /** Name */
             name: string;
             /**
-             * Logo
-             * @default default.png
+             * Phone
+             * @default 353079644297
              */
-            logo: string;
-            /** Phone */
-            phone?: string | null;
-            /** Address */
-            address?: string | null;
+            phone: string | null;
+            /**
+             * Wifipassword
+             * @default strongPassword
+             */
+            wifiPassword: string | null;
+            /**
+             * Address
+             * @default 70A Hillcreast Park
+             */
+            address: string | null;
+            /** Google Maps Link */
+            google_maps_link?: string | null;
+            /** Inst Link */
+            inst_link?: string | null;
+            /** Facebook Link */
+            facebook_link?: string | null;
+            /** Tiktok Link */
+            tiktok_link?: string | null;
             /**
              * Max Tables
              * @default 20
              */
             max_tables: number | null;
-            /** Created At */
-            created_at?: string | null;
             /**
              * Currency
              * @default USD
@@ -182,6 +290,91 @@ export interface components {
              * @default English
              */
             language: string;
+            /**
+             * Logo
+             * @default default.png
+             */
+            logo: string;
+            /**
+             * Background
+             * @default defaultBG.png
+             */
+            background: string;
+        };
+        /** VenueRead */
+        VenueRead: {
+            /**
+             * Name
+             * @default Jopa Caffe
+             */
+            name: string;
+            /**
+             * Phone
+             * @default 353079644297
+             */
+            phone: string | null;
+            /**
+             * Wifipassword
+             * @default strongPassword
+             */
+            wifiPassword: string | null;
+            /**
+             * Address
+             * @default 70A Hillcreast Park
+             */
+            address: string | null;
+            /** Google Maps Link */
+            google_maps_link?: string | null;
+            /** Inst Link */
+            inst_link?: string | null;
+            /** Facebook Link */
+            facebook_link?: string | null;
+            /** Tiktok Link */
+            tiktok_link?: string | null;
+            /**
+             * Max Tables
+             * @default 20
+             */
+            max_tables: number | null;
+            /**
+             * Currency
+             * @default USD
+             */
+            currency: string;
+            /**
+             * Language
+             * @default English
+             */
+            language: string;
+            /**
+             * Logo
+             * @default default.png
+             */
+            logo: string;
+            /**
+             * Background
+             * @default defaultBG.png
+             */
+            background: string;
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /** Slug */
+            slug: string;
+            /**
+             * Owner Id
+             * Format: uuid
+             */
+            owner_id: string;
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            /** Menus */
+            menus?: components["schemas"]["MenuRead"][];
         };
     };
     responses: never;
@@ -310,7 +503,7 @@ export interface operations {
             };
         };
     };
-    get_my_venues_profiles_my_venues_get: {
+    get_my_venues_profile_my_venues_get: {
         parameters: {
             query?: never;
             header?: never;
@@ -325,7 +518,40 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["VenueRead"][];
+                    "application/json": components["schemas"]["ApiResponse"];
+                };
+            };
+        };
+    };
+    create_venue_venues_create_venue_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["VenueBase"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
                 };
             };
         };

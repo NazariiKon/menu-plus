@@ -3,44 +3,57 @@ from datetime import datetime
 from typing import List, Optional
 from uuid import UUID
 
+from src.schemas.menu import MenuRead
+
 class VenueBase(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
-class VenueRead(VenueBase):
-    id: UUID
-    slug: str
-    name: str
-    logo: str = Field(default="default.png")
-    phone: Optional[str] = None
-    address: Optional[str] = None
-    max_tables: Optional[int] = Field(default=20)
-    created_at: Optional[datetime] = None
-    currency: str = Field(default="USD")
-    language: str = Field(default="English")
+    name: str = Field(default="Jopa Caffe", max_length=100)
 
-    model_config = ConfigDict(from_attributes=True)
+    phone: Optional[str] = Field(default="353079644297", max_length=20)
+    wifiPassword: Optional[str] = Field(default="strongPassword", max_length=20)
 
-class VenueCreate(BaseModel):
-    slug: str
-    name: str
-    phone: Optional[str] = None
-    address: Optional[str] = None
-    max_tables: Optional[int] = Field(default=20)
-    currency: str = Field(default="USD")
-    language: str = Field(default="English")
-    logo: str = Field(default="default.png")
+    address: Optional[str] = Field(default="70A Hillcreast Park", max_length=30)
+    google_maps_link: Optional[str] = Field(default=None, max_length=30)
+    inst_link: Optional[str] = Field(default=None, max_length=30)
+    facebook_link: Optional[str] = Field(default=None, max_length=30)
+    tiktok_link: Optional[str] = Field(default=None, max_length=30)
 
-class VenueUpdate(BaseModel):
-    slug: Optional[str] = None
-    name: Optional[str] = None
-    phone: Optional[str] = None
-    address: Optional[str] = None
+    max_tables: Optional[int] = 20
+    currency: str = "USD"
+    language: str = "English"
+    logo: str = "default.png"
+    background: str = "defaultBG.png"
+
+class VenueUpdate(VenueBase):
+    name: Optional[str] = Field(default=None, max_length=100)
+
+    phone: Optional[str] = Field(default=None, max_length=20)
+    wifiPassword: Optional[str] = Field(default=None, max_length=20)
+
+    address: Optional[str] = Field(default=None, max_length=30)
+    google_maps_link: Optional[str] = Field(default=None, max_length=30)
+    inst_link: Optional[str] = Field(default=None, max_length=30)
+    facebook_link: Optional[str] = Field(default=None, max_length=30)
+    tiktok_link: Optional[str] = Field(default=None, max_length=30)
+
     max_tables: Optional[int] = None
     currency: Optional[str] = None
     language: Optional[str] = None
     logo: Optional[str] = None
+    background: Optional[str] = None
+
+
+class VenueRead(VenueBase):
+    id: UUID
+    slug: str = Field(max_length=50)
+    owner_id: UUID
+    created_at: datetime
+    menus: list["MenuRead"] = Field(default_factory=list)
 
 class ApiResponse(BaseModel):
     success: bool
     data: List[VenueRead] = []
     total: int
+
+VenueRead.model_rebuild()

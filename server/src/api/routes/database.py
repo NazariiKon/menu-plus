@@ -1,15 +1,14 @@
 from fastapi import APIRouter, Depends, HTTPException, status
-from sqlalchemy.ext.asyncio import AsyncSession
 
-from src.database import engine, Base, get_db
+from src.database import engine, Base
 
 
 router = APIRouter(prefix="/database", tags=["Database"])
 
 
 @router.post("/migrate")
-async def migrate(db: AsyncSession = Depends(get_db)):
+async def migrate():
+    import src.models
     async with engine.begin() as conn:
-        await conn.run_sync(Base.metadata.drop_all)
         await conn.run_sync(Base.metadata.create_all)
-    return {"status": status.HTTP_200_OK}
+    return {"status": status.HTTP_200_OK, "tables": list(Base.metadata.tables.keys())}

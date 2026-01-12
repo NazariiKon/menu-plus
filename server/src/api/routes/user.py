@@ -2,26 +2,34 @@ from fastapi import APIRouter, HTTPException, Depends, status
 from pydantic import BaseModel, EmailStr
 from supabase import AuthApiError, Client
 
-from src.api.dependencies import get_current_user, get_supabase_client
+from src.services.profile_service import ProfileService
+from src.api.dependencies import get_profile_service, get_supabase_client
 
 
 router = APIRouter(prefix="/auth", tags=["Auth"])
 
 class Register(BaseModel):
-    email: str
-    password: str
+    name: str = "Nazarii"
+    email: EmailStr = "nazar.konechniy2@gmail.com"
+    password: str = "nazar.konechniy2@gmail.com"
 
 @router.post("/register")
-async def register(reg: Register, supabase: Client = Depends(get_supabase_client)):
+async def register(
+    reg: Register, 
+    supabase: Client = Depends(get_supabase_client), 
+    ps: ProfileService = Depends(get_profile_service)):
     try:
         signup_res = supabase.auth.sign_up({
             "email": reg.email,
             "password": reg.password,
         })
+        profile = await ps.create_profile(user_id=signup_res.user.id, name=reg.name)
+        
         
         return {
             "success": True,
-            "user": signup_res.user
+            "user": signup_res.user,
+            "profile": profile
         }
         
     except AuthApiError as e:

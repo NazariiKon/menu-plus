@@ -5,6 +5,7 @@ from jose import JWTError, jwt
 import requests
 from functools import lru_cache
 
+from src.services.profile_service import ProfileService
 from src.services.venue_service import VenueService
 from src.core.config import settings
 
@@ -47,3 +48,6 @@ async def get_current_user(authorization: str = Security(security_scheme)):
 # Services: 
 async def get_venue_service(supabase: Client = Depends(get_supabase_client)):
     return VenueService(supabase)
+
+async def get_profile_service(supabase: Client = Depends(get_supabase_client)):
+    return ProfileService(supabase)

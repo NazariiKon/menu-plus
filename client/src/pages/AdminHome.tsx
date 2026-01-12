@@ -2,20 +2,44 @@ import { useSelector } from "react-redux";
 import type { RootState } from "@/store/store";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Building2, Edit, ChevronRight } from "lucide-react";
+import { Building2, ChevronRight, Trash } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 import type { User } from "@supabase/supabase-js";
 import Verification from "@/components/ui/verification";
 import type { VenueRead } from "@/types/types";
-import { get_my_venues } from "@/api/venue";
+import { get_my_venues } from "@/api/profile";
+import { VenueModal, type VenueFormValues } from "@/components/RestaurantModal";
+import { create_venue } from "@/api/venue";
 
 export default function Admin() {
     const navigate = useNavigate();
     const currentUser = useSelector((state: RootState) => state.user.currentUser) as User | null;
     const [venues, setVenues] = useState<VenueRead[]>([]);
+    const [error, setError] = useState<string>();
+    const [open, setOpen] = useState(false);
     const [loading, setLoading] = useState(true);
+
+    const handleCreate = async (values: VenueFormValues) => {
+        const res = await create_venue(values);
+        if (!res) return;
+        await getVenues();
+    };
+
+
+    const getVenues = async () => {
+        setLoading(true);
+        const result = await get_my_venues();
+
+        if (result.success && result.data) {
+            setVenues(result.data);
+        } else {
+            setError(result.error);
+        }
+
+        setLoading(false);
+    };
 
     useEffect(() => {
         if (!currentUser) {
@@ -23,28 +47,15 @@ export default function Admin() {
             return;
         }
 
-        const getVenues = async () => {
-            setLoading(true);
-            const result = await get_my_venues();
-
-            console.log(result);
-
-            if (result.success && result.data) {
-                setVenues(result.data);
-            } else {
-                console.error(result.error);
-            }
-
-            setLoading(false);
-        };
-
-        getVenues();
+        if (currentUser.confirmed_at) {
+            getVenues();
+        }
     }, [currentUser]);
 
-    if (!currentUser) return <div className="min-h-screen flex items-center justify-center">Loading...</div>;
+    if (!currentUser || error) return <div className="min-h-screen flex items-center justify-center">Loading...</div>;
 
-    if (!currentUser.confirmation_sent_at && currentUser.email) {
-        <Verification email={currentUser.email} />
+    if (!currentUser.confirmed_at && currentUser.email) {
+        return <Verification email={currentUser.email} />
     }
 
     return (
@@ -68,7 +79,7 @@ export default function Admin() {
                     <Button
                         size="lg"
                         className="px-8 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white shadow-xl hover:shadow-2xl transition-all font-semibold rounded-xl"
-                        onClick={() => navigate("/admin/venues/new")}
+                        onClick={() => setOpen(true)}
                     >
                         <Building2 className="w-5 h-5 mr-2" />
                         New Venue
@@ -76,6 +87,14 @@ export default function Admin() {
                 </div>
 
                 <div className="space-y-4">
+                    <VenueModal
+                        open={open}
+                        onOpenChange={setOpen}
+                        onSubmit={handleCreate}
+                        title="Add venue"
+                        description="Enter a venue name."
+                        submitLabel="Create"
+                    />
                     {loading ? (
                         <div className="space-y-4 ">
                             {Array.from({ length: 3 }).map((_, i) => (
@@ -83,18 +102,21 @@ export default function Admin() {
                             ))}
                         </div>
                     ) : venues.length === 0 ? (
-                        <Card className="border-0 bg-white/60 backdrop-blur-xl text-center p-20 rounded-3xl shadow-xl">
-                            <Building2 className="w-20 h-20 text-gray-300 mx-auto mb-6" />
-                            <h3 className="text-2xl font-bold text-gray-900 mb-2">No venues yet</h3>
-                            <p className="text-gray-600 mb-8">Create your first venue to get started</p>
-                            <Button
-                                size="lg"
-                                className="px-12 py-6 bg-gradient-to-r from-emerald-600 to-indigo-600 text-white shadow-2xl rounded-xl font-bold text-lg"
-                                onClick={() => navigate("/admin/venues/new")}
-                            >
-                                Create First Venue
-                            </Button>
-                        </Card>
+                        <>
+                            <Card className="border-0 bg-white/60 backdrop-blur-xl text-center p-20 rounded-3xl shadow-xl">
+                                <Building2 className="w-20 h-20 text-gray-300 mx-auto mb-6" />
+                                <h3 className="text-2xl font-bold text-gray-900 mb-2">No venues yet</h3>
+                                <p className="text-gray-600 mb-8">Create your first venue to get started</p>
+                                <Button
+                                    size="lg"
+                                    className="px-12 py-6 bg-gradient-to-r from-emerald-600 to-indigo-600 text-white shadow-2xl rounded-xl font-bold text-lg"
+                                    onClick={() => setOpen(true)}
+                                >
+                                    Create First Venue
+                                </Button>
+                            </Card>
+                        </>
+
                     ) : (
                         venues.map((venue) => (
                             <Card
@@ -127,18 +149,15 @@ export default function Admin() {
                                             </div>
                                         </div>
 
-                                        <div className="flex items-center gap-2 ml-auto lg:ml-0">
+                                        <div className="grid min-[350px]:grid-cols-[auto_1fr_auto] grid-cols-1 items-center gap-2 ml-auto lg:ml-0">
                                             <Button
-                                                variant="outline"
+                                                variant="destructive"
                                                 size="lg"
-                                                className="px-6 h-12 border-gray-200 hover:border-indigo-400 hover:bg-indigo-50 rounded-xl font-medium"
-                                                asChild
+                                                className="px-6 h-12 rounded-xl font-medium border border-gray-200 hover:border-gray-400 inline-flex items-center"
                                             >
-                                                <Link to={`/admin/venues/${venue.slug}/edit`}>
-                                                    <Edit className="w-4 h-4 mr-2" />
-                                                    Edit
-                                                </Link>
+                                                <Trash className="h-5 w-5" />
                                             </Button>
+
                                             <Button
                                                 asChild
                                                 size="lg"

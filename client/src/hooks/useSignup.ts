@@ -11,6 +11,7 @@ import type { ApiResponse } from "@/types/types";
 import type { User } from '@supabase/supabase-js';
 
 const formSchema = z.object({
+    name: z.string("Enter your name").min(2, "Name must be at least 6 characters").max(20, "Too long!"),
     email: z.email("Invalid email"),
     password: z.string().min(6, "Password must be at least 6 characters")
 });
@@ -22,14 +23,13 @@ export const useSignup = () => {
     const [loading, setLoading] = useState(false);
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
-        defaultValues: { email: '', password: '' }
+        defaultValues: { email: '', password: '', name: '' }
     });
 
     const onSubmit = async (values: z.infer<typeof formSchema>) => {
         setLoading(true);
         try {
             const result: ApiResponse<User> = await signup(values);
-            console.log(result)
             if (result.success && result.data) {
                 dispatch(setUser(result.data));
                 navigate('/create-cafe', { replace: true });

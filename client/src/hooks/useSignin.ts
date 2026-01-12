@@ -27,7 +27,7 @@ export const useSignin = () => {
     const onSubmit = async (values: z.infer<typeof formSchema>) => {
         setLoading(true);
         try {
-            const result: ApiResponse<User> = await login(values);
+            const result: ApiResponse<User> = await login(values.email, values.password);
             if (result.success && result.data) {
                 dispatch(setUser(result.data));
                 navigate('/', { replace: true });

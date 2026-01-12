@@ -159,38 +159,82 @@
                                                                        }
                                                      }
                                         },
-                  "/profiles/my-venues":  {
-                                              "get":  {
-                                                          "tags":  [
-                                                                       "Profiles"
-                                                                   ],
-                                                          "summary":  "Get My Venues",
-                                                          "operationId":  "get_my_venues_profiles_my_venues_get",
-                                                          "responses":  {
-                                                                            "200":  {
-                                                                                        "description":  "Successful Response",
-                                                                                        "content":  {
-                                                                                                        "application/json":  {
-                                                                                                                                 "schema":  {
-                                                                                                                                                "items":  {
-                                                                                                                                                              "$ref":  "#/components/schemas/VenueRead"
-                                                                                                                                                          },
-                                                                                                                                                "type":  "array",
-                                                                                                                                                "title":  "Response Get My Venues Profiles My Venues Get"
-                                                                                                                                            }
-                                                                                                                             }
-                                                                                                    }
-                                                                                    }
-                                                                        },
-                                                          "security":  [
-                                                                           {
-                                                                               "APIKeyHeader":  [
+                  "/profile/my-venues":  {
+                                             "get":  {
+                                                         "tags":  [
+                                                                      "Profiles"
+                                                                  ],
+                                                         "summary":  "Get My Venues",
+                                                         "operationId":  "get_my_venues_profile_my_venues_get",
+                                                         "responses":  {
+                                                                           "200":  {
+                                                                                       "description":  "Successful Response",
+                                                                                       "content":  {
+                                                                                                       "application/json":  {
+                                                                                                                                "schema":  {
+                                                                                                                                               "$ref":  "#/components/schemas/ApiResponse"
+                                                                                                                                           }
+                                                                                                                            }
+                                                                                                   }
+                                                                                   }
+                                                                       },
+                                                         "security":  [
+                                                                          {
+                                                                              "APIKeyHeader":  [
 
-                                                                                                ]
-                                                                           }
-                                                                       ]
-                                                      }
-                                          },
+                                                                                               ]
+                                                                          }
+                                                                      ]
+                                                     }
+                                         },
+                  "/venues/create-venue":  {
+                                               "post":  {
+                                                            "tags":  [
+                                                                         "Venue"
+                                                                     ],
+                                                            "summary":  "Create Venue",
+                                                            "operationId":  "create_venue_venues_create_venue_post",
+                                                            "requestBody":  {
+                                                                                "content":  {
+                                                                                                "application/json":  {
+                                                                                                                         "schema":  {
+                                                                                                                                        "$ref":  "#/components/schemas/VenueBase"
+                                                                                                                                    }
+                                                                                                                     }
+                                                                                            },
+                                                                                "required":  true
+                                                                            },
+                                                            "responses":  {
+                                                                              "200":  {
+                                                                                          "description":  "Successful Response",
+                                                                                          "content":  {
+                                                                                                          "application/json":  {
+                                                                                                                                   "schema":  {
+
+                                                                                                                                              }
+                                                                                                                               }
+                                                                                                      }
+                                                                                      },
+                                                                              "422":  {
+                                                                                          "description":  "Validation Error",
+                                                                                          "content":  {
+                                                                                                          "application/json":  {
+                                                                                                                                   "schema":  {
+                                                                                                                                                  "$ref":  "#/components/schemas/HTTPValidationError"
+                                                                                                                                              }
+                                                                                                                               }
+                                                                                                      }
+                                                                                      }
+                                                                          },
+                                                            "security":  [
+                                                                             {
+                                                                                 "APIKeyHeader":  [
+
+                                                                                                  ]
+                                                                             }
+                                                                         ]
+                                                        }
+                                           },
                   "/":  {
                             "get":  {
                                         "summary":  "Root",
@@ -212,6 +256,91 @@
               },
     "components":  {
                        "schemas":  {
+                                       "ApiResponse":  {
+                                                           "properties":  {
+                                                                              "success":  {
+                                                                                              "type":  "boolean",
+                                                                                              "title":  "Success"
+                                                                                          },
+                                                                              "data":  {
+                                                                                           "items":  {
+                                                                                                         "$ref":  "#/components/schemas/VenueRead"
+                                                                                                     },
+                                                                                           "type":  "array",
+                                                                                           "title":  "Data",
+                                                                                           "default":  [
+
+                                                                                                       ]
+                                                                                       },
+                                                                              "total":  {
+                                                                                            "type":  "integer",
+                                                                                            "title":  "Total"
+                                                                                        }
+                                                                          },
+                                                           "type":  "object",
+                                                           "required":  [
+                                                                            "success",
+                                                                            "total"
+                                                                        ],
+                                                           "title":  "ApiResponse"
+                                                       },
+                                       "CategoryRead":  {
+                                                            "properties":  {
+                                                                               "id":  {
+                                                                                          "type":  "string",
+                                                                                          "format":  "uuid",
+                                                                                          "title":  "Id"
+                                                                                      },
+                                                                               "menu_id":  {
+                                                                                               "type":  "string",
+                                                                                               "format":  "uuid",
+                                                                                               "title":  "Menu Id"
+                                                                                           },
+                                                                               "name":  {
+                                                                                            "type":  "string",
+                                                                                            "maxLength":  20,
+                                                                                            "title":  "Name"
+                                                                                        },
+                                                                               "desc":  {
+                                                                                            "anyOf":  [
+                                                                                                          {
+                                                                                                              "type":  "string",
+                                                                                                              "maxLength":  100
+                                                                                                          },
+                                                                                                          {
+                                                                                                              "type":  "null"
+                                                                                                          }
+                                                                                                      ],
+                                                                                            "title":  "Desc"
+                                                                                        },
+                                                                               "image":  {
+                                                                                             "anyOf":  [
+                                                                                                           {
+                                                                                                               "type":  "string",
+                                                                                                               "maxLength":  100
+                                                                                                           },
+                                                                                                           {
+                                                                                                               "type":  "null"
+                                                                                                           }
+                                                                                                       ],
+                                                                                             "title":  "Image"
+                                                                                         },
+                                                                               "items":  {
+                                                                                             "items":  {
+                                                                                                           "$ref":  "#/components/schemas/ItemRead"
+                                                                                                       },
+                                                                                             "type":  "array",
+                                                                                             "title":  "Items"
+                                                                                         }
+                                                                           },
+                                                            "type":  "object",
+                                                            "required":  [
+                                                                             "id",
+                                                                             "menu_id",
+                                                                             "name"
+                                                                         ],
+                                                            "title":  "CategoryRead"
+                                                        },
                                        "HTTPValidationError":  {
                                                                    "properties":  {
                                                                                       "detail":  {
@@ -225,6 +354,67 @@
                                                                    "type":  "object",
                                                                    "title":  "HTTPValidationError"
                                                                },
+                                       "ItemRead":  {
+                                                        "properties":  {
+                                                                           "id":  {
+                                                                                      "type":  "string",
+                                                                                      "format":  "uuid",
+                                                                                      "title":  "Id"
+                                                                                  },
+                                                                           "category_id":  {
+                                                                                               "type":  "string",
+                                                                                               "format":  "uuid",
+                                                                                               "title":  "Category Id"
+                                                                                           },
+                                                                           "name":  {
+                                                                                        "type":  "string",
+                                                                                        "maxLength":  50,
+                                                                                        "title":  "Name"
+                                                                                    },
+                                                                           "desc":  {
+                                                                                        "anyOf":  [
+                                                                                                      {
+                                                                                                          "type":  "string",
+                                                                                                          "maxLength":  100
+                                                                                                      },
+                                                                                                      {
+                                                                                                          "type":  "null"
+                                                                                                      }
+                                                                                                  ],
+                                                                                        "title":  "Desc"
+                                                                                    },
+                                                                           "price":  {
+                                                                                         "anyOf":  [
+                                                                                                       {
+                                                                                                           "type":  "string",
+                                                                                                           "pattern":  "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$"
+                                                                                                       },
+                                                                                                       {
+                                                                                                           "type":  "null"
+                                                                                                       }
+                                                                                                   ],
+                                                                                         "title":  "Price"
+                                                                                     },
+                                                                           "weight_g":  {
+                                                                                            "anyOf":  [
+                                                                                                          {
+                                                                                                              "type":  "integer"
+                                                                                                          },
+                                                                                                          {
+                                                                                                              "type":  "null"
+                                                                                                          }
+                                                                                                      ],
+                                                                                            "title":  "Weight G"
+                                                                                        }
+                                                                       },
+                                                        "type":  "object",
+                                                        "required":  [
+                                                                         "id",
+                                                                         "category_id",
+                                                                         "name"
+                                                                     ],
+                                                        "title":  "ItemRead"
+                                                    },
                                        "Login":  {
                                                      "properties":  {
                                                                         "email":  {
@@ -242,22 +432,59 @@
                                                      "type":  "object",
                                                      "title":  "Login"
                                                  },
-                                       "Register":  {
+                                       "MenuRead":  {
                                                         "properties":  {
-                                                                           "email":  {
-                                                                                         "type":  "string",
-                                                                                         "title":  "Email"
-                                                                                     },
-                                                                           "password":  {
+                                                                           "id":  {
+                                                                                      "type":  "string",
+                                                                                      "format":  "uuid",
+                                                                                      "title":  "Id"
+                                                                                  },
+                                                                           "venue_id":  {
                                                                                             "type":  "string",
-                                                                                            "title":  "Password"
-                                                                                        }
+                                                                                            "format":  "uuid",
+                                                                                            "title":  "Venue Id"
+                                                                                        },
+                                                                           "name":  {
+                                                                                        "type":  "string",
+                                                                                        "maxLength":  20,
+                                                                                        "title":  "Name"
+                                                                                    },
+                                                                           "categories":  {
+                                                                                              "items":  {
+                                                                                                            "$ref":  "#/components/schemas/CategoryRead"
+                                                                                                        },
+                                                                                              "type":  "array",
+                                                                                              "title":  "Categories"
+                                                                                          }
                                                                        },
                                                         "type":  "object",
                                                         "required":  [
-                                                                         "email",
-                                                                         "password"
+                                                                         "id",
+                                                                         "venue_id",
+                                                                         "name"
                                                                      ],
+                                                        "title":  "MenuRead"
+                                                    },
+                                       "Register":  {
+                                                        "properties":  {
+                                                                           "name":  {
+                                                                                        "type":  "string",
+                                                                                        "title":  "Name",
+                                                                                        "default":  "Nazarii"
+                                                                                    },
+                                                                           "email":  {
+                                                                                         "type":  "string",
+                                                                                         "format":  "email",
+                                                                                         "title":  "Email",
+                                                                                         "default":  "nazar.konechniy2@gmail.com"
+                                                                                     },
+                                                                           "password":  {
+                                                                                            "type":  "string",
+                                                                                            "title":  "Password",
+                                                                                            "default":  "nazar.konechniy2@gmail.com"
+                                                                                        }
+                                                                       },
+                                                        "type":  "object",
                                                         "title":  "Register"
                                                     },
                                        "ValidationError":  {
@@ -293,48 +520,101 @@
                                                                             ],
                                                                "title":  "ValidationError"
                                                            },
-                                       "VenueRead":  {
+                                       "VenueBase":  {
                                                          "properties":  {
-                                                                            "id":  {
-                                                                                       "type":  "string",
-                                                                                       "format":  "uuid",
-                                                                                       "title":  "Id"
-                                                                                   },
-                                                                            "slug":  {
-                                                                                         "type":  "string",
-                                                                                         "title":  "Slug"
-                                                                                     },
                                                                             "name":  {
                                                                                          "type":  "string",
-                                                                                         "title":  "Name"
-                                                                                     },
-                                                                            "logo":  {
-                                                                                         "type":  "string",
-                                                                                         "title":  "Logo",
-                                                                                         "default":  "default.png"
+                                                                                         "maxLength":  100,
+                                                                                         "title":  "Name",
+                                                                                         "default":  "Jopa Caffe"
                                                                                      },
                                                                             "phone":  {
                                                                                           "anyOf":  [
                                                                                                         {
-                                                                                                            "type":  "string"
+                                                                                                            "type":  "string",
+                                                                                                            "maxLength":  20
                                                                                                         },
                                                                                                         {
                                                                                                             "type":  "null"
                                                                                                         }
                                                                                                     ],
-                                                                                          "title":  "Phone"
+                                                                                          "title":  "Phone",
+                                                                                          "default":  "353079644297"
                                                                                       },
+                                                                            "wifiPassword":  {
+                                                                                                 "anyOf":  [
+                                                                                                               {
+                                                                                                                   "type":  "string",
+                                                                                                                   "maxLength":  20
+                                                                                                               },
+                                                                                                               {
+                                                                                                                   "type":  "null"
+                                                                                                               }
+                                                                                                           ],
+                                                                                                 "title":  "Wifipassword",
+                                                                                                 "default":  "strongPassword"
+                                                                                             },
                                                                             "address":  {
                                                                                             "anyOf":  [
                                                                                                           {
-                                                                                                              "type":  "string"
+                                                                                                              "type":  "string",
+                                                                                                              "maxLength":  30
                                                                                                           },
                                                                                                           {
                                                                                                               "type":  "null"
                                                                                                           }
                                                                                                       ],
-                                                                                            "title":  "Address"
+                                                                                            "title":  "Address",
+                                                                                            "default":  "70A Hillcreast Park"
                                                                                         },
+                                                                            "google_maps_link":  {
+                                                                                                     "anyOf":  [
+                                                                                                                   {
+                                                                                                                       "type":  "string",
+                                                                                                                       "maxLength":  30
+                                                                                                                   },
+                                                                                                                   {
+                                                                                                                       "type":  "null"
+                                                                                                                   }
+                                                                                                               ],
+                                                                                                     "title":  "Google Maps Link"
+                                                                                                 },
+                                                                            "inst_link":  {
+                                                                                              "anyOf":  [
+                                                                                                            {
+                                                                                                                "type":  "string",
+                                                                                                                "maxLength":  30
+                                                                                                            },
+                                                                                                            {
+                                                                                                                "type":  "null"
+                                                                                                            }
+                                                                                                        ],
+                                                                                              "title":  "Inst Link"
+                                                                                          },
+                                                                            "facebook_link":  {
+                                                                                                  "anyOf":  [
+                                                                                                                {
+                                                                                                                    "type":  "string",
+                                                                                                                    "maxLength":  30
+                                                                                                                },
+                                                                                                                {
+                                                                                                                    "type":  "null"
+                                                                                                                }
+                                                                                                            ],
+                                                                                                  "title":  "Facebook Link"
+                                                                                              },
+                                                                            "tiktok_link":  {
+                                                                                                "anyOf":  [
+                                                                                                              {
+                                                                                                                  "type":  "string",
+                                                                                                                  "maxLength":  30
+                                                                                                              },
+                                                                                                              {
+                                                                                                                  "type":  "null"
+                                                                                                              }
+                                                                                                          ],
+                                                                                                "title":  "Tiktok Link"
+                                                                                            },
                                                                             "max_tables":  {
                                                                                                "anyOf":  [
                                                                                                              {
@@ -347,17 +627,136 @@
                                                                                                "title":  "Max Tables",
                                                                                                "default":  20
                                                                                            },
-                                                                            "created_at":  {
+                                                                            "currency":  {
+                                                                                             "type":  "string",
+                                                                                             "title":  "Currency",
+                                                                                             "default":  "USD"
+                                                                                         },
+                                                                            "language":  {
+                                                                                             "type":  "string",
+                                                                                             "title":  "Language",
+                                                                                             "default":  "English"
+                                                                                         },
+                                                                            "logo":  {
+                                                                                         "type":  "string",
+                                                                                         "title":  "Logo",
+                                                                                         "default":  "default.png"
+                                                                                     },
+                                                                            "background":  {
+                                                                                               "type":  "string",
+                                                                                               "title":  "Background",
+                                                                                               "default":  "defaultBG.png"
+                                                                                           }
+                                                                        },
+                                                         "type":  "object",
+                                                         "title":  "VenueBase"
+                                                     },
+                                       "VenueRead":  {
+                                                         "properties":  {
+                                                                            "name":  {
+                                                                                         "type":  "string",
+                                                                                         "maxLength":  100,
+                                                                                         "title":  "Name",
+                                                                                         "default":  "Jopa Caffe"
+                                                                                     },
+                                                                            "phone":  {
+                                                                                          "anyOf":  [
+                                                                                                        {
+                                                                                                            "type":  "string",
+                                                                                                            "maxLength":  20
+                                                                                                        },
+                                                                                                        {
+                                                                                                            "type":  "null"
+                                                                                                        }
+                                                                                                    ],
+                                                                                          "title":  "Phone",
+                                                                                          "default":  "353079644297"
+                                                                                      },
+                                                                            "wifiPassword":  {
+                                                                                                 "anyOf":  [
+                                                                                                               {
+                                                                                                                   "type":  "string",
+                                                                                                                   "maxLength":  20
+                                                                                                               },
+                                                                                                               {
+                                                                                                                   "type":  "null"
+                                                                                                               }
+                                                                                                           ],
+                                                                                                 "title":  "Wifipassword",
+                                                                                                 "default":  "strongPassword"
+                                                                                             },
+                                                                            "address":  {
+                                                                                            "anyOf":  [
+                                                                                                          {
+                                                                                                              "type":  "string",
+                                                                                                              "maxLength":  30
+                                                                                                          },
+                                                                                                          {
+                                                                                                              "type":  "null"
+                                                                                                          }
+                                                                                                      ],
+                                                                                            "title":  "Address",
+                                                                                            "default":  "70A Hillcreast Park"
+                                                                                        },
+                                                                            "google_maps_link":  {
+                                                                                                     "anyOf":  [
+                                                                                                                   {
+                                                                                                                       "type":  "string",
+                                                                                                                       "maxLength":  30
+                                                                                                                   },
+                                                                                                                   {
+                                                                                                                       "type":  "null"
+                                                                                                                   }
+                                                                                                               ],
+                                                                                                     "title":  "Google Maps Link"
+                                                                                                 },
+                                                                            "inst_link":  {
+                                                                                              "anyOf":  [
+                                                                                                            {
+                                                                                                                "type":  "string",
+                                                                                                                "maxLength":  30
+                                                                                                            },
+                                                                                                            {
+                                                                                                                "type":  "null"
+                                                                                                            }
+                                                                                                        ],
+                                                                                              "title":  "Inst Link"
+                                                                                          },
+                                                                            "facebook_link":  {
+                                                                                                  "anyOf":  [
+                                                                                                                {
+                                                                                                                    "type":  "string",
+                                                                                                                    "maxLength":  30
+                                                                                                                },
+                                                                                                                {
+                                                                                                                    "type":  "null"
+                                                                                                                }
+                                                                                                            ],
+                                                                                                  "title":  "Facebook Link"
+                                                                                              },
+                                                                            "tiktok_link":  {
+                                                                                                "anyOf":  [
+                                                                                                              {
+                                                                                                                  "type":  "string",
+                                                                                                                  "maxLength":  30
+                                                                                                              },
+                                                                                                              {
+                                                                                                                  "type":  "null"
+                                                                                                              }
+                                                                                                          ],
+                                                                                                "title":  "Tiktok Link"
+                                                                                            },
+                                                                            "max_tables":  {
                                                                                                "anyOf":  [
                                                                                                              {
-                                                                                                                 "type":  "string",
-                                                                                                                 "format":  "date-time"
+                                                                                                                 "type":  "integer"
                                                                                                              },
                                                                                                              {
                                                                                                                  "type":  "null"
                                                                                                              }
                                                                                                          ],
-                                                                                               "title":  "Created At"
+                                                                                               "title":  "Max Tables",
+                                                                                               "default":  20
                                                                                            },
                                                                             "currency":  {
                                                                                              "type":  "string",
@@ -368,13 +767,51 @@
                                                                                              "type":  "string",
                                                                                              "title":  "Language",
                                                                                              "default":  "English"
-                                                                                         }
+                                                                                         },
+                                                                            "logo":  {
+                                                                                         "type":  "string",
+                                                                                         "title":  "Logo",
+                                                                                         "default":  "default.png"
+                                                                                     },
+                                                                            "background":  {
+                                                                                               "type":  "string",
+                                                                                               "title":  "Background",
+                                                                                               "default":  "defaultBG.png"
+                                                                                           },
+                                                                            "id":  {
+                                                                                       "type":  "string",
+                                                                                       "format":  "uuid",
+                                                                                       "title":  "Id"
+                                                                                   },
+                                                                            "slug":  {
+                                                                                         "type":  "string",
+                                                                                         "maxLength":  50,
+                                                                                         "title":  "Slug"
+                                                                                     },
+                                                                            "owner_id":  {
+                                                                                             "type":  "string",
+                                                                                             "format":  "uuid",
+                                                                                             "title":  "Owner Id"
+                                                                                         },
+                                                                            "created_at":  {
+                                                                                               "type":  "string",
+                                                                                               "format":  "date-time",
+                                                                                               "title":  "Created At"
+                                                                                           },
+                                                                            "menus":  {
+                                                                                          "items":  {
+                                                                                                        "$ref":  "#/components/schemas/MenuRead"
+                                                                                                    },
+                                                                                          "type":  "array",
+                                                                                          "title":  "Menus"
+                                                                                      }
                                                                         },
                                                          "type":  "object",
                                                          "required":  [
                                                                           "id",
                                                                           "slug",
-                                                                          "name"
+                                                                          "owner_id",
+                                                                          "created_at"
                                                                       ],
                                                          "title":  "VenueRead"
                                                      }

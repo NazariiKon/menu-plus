@@ -1,28 +1,26 @@
-import type { VenueRead, ApiResponse } from "@/types/types";
+import { supabase } from "@/lib/supabase";
+import type { ApiResponse, VenueBase, VenueRead } from "@/types/types";
+export type VenueCreateInput = Pick<VenueBase, "name">;
 
-export async function get_my_venues(): Promise<ApiResponse<VenueRead[]>> {
+export async function create_venue(data: VenueCreateInput): Promise<ApiResponse<VenueRead>> {
     try {
-        const token = localStorage.getItem('access_token');
+        const { data: sessionData, error } = await supabase.auth.getSession();
+        const token = sessionData.session?.access_token;
 
-        if (!token) {
-            return { success: false, error: "Not authenticated" };
-        }
+        if (error || !token) return { success: false, error: "Not authenticated" };
 
-        const response = await fetch(`${import.meta.env.VITE_API_URL}/profile/my-venues`, {
-            headers: {
-                "Authorization": `Bearer ${token}`,
-                "Content-Type": "application/json"
-            }
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/venues/create-venue`, {
+            method: "POST",
+            headers: { "Authorization": `Bearer ${token}`, "Content-Type": "application/json" },
+            body: JSON.stringify(data)
         });
 
         const result = await response.json();
-
-        if (response.ok) {
-            return { success: true, data: result.data };
-        } else {
-            return { success: false, error: result.error || "Unknown error" };
-        }
+        return response.ok
+            ? result
+            : { success: false, error: result.detail || "Unknown error" };
     } catch (error) {
+        console.error("Signup error:", error);
         return { success: false, error: "Network error" };
     }
 }

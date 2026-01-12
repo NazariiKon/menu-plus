@@ -15,7 +15,7 @@ export default function FinalCTA() {
                 </p>
 
                 <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 justify-center items-center">
-                    <Link to="/signup" className="w-full sm:w-auto flex-shrink-0">  {/* ✅ w-full mobile, auto desktop */}
+                    <Link to="/signup" className="w-full sm:w-auto flex-shrink-0">
                         <Button
                             size="lg"
                             className="w-full sm:w-auto text-xl sm:text-2xl px-8 sm:px-12 py-6 sm:py-8 bg-white text-indigo-900 hover:bg-emerald-50 font-bold shadow-2xl hover:shadow-3xl hover:scale-105 transition-all duration-300 min-h-[56px] sm:min-h-[64px]"

@@ -22,9 +22,6 @@ export default function Navbar() {
 
     async function onClickLogout() {
         dispatch(clearUser());
-
-        localStorage.removeItem('access_token');
-        localStorage.removeItem('refresh_token');
         await supabase.auth.signOut();
         navigate("/");
     }
