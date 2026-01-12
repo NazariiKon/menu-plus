@@ -1,6 +1,6 @@
 import re
 from supabase import Client
-from typing import Tuple, List
+from typing import Any, Tuple, List
 
 from src.schemas.venue import VenueBase
 
@@ -40,6 +40,18 @@ class VenueService:
             .execute()
         )
         return response.data
+    
+    
+    async def update_venue(self, venue_id: str, owner_id: str, patch: dict) -> dict:
+        response = (
+            self.supabase
+            .table("venues")
+            .update(patch)
+            .eq("id", venue_id)
+            .eq("owner_id", owner_id)
+            .execute()
+        )
+        return response.data[0] if response.data else {}
 
     
     async def create_venue(self, owner_id: str, data: VenueBase) -> dict:

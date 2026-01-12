@@ -6,6 +6,7 @@ export type RegisterRequest = ApiComponents['schemas']['Register'];
 export type LoginRequest = ApiComponents['schemas']['Login'];
 export type VenueRead = ApiComponents['schemas']['VenueRead'];
 export type VenueBase = ApiComponents['schemas']['VenueBase'];
+export type VenueUpdate = ApiComponents['schemas']['VenueUpdate'];
 export type HTTPValidationError = ApiComponents['schemas']['HTTPValidationError'];
 export interface ApiResponse<T> {
     success: boolean;

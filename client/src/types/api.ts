@@ -89,7 +89,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/venues/create-venue": {
+    "/venues/": {
         parameters: {
             query?: never;
             header?: never;
@@ -99,7 +99,42 @@ export interface paths {
         get?: never;
         put?: never;
         /** Create Venue */
-        post: operations["create_venue_venues_create_venue_post"];
+        post: operations["create_venue_venues__post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/venues/{venue_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** Delete Venue By Id */
+        delete: operations["delete_venue_by_id_venues__venue_id__delete"];
+        options?: never;
+        head?: never;
+        /** Update Venue */
+        patch: operations["update_venue_venues__venue_id__patch"];
+        trace?: never;
+    };
+    "/venues/p/{slug}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Venue By Slug */
+        get: operations["get_venue_by_slug_venues_p__slug__get"];
+        put?: never;
+        post?: never;
         delete?: never;
         options?: never;
         head?: never;
@@ -376,6 +411,35 @@ export interface components {
             /** Menus */
             menus?: components["schemas"]["MenuRead"][];
         };
+        /** VenueUpdate */
+        VenueUpdate: {
+            /** Name */
+            name?: string | null;
+            /** Phone */
+            phone?: string | null;
+            /** Wifipassword */
+            wifiPassword?: string | null;
+            /** Address */
+            address?: string | null;
+            /** Google Maps Link */
+            google_maps_link?: string | null;
+            /** Inst Link */
+            inst_link?: string | null;
+            /** Facebook Link */
+            facebook_link?: string | null;
+            /** Tiktok Link */
+            tiktok_link?: string | null;
+            /** Max Tables */
+            max_tables?: number | null;
+            /** Currency */
+            currency?: string | null;
+            /** Language */
+            language?: string | null;
+            /** Logo */
+            logo?: string | null;
+            /** Background */
+            background?: string | null;
+        };
     };
     responses: never;
     parameters: never;
@@ -523,7 +587,7 @@ export interface operations {
             };
         };
     };
-    create_venue_venues_create_venue_post: {
+    create_venue_venues__post: {
         parameters: {
             query?: never;
             header?: never;
@@ -535,6 +599,103 @@ export interface operations {
                 "application/json": components["schemas"]["VenueBase"];
             };
         };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["VenueRead"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    delete_venue_by_id_venues__venue_id__delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                venue_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    update_venue_venues__venue_id__patch: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                venue_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["VenueUpdate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["VenueRead"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_venue_by_slug_venues_p__slug__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                slug: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
         responses: {
             /** @description Successful Response */
             200: {

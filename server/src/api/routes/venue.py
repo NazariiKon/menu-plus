@@ -1,14 +1,14 @@
 
 from fastapi import APIRouter, Depends, HTTPException, status
 
-from src.schemas.venue import VenueBase
+from src.schemas.venue import VenueBase, VenueRead, VenueUpdate
 from src.api.dependencies import get_current_user, get_venue_service
 from src.services.venue_service import VenueService
 
 
 router = APIRouter(prefix="/venues", tags=["Venue"])
 
-@router.post("/")
+@router.post("/", response_model=VenueRead)
 async def create_venue(
     data: VenueBase,
     current_user: dict = Depends(get_current_user),
@@ -52,6 +52,26 @@ async def get_venue_by_slug(
     
     result = await vs.get_venue_menu_by_slug(slug=slug, owner_id=current_user["sub"])
     if not result:
-        raise HTTPException(status.HTTP_404_NOT_FOUND, "Nothing was removed")
+        raise HTTPException(status.HTTP_404_NOT_FOUND, "This slug doesn't exist")
     return result
-    
+
+@router.patch("/{venue_id}", response_model=VenueRead)
+async def patch_venue(
+    venue_id: str,
+    data: VenueUpdate,
+    current_user: dict = Depends(get_current_user),
+    vs: VenueService = Depends(get_venue_service),
+):
+    if not current_user:
+        raise HTTPException(status.HTTP_401_UNAUTHORIZED, "UNAUTHORIZED")
+
+    patch = data.model_dump(exclude_unset=True)
+    if not patch:
+        raise HTTPException(status.HTTP_400_BAD_REQUEST, "No fields to update")
+
+    updated = await vs.update_venue(venue_id=venue_id, owner_id=current_user["sub"], patch=patch)
+    if not updated:
+        raise HTTPException(status.HTTP_404_NOT_FOUND, "Venue not found")
+
+    return updated
+

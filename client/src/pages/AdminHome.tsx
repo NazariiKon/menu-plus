@@ -10,7 +10,7 @@ import type { User } from "@supabase/supabase-js";
 import Verification from "@/components/ui/verification";
 import type { VenueRead } from "@/types/types";
 import { get_my_venues } from "@/api/profile";
-import { VenueModal, type VenueFormValues } from "@/components/VenueCreateModal";
+import { VenueModal, type VenueFormValues } from "@/components/VenueModal";
 import { create_venue, delete_venue } from "@/api/venue";
 import { Alert } from "@/components/Alert";
 
@@ -146,7 +146,7 @@ export default function Admin() {
                                             </div>
                                             <div className="min-w-0 flex-1">
                                                 <Link
-                                                    to={`/admin/venues/${venue.slug}`}
+                                                    to={`../p/${venue.slug}`}
                                                     className="block hover:text-indigo-600 transition-colors font-bold text-xl lg:text-2xl leading-tight line-clamp-2"
                                                 >
                                                     {venue.name}
@@ -170,7 +170,7 @@ export default function Admin() {
                                                 size="lg"
                                                 className="px-8 h-12 rounded-xl"
                                             >
-                                                <Link to={`/${venue.slug}`}>
+                                                <Link to={`../p/${venue.slug}`}>
                                                     Open Menu
                                                     <ChevronRight className="w-4 h-4 ml-2 transition-transform group-hover:translate-x-1" />
                                                 </Link>

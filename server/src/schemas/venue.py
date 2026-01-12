@@ -25,17 +25,18 @@ class VenueBase(BaseModel):
     logo: str = "default.png"
     background: str = "defaultBG.png"
 
-class VenueUpdate(VenueBase):
-    name: Optional[str] = Field(default=None, max_length=100)
+class VenueUpdate(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
 
+    name: Optional[str] = Field(default=None, max_length=100)
     phone: Optional[str] = Field(default=None, max_length=20)
     wifiPassword: Optional[str] = Field(default=None, max_length=20)
 
     address: Optional[str] = Field(default=None, max_length=30)
-    google_maps_link: Optional[str] = Field(default=None, max_length=30)
-    inst_link: Optional[str] = Field(default=None, max_length=30)
-    facebook_link: Optional[str] = Field(default=None, max_length=30)
-    tiktok_link: Optional[str] = Field(default=None, max_length=30)
+    google_maps_link: Optional[str] = Field(default=None, max_length=300)
+    inst_link: Optional[str] = Field(default=None, max_length=300)
+    facebook_link: Optional[str] = Field(default=None, max_length=300)
+    tiktok_link: Optional[str] = Field(default=None, max_length=300)
 
     max_tables: Optional[int] = None
     currency: Optional[str] = None

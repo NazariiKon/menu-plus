@@ -187,23 +187,79 @@
                                                                       ]
                                                      }
                                          },
-                  "/venues/create-venue":  {
-                                               "post":  {
+                  "/venues/":  {
+                                   "post":  {
+                                                "tags":  [
+                                                             "Venue"
+                                                         ],
+                                                "summary":  "Create Venue",
+                                                "operationId":  "create_venue_venues__post",
+                                                "requestBody":  {
+                                                                    "content":  {
+                                                                                    "application/json":  {
+                                                                                                             "schema":  {
+                                                                                                                            "$ref":  "#/components/schemas/VenueBase"
+                                                                                                                        }
+                                                                                                         }
+                                                                                },
+                                                                    "required":  true
+                                                                },
+                                                "responses":  {
+                                                                  "200":  {
+                                                                              "description":  "Successful Response",
+                                                                              "content":  {
+                                                                                              "application/json":  {
+                                                                                                                       "schema":  {
+                                                                                                                                      "$ref":  "#/components/schemas/VenueRead"
+                                                                                                                                  }
+                                                                                                                   }
+                                                                                          }
+                                                                          },
+                                                                  "422":  {
+                                                                              "description":  "Validation Error",
+                                                                              "content":  {
+                                                                                              "application/json":  {
+                                                                                                                       "schema":  {
+                                                                                                                                      "$ref":  "#/components/schemas/HTTPValidationError"
+                                                                                                                                  }
+                                                                                                                   }
+                                                                                          }
+                                                                          }
+                                                              },
+                                                "security":  [
+                                                                 {
+                                                                     "APIKeyHeader":  [
+
+                                                                                      ]
+                                                                 }
+                                                             ]
+                                            }
+                               },
+                  "/venues/{venue_id}":  {
+                                             "delete":  {
                                                             "tags":  [
                                                                          "Venue"
                                                                      ],
-                                                            "summary":  "Create Venue",
-                                                            "operationId":  "create_venue_venues_create_venue_post",
-                                                            "requestBody":  {
-                                                                                "content":  {
-                                                                                                "application/json":  {
-                                                                                                                         "schema":  {
-                                                                                                                                        "$ref":  "#/components/schemas/VenueBase"
-                                                                                                                                    }
-                                                                                                                     }
-                                                                                            },
-                                                                                "required":  true
-                                                                            },
+                                                            "summary":  "Delete Venue By Id",
+                                                            "operationId":  "delete_venue_by_id_venues__venue_id__delete",
+                                                            "security":  [
+                                                                             {
+                                                                                 "APIKeyHeader":  [
+
+                                                                                                  ]
+                                                                             }
+                                                                         ],
+                                                            "parameters":  [
+                                                                               {
+                                                                                   "name":  "venue_id",
+                                                                                   "in":  "path",
+                                                                                   "required":  true,
+                                                                                   "schema":  {
+                                                                                                  "type":  "string",
+                                                                                                  "title":  "Venue Id"
+                                                                                              }
+                                                                               }
+                                                                           ],
                                                             "responses":  {
                                                                               "200":  {
                                                                                           "description":  "Successful Response",
@@ -225,16 +281,115 @@
                                                                                                                                }
                                                                                                       }
                                                                                       }
-                                                                          },
-                                                            "security":  [
-                                                                             {
-                                                                                 "APIKeyHeader":  [
+                                                                          }
+                                                        },
+                                             "patch":  {
+                                                           "tags":  [
+                                                                        "Venue"
+                                                                    ],
+                                                           "summary":  "Update Venue",
+                                                           "operationId":  "update_venue_venues__venue_id__patch",
+                                                           "security":  [
+                                                                            {
+                                                                                "APIKeyHeader":  [
 
-                                                                                                  ]
-                                                                             }
-                                                                         ]
-                                                        }
-                                           },
+                                                                                                 ]
+                                                                            }
+                                                                        ],
+                                                           "parameters":  [
+                                                                              {
+                                                                                  "name":  "venue_id",
+                                                                                  "in":  "path",
+                                                                                  "required":  true,
+                                                                                  "schema":  {
+                                                                                                 "type":  "string",
+                                                                                                 "title":  "Venue Id"
+                                                                                             }
+                                                                              }
+                                                                          ],
+                                                           "requestBody":  {
+                                                                               "required":  true,
+                                                                               "content":  {
+                                                                                               "application/json":  {
+                                                                                                                        "schema":  {
+                                                                                                                                       "$ref":  "#/components/schemas/VenueUpdate"
+                                                                                                                                   }
+                                                                                                                    }
+                                                                                           }
+                                                                           },
+                                                           "responses":  {
+                                                                             "200":  {
+                                                                                         "description":  "Successful Response",
+                                                                                         "content":  {
+                                                                                                         "application/json":  {
+                                                                                                                                  "schema":  {
+                                                                                                                                                 "$ref":  "#/components/schemas/VenueRead"
+                                                                                                                                             }
+                                                                                                                              }
+                                                                                                     }
+                                                                                     },
+                                                                             "422":  {
+                                                                                         "description":  "Validation Error",
+                                                                                         "content":  {
+                                                                                                         "application/json":  {
+                                                                                                                                  "schema":  {
+                                                                                                                                                 "$ref":  "#/components/schemas/HTTPValidationError"
+                                                                                                                                             }
+                                                                                                                              }
+                                                                                                     }
+                                                                                     }
+                                                                         }
+                                                       }
+                                         },
+                  "/venues/p/{slug}":  {
+                                           "get":  {
+                                                       "tags":  [
+                                                                    "Venue"
+                                                                ],
+                                                       "summary":  "Get Venue By Slug",
+                                                       "operationId":  "get_venue_by_slug_venues_p__slug__get",
+                                                       "security":  [
+                                                                        {
+                                                                            "APIKeyHeader":  [
+
+                                                                                             ]
+                                                                        }
+                                                                    ],
+                                                       "parameters":  [
+                                                                          {
+                                                                              "name":  "slug",
+                                                                              "in":  "path",
+                                                                              "required":  true,
+                                                                              "schema":  {
+                                                                                             "type":  "string",
+                                                                                             "title":  "Slug"
+                                                                                         }
+                                                                          }
+                                                                      ],
+                                                       "responses":  {
+                                                                         "200":  {
+                                                                                     "description":  "Successful Response",
+                                                                                     "content":  {
+                                                                                                     "application/json":  {
+                                                                                                                              "schema":  {
+
+                                                                                                                                         }
+                                                                                                                          }
+                                                                                                 }
+                                                                                 },
+                                                                         "422":  {
+                                                                                     "description":  "Validation Error",
+                                                                                     "content":  {
+                                                                                                     "application/json":  {
+                                                                                                                              "schema":  {
+                                                                                                                                             "$ref":  "#/components/schemas/HTTPValidationError"
+                                                                                                                                         }
+                                                                                                                          }
+                                                                                                 }
+                                                                                 }
+                                                                     }
+                                                   }
+                                       },
                   "/":  {
                             "get":  {
                                         "summary":  "Root",
@@ -814,7 +969,164 @@
                                                                           "created_at"
                                                                       ],
                                                          "title":  "VenueRead"
-                                                     }
+                                                     },
+                                       "VenueUpdate":  {
+                                                           "properties":  {
+                                                                              "name":  {
+                                                                                           "anyOf":  [
+                                                                                                         {
+                                                                                                             "type":  "string",
+                                                                                                             "maxLength":  100
+                                                                                                         },
+                                                                                                         {
+                                                                                                             "type":  "null"
+                                                                                                         }
+                                                                                                     ],
+                                                                                           "title":  "Name"
+                                                                                       },
+                                                                              "phone":  {
+                                                                                            "anyOf":  [
+                                                                                                          {
+                                                                                                              "type":  "string",
+                                                                                                              "maxLength":  20
+                                                                                                          },
+                                                                                                          {
+                                                                                                              "type":  "null"
+                                                                                                          }
+                                                                                                      ],
+                                                                                            "title":  "Phone"
+                                                                                        },
+                                                                              "wifiPassword":  {
+                                                                                                   "anyOf":  [
+                                                                                                                 {
+                                                                                                                     "type":  "string",
+                                                                                                                     "maxLength":  20
+                                                                                                                 },
+                                                                                                                 {
+                                                                                                                     "type":  "null"
+                                                                                                                 }
+                                                                                                             ],
+                                                                                                   "title":  "Wifipassword"
+                                                                                               },
+                                                                              "address":  {
+                                                                                              "anyOf":  [
+                                                                                                            {
+                                                                                                                "type":  "string",
+                                                                                                                "maxLength":  30
+                                                                                                            },
+                                                                                                            {
+                                                                                                                "type":  "null"
+                                                                                                            }
+                                                                                                        ],
+                                                                                              "title":  "Address"
+                                                                                          },
+                                                                              "google_maps_link":  {
+                                                                                                       "anyOf":  [
+                                                                                                                     {
+                                                                                                                         "type":  "string",
+                                                                                                                         "maxLength":  300
+                                                                                                                     },
+                                                                                                                     {
+                                                                                                                         "type":  "null"
+                                                                                                                     }
+                                                                                                                 ],
+                                                                                                       "title":  "Google Maps Link"
+                                                                                                   },
+                                                                              "inst_link":  {
+                                                                                                "anyOf":  [
+                                                                                                              {
+                                                                                                                  "type":  "string",
+                                                                                                                  "maxLength":  300
+                                                                                                              },
+                                                                                                              {
+                                                                                                                  "type":  "null"
+                                                                                                              }
+                                                                                                          ],
+                                                                                                "title":  "Inst Link"
+                                                                                            },
+                                                                              "facebook_link":  {
+                                                                                                    "anyOf":  [
+                                                                                                                  {
+                                                                                                                      "type":  "string",
+                                                                                                                      "maxLength":  300
+                                                                                                                  },
+                                                                                                                  {
+                                                                                                                      "type":  "null"
+                                                                                                                  }
+                                                                                                              ],
+                                                                                                    "title":  "Facebook Link"
+                                                                                                },
+                                                                              "tiktok_link":  {
+                                                                                                  "anyOf":  [
+                                                                                                                {
+                                                                                                                    "type":  "string",
+                                                                                                                    "maxLength":  300
+                                                                                                                },
+                                                                                                                {
+                                                                                                                    "type":  "null"
+                                                                                                                }
+                                                                                                            ],
+                                                                                                  "title":  "Tiktok Link"
+                                                                                              },
+                                                                              "max_tables":  {
+                                                                                                 "anyOf":  [
+                                                                                                               {
+                                                                                                                   "type":  "integer"
+                                                                                                               },
+                                                                                                               {
+                                                                                                                   "type":  "null"
+                                                                                                               }
+                                                                                                           ],
+                                                                                                 "title":  "Max Tables"
+                                                                                             },
+                                                                              "currency":  {
+                                                                                               "anyOf":  [
+                                                                                                             {
+                                                                                                                 "type":  "string"
+                                                                                                             },
+                                                                                                             {
+                                                                                                                 "type":  "null"
+                                                                                                             }
+                                                                                                         ],
+                                                                                               "title":  "Currency"
+                                                                                           },
+                                                                              "language":  {
+                                                                                               "anyOf":  [
+                                                                                                             {
+                                                                                                                 "type":  "string"
+                                                                                                             },
+                                                                                                             {
+                                                                                                                 "type":  "null"
+                                                                                                             }
+                                                                                                         ],
+                                                                                               "title":  "Language"
+                                                                                           },
+                                                                              "logo":  {
+                                                                                           "anyOf":  [
+                                                                                                         {
+                                                                                                             "type":  "string"
+                                                                                                         },
+                                                                                                         {
+                                                                                                             "type":  "null"
+                                                                                                         }
+                                                                                                     ],
+                                                                                           "title":  "Logo"
+                                                                                       },
+                                                                              "background":  {
+                                                                                                 "anyOf":  [
+                                                                                                               {
+                                                                                                                   "type":  "string"
+                                                                                                               },
+                                                                                                               {
+                                                                                                                   "type":  "null"
+                                                                                                               }
+                                                                                                           ],
+                                                                                                 "title":  "Background"
+                                                                                             }
+                                                                          },
+                                                           "type":  "object",
+                                                           "title":  "VenueUpdate"
+                                                       }
                                    },
                        "securitySchemes":  {
                                                "APIKeyHeader":  {
