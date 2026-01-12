@@ -2,7 +2,7 @@ import { useSelector } from "react-redux";
 import type { RootState } from "@/store/store";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Building2, ChevronRight, Trash } from "lucide-react";
+import { Building2, ChevronRight } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -10,8 +10,9 @@ import type { User } from "@supabase/supabase-js";
 import Verification from "@/components/ui/verification";
 import type { VenueRead } from "@/types/types";
 import { get_my_venues } from "@/api/profile";
-import { VenueModal, type VenueFormValues } from "@/components/RestaurantModal";
-import { create_venue } from "@/api/venue";
+import { VenueModal, type VenueFormValues } from "@/components/VenueCreateModal";
+import { create_venue, delete_venue } from "@/api/venue";
+import { Alert } from "@/components/Alert";
 
 export default function Admin() {
     const navigate = useNavigate();
@@ -19,6 +20,7 @@ export default function Admin() {
     const [venues, setVenues] = useState<VenueRead[]>([]);
     const [error, setError] = useState<string>();
     const [open, setOpen] = useState(false);
+    const [openDelete, setOpenDelete] = useState(false);
     const [loading, setLoading] = useState(true);
 
     const handleCreate = async (values: VenueFormValues) => {
@@ -27,6 +29,12 @@ export default function Admin() {
         await getVenues();
     };
 
+    const handleDelete = async (venueId: string) => {
+        if (venueId == null) return
+        console.log("Delete", venueId)
+        await delete_venue(venueId);
+        await getVenues();
+    }
 
     const getVenues = async () => {
         setLoading(true);
@@ -109,7 +117,7 @@ export default function Admin() {
                                 <p className="text-gray-600 mb-8">Create your first venue to get started</p>
                                 <Button
                                     size="lg"
-                                    className="px-12 py-6 bg-gradient-to-r from-emerald-600 to-indigo-600 text-white shadow-2xl rounded-xl font-bold text-lg"
+                                    className="px-12 py-6  rounded-xl"
                                     onClick={() => setOpen(true)}
                                 >
                                     Create First Venue
@@ -150,18 +158,17 @@ export default function Admin() {
                                         </div>
 
                                         <div className="grid min-[350px]:grid-cols-[auto_1fr_auto] grid-cols-1 items-center gap-2 ml-auto lg:ml-0">
-                                            <Button
-                                                variant="destructive"
-                                                size="lg"
-                                                className="px-6 h-12 rounded-xl font-medium border border-gray-200 hover:border-gray-400 inline-flex items-center"
-                                            >
-                                                <Trash className="h-5 w-5" />
-                                            </Button>
+                                            <Alert
+                                                open={openDelete}
+                                                onOpenChange={setOpenDelete}
+                                                onConfirm={handleDelete}
+                                                venueId={venue.id}
+                                            />
 
                                             <Button
                                                 asChild
                                                 size="lg"
-                                                className="px-8 h-12 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white rounded-xl shadow-lg hover:shadow-xl font-semibold"
+                                                className="px-8 h-12 rounded-xl"
                                             >
                                                 <Link to={`/${venue.slug}`}>
                                                     Open Menu

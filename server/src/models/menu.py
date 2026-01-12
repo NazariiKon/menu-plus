@@ -24,7 +24,10 @@ class Menu(Base):
         back_populates="menu"
     )
 
-    venue_id: Mapped[UUID] = mapped_column(ForeignKey("venues.id"), nullable=False)
+    venue_id: Mapped[UUID] = mapped_column(
+        ForeignKey("venues.id", ondelete="CASCADE"),
+        nullable=False
+    )
     venue: Mapped["Venue"] = relationship("Venue", back_populates="menus")
 
 
@@ -36,7 +39,10 @@ class Category(Base):
         primary_key=True, 
         server_default=text("gen_random_uuid()")
     )
-    menu_id: Mapped[UUID] = mapped_column(ForeignKey("menus.id"), nullable=False)
+    menu_id: Mapped[UUID] = mapped_column (
+        ForeignKey("menus.id", ondelete="CASCADE"),
+        nullable=False
+    )
 
     name: Mapped[str] = mapped_column(String(20), nullable=False)
     desc: Mapped[Optional[str]] = mapped_column(String(100), nullable=True)
@@ -56,7 +62,10 @@ class Item(Base):
         primary_key=True, 
         server_default=text("gen_random_uuid()")
     )
-    category_id: Mapped[UUID] = mapped_column(ForeignKey("categories.id"), nullable=False)
+    category_id: Mapped[UUID] = mapped_column(
+        ForeignKey("categories.id", ondelete="CASCADE"),
+        nullable=False
+    )
 
     name: Mapped[str] = mapped_column(String(50), nullable=False)
     desc: Mapped[Optional[str]] = mapped_column(String(100), nullable=True)

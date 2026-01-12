@@ -19,6 +19,19 @@ class VenueService:
         )
         return response.data, response.count
 
+    async def delete_venue_by_id(self, venue_id: str, owner_id: str) -> dict:
+        response = (
+            self.supabase
+            .table("venues")
+            .delete()
+            .eq("id", venue_id)
+            .eq("owner_id", owner_id)
+            .execute()
+        )
+        return response.data
+
+
+
 
     
     async def create_venue(self, owner_id: str, data: VenueBase) -> dict:
