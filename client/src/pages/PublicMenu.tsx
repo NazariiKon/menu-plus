@@ -6,6 +6,7 @@ import type { VenueRead, VenueUpdate } from "@/types/types"
 import { useEffect, useState } from "react"
 import Header from "@/components/MenuComponents/Header"
 import EditVenueModal from "@/components/MenuComponents/EditMenuModal"
+import { Details } from "@/components/MenuComponents/Details"
 
 const gradientBtn =
     "bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-lg hover:shadow-xl hover:from-indigo-700 hover:to-purple-700 hover:bg-primary/90 font-semibold"
@@ -27,7 +28,6 @@ export default function PublicMenu() {
         setLoading(true);
         if (!slug) return;
         const result = await get_menu_by_slug(slug);
-        console.log(result);
 
         if (result.success && result.data) {
             setVenue(result.data);
@@ -53,24 +53,19 @@ export default function PublicMenu() {
         setVenue(updatedVenue.data)
     }
 
+    if (!venue) return <>Loading...</>;
+
     return (
-        <>
-            {venue ? (
-                <div>
-                    <Header venue={venue} onEdit={setOpen} />
-                    <EditVenueModal
-                        open={open}
-                        onOpenChange={setOpen}
-                        venue={venue}
-                        onSave={handleSubmit}
-                    />
-
-                </div>
-            ) : (
-                <p>Error</p>
-            )}
-        </>
-
+        <div className="min-h-dvh w-full bg-background text-foreground">
+            <Header venue={venue} onEdit={setOpen} />
+            <Details venue={venue} />
+            <EditVenueModal
+                open={open}
+                onOpenChange={setOpen}
+                venue={venue}
+                onSave={handleSubmit}
+            />
+        </div>
     )
 
 }

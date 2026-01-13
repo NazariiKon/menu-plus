@@ -120,8 +120,8 @@ export interface paths {
         delete: operations["delete_venue_by_id_venues__venue_id__delete"];
         options?: never;
         head?: never;
-        /** Update Venue */
-        patch: operations["update_venue_venues__venue_id__patch"];
+        /** Patch Venue */
+        patch: operations["patch_venue_venues__venue_id__patch"];
         trace?: never;
     };
     "/venues/p/{slug}": {
@@ -216,6 +216,8 @@ export interface components {
             name: string;
             /** Desc */
             desc?: string | null;
+            /** Image */
+            image?: string | null;
             /** Price */
             price?: string | null;
             /** Weight G */
@@ -287,6 +289,8 @@ export interface components {
              * @default Jopa Caffe
              */
             name: string;
+            /** Desc */
+            desc?: string | null;
             /**
              * Phone
              * @default 353079644297
@@ -336,6 +340,15 @@ export interface components {
              */
             background: string;
         };
+        /** VenueCreateResponse */
+        VenueCreateResponse: {
+            venue: components["schemas"]["VenueRead"];
+            menu: components["schemas"]["MenuRead"];
+            /** Categories */
+            categories: components["schemas"]["CategoryRead"][];
+            /** Items */
+            items: components["schemas"]["ItemRead"][];
+        };
         /** VenueRead */
         VenueRead: {
             /**
@@ -343,6 +356,8 @@ export interface components {
              * @default Jopa Caffe
              */
             name: string;
+            /** Desc */
+            desc?: string | null;
             /**
              * Phone
              * @default 353079644297
@@ -419,6 +434,8 @@ export interface components {
             phone?: string | null;
             /** Wifipassword */
             wifiPassword?: string | null;
+            /** Desc */
+            desc?: string | null;
             /** Address */
             address?: string | null;
             /** Google Maps Link */
@@ -606,7 +623,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["VenueRead"];
+                    "application/json": components["schemas"]["VenueCreateResponse"];
                 };
             };
             /** @description Validation Error */
@@ -651,7 +668,7 @@ export interface operations {
             };
         };
     };
-    update_venue_venues__venue_id__patch: {
+    patch_venue_venues__venue_id__patch: {
         parameters: {
             query?: never;
             header?: never;

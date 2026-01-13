@@ -210,7 +210,7 @@
                                                                               "content":  {
                                                                                               "application/json":  {
                                                                                                                        "schema":  {
-                                                                                                                                      "$ref":  "#/components/schemas/VenueRead"
+                                                                                                                                      "$ref":  "#/components/schemas/VenueCreateResponse"
                                                                                                                                   }
                                                                                                                    }
                                                                                           }
@@ -287,8 +287,8 @@
                                                            "tags":  [
                                                                         "Venue"
                                                                     ],
-                                                           "summary":  "Update Venue",
-                                                           "operationId":  "update_venue_venues__venue_id__patch",
+                                                           "summary":  "Patch Venue",
+                                                           "operationId":  "patch_venue_venues__venue_id__patch",
                                                            "security":  [
                                                                             {
                                                                                 "APIKeyHeader":  [
@@ -472,7 +472,7 @@
                                                                                              "anyOf":  [
                                                                                                            {
                                                                                                                "type":  "string",
-                                                                                                               "maxLength":  100
+                                                                                                               "maxLength":  255
                                                                                                            },
                                                                                                            {
                                                                                                                "type":  "null"
@@ -530,7 +530,7 @@
                                                                                         "anyOf":  [
                                                                                                       {
                                                                                                           "type":  "string",
-                                                                                                          "maxLength":  100
+                                                                                                          "maxLength":  255
                                                                                                       },
                                                                                                       {
                                                                                                           "type":  "null"
@@ -538,6 +538,18 @@
                                                                                                   ],
                                                                                         "title":  "Desc"
                                                                                     },
+                                                                           "image":  {
+                                                                                         "anyOf":  [
+                                                                                                       {
+                                                                                                           "type":  "string",
+                                                                                                           "maxLength":  255
+                                                                                                       },
+                                                                                                       {
+                                                                                                           "type":  "null"
+                                                                                                       }
+                                                                                                   ],
+                                                                                         "title":  "Image"
+                                                                                     },
                                                                            "price":  {
                                                                                          "anyOf":  [
                                                                                                        {
@@ -683,6 +695,18 @@
                                                                                          "title":  "Name",
                                                                                          "default":  "Jopa Caffe"
                                                                                      },
+                                                                            "desc":  {
+                                                                                         "anyOf":  [
+                                                                                                       {
+                                                                                                           "type":  "string",
+                                                                                                           "maxLength":  100
+                                                                                                       },
+                                                                                                       {
+                                                                                                           "type":  "null"
+                                                                                                       }
+                                                                                                   ],
+                                                                                         "title":  "Desc"
+                                                                                     },
                                                                             "phone":  {
                                                                                           "anyOf":  [
                                                                                                         {
@@ -713,7 +737,7 @@
                                                                                             "anyOf":  [
                                                                                                           {
                                                                                                               "type":  "string",
-                                                                                                              "maxLength":  30
+                                                                                                              "maxLength":  255
                                                                                                           },
                                                                                                           {
                                                                                                               "type":  "null"
@@ -726,7 +750,7 @@
                                                                                                      "anyOf":  [
                                                                                                                    {
                                                                                                                        "type":  "string",
-                                                                                                                       "maxLength":  30
+                                                                                                                       "maxLength":  255
                                                                                                                    },
                                                                                                                    {
                                                                                                                        "type":  "null"
@@ -738,7 +762,7 @@
                                                                                               "anyOf":  [
                                                                                                             {
                                                                                                                 "type":  "string",
-                                                                                                                "maxLength":  30
+                                                                                                                "maxLength":  255
                                                                                                             },
                                                                                                             {
                                                                                                                 "type":  "null"
@@ -750,7 +774,7 @@
                                                                                                   "anyOf":  [
                                                                                                                 {
                                                                                                                     "type":  "string",
-                                                                                                                    "maxLength":  30
+                                                                                                                    "maxLength":  255
                                                                                                                 },
                                                                                                                 {
                                                                                                                     "type":  "null"
@@ -762,7 +786,7 @@
                                                                                                 "anyOf":  [
                                                                                                               {
                                                                                                                   "type":  "string",
-                                                                                                                  "maxLength":  30
+                                                                                                                  "maxLength":  255
                                                                                                               },
                                                                                                               {
                                                                                                                   "type":  "null"
@@ -806,6 +830,38 @@
                                                          "type":  "object",
                                                          "title":  "VenueBase"
                                                      },
+                                       "VenueCreateResponse":  {
+                                                                   "properties":  {
+                                                                                      "venue":  {
+                                                                                                    "$ref":  "#/components/schemas/VenueRead"
+                                                                                                },
+                                                                                      "menu":  {
+                                                                                                   "$ref":  "#/components/schemas/MenuRead"
+                                                                                               },
+                                                                                      "categories":  {
+                                                                                                         "items":  {
+                                                                                                                       "$ref":  "#/components/schemas/CategoryRead"
+                                                                                                                   },
+                                                                                                         "type":  "array",
+                                                                                                         "title":  "Categories"
+                                                                                                     },
+                                                                                      "items":  {
+                                                                                                    "items":  {
+                                                                                                                  "$ref":  "#/components/schemas/ItemRead"
+                                                                                                              },
+                                                                                                    "type":  "array",
+                                                                                                    "title":  "Items"
+                                                                                                }
+                                                                                  },
+                                                                   "type":  "object",
+                                                                   "required":  [
+                                                                                    "venue",
+                                                                                    "menu",
+                                                                                    "categories",
+                                                                                    "items"
+                                                                                ],
+                                                                   "title":  "VenueCreateResponse"
+                                                               },
                                        "VenueRead":  {
                                                          "properties":  {
                                                                             "name":  {
@@ -813,6 +869,18 @@
                                                                                          "maxLength":  100,
                                                                                          "title":  "Name",
                                                                                          "default":  "Jopa Caffe"
+                                                                                     },
+                                                                            "desc":  {
+                                                                                         "anyOf":  [
+                                                                                                       {
+                                                                                                           "type":  "string",
+                                                                                                           "maxLength":  100
+                                                                                                       },
+                                                                                                       {
+                                                                                                           "type":  "null"
+                                                                                                       }
+                                                                                                   ],
+                                                                                         "title":  "Desc"
                                                                                      },
                                                                             "phone":  {
                                                                                           "anyOf":  [
@@ -844,7 +912,7 @@
                                                                                             "anyOf":  [
                                                                                                           {
                                                                                                               "type":  "string",
-                                                                                                              "maxLength":  30
+                                                                                                              "maxLength":  255
                                                                                                           },
                                                                                                           {
                                                                                                               "type":  "null"
@@ -857,7 +925,7 @@
                                                                                                      "anyOf":  [
                                                                                                                    {
                                                                                                                        "type":  "string",
-                                                                                                                       "maxLength":  30
+                                                                                                                       "maxLength":  255
                                                                                                                    },
                                                                                                                    {
                                                                                                                        "type":  "null"
@@ -869,7 +937,7 @@
                                                                                               "anyOf":  [
                                                                                                             {
                                                                                                                 "type":  "string",
-                                                                                                                "maxLength":  30
+                                                                                                                "maxLength":  255
                                                                                                             },
                                                                                                             {
                                                                                                                 "type":  "null"
@@ -881,7 +949,7 @@
                                                                                                   "anyOf":  [
                                                                                                                 {
                                                                                                                     "type":  "string",
-                                                                                                                    "maxLength":  30
+                                                                                                                    "maxLength":  255
                                                                                                                 },
                                                                                                                 {
                                                                                                                     "type":  "null"
@@ -893,7 +961,7 @@
                                                                                                 "anyOf":  [
                                                                                                               {
                                                                                                                   "type":  "string",
-                                                                                                                  "maxLength":  30
+                                                                                                                  "maxLength":  255
                                                                                                               },
                                                                                                               {
                                                                                                                   "type":  "null"
@@ -1008,11 +1076,23 @@
                                                                                                              ],
                                                                                                    "title":  "Wifipassword"
                                                                                                },
+                                                                              "desc":  {
+                                                                                           "anyOf":  [
+                                                                                                         {
+                                                                                                             "type":  "string",
+                                                                                                             "maxLength":  100
+                                                                                                         },
+                                                                                                         {
+                                                                                                             "type":  "null"
+                                                                                                         }
+                                                                                                     ],
+                                                                                           "title":  "Desc"
+                                                                                       },
                                                                               "address":  {
                                                                                               "anyOf":  [
                                                                                                             {
                                                                                                                 "type":  "string",
-                                                                                                                "maxLength":  30
+                                                                                                                "maxLength":  255
                                                                                                             },
                                                                                                             {
                                                                                                                 "type":  "null"

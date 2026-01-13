@@ -10,7 +10,8 @@ class ItemRead(ORMBase):
     id: UUID
     category_id: UUID
     name: str = Field(max_length=50)
-    desc: Optional[str] = Field(default=None, max_length=100)
+    desc: Optional[str] = Field(default=None, max_length=255)
+    image: Optional[str] = Field(default=None, max_length=255)
     price: Optional[Decimal] = None
     weight_g: Optional[int] = None
 
@@ -20,7 +21,7 @@ class CategoryRead(ORMBase):
     menu_id: UUID
     name: str = Field(max_length=20)
     desc: Optional[str] = Field(default=None, max_length=100)
-    image: Optional[str] = Field(default=None, max_length=100)
+    image: Optional[str] = Field(default=None, max_length=255)
 
     items: list[ItemRead] = Field(default_factory=list)
 
@@ -35,6 +36,7 @@ class MenuRead(ORMBase):
 class ItemCreate(ORMBase):
     name: str = Field(max_length=50)
     desc: Optional[str] = Field(default=None, max_length=100)
+    image: Optional[str] = Field(default=None, max_length=255)
     price: Optional[Decimal] = None
     weight_g: Optional[int] = None
 
@@ -42,7 +44,7 @@ class ItemCreate(ORMBase):
 class CategoryCreate(ORMBase):
     name: str = Field(max_length=20)
     desc: Optional[str] = Field(default=None, max_length=100)
-    image: Optional[str] = Field(default=None, max_length=100)
+    image: Optional[str] = Field(default=None, max_length=255)
 
 
 class MenuCreate(ORMBase):

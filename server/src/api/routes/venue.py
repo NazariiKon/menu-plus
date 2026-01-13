@@ -1,14 +1,14 @@
 
 from fastapi import APIRouter, Depends, HTTPException, status
 
-from src.schemas.venue import VenueBase, VenueRead, VenueUpdate
+from src.schemas.venue import VenueBase, VenueCreateResponse, VenueRead, VenueUpdate
 from src.api.dependencies import get_current_user, get_venue_service
 from src.services.venue_service import VenueService
 
 
 router = APIRouter(prefix="/venues", tags=["Venue"])
 
-@router.post("/", response_model=VenueRead)
+@router.post("/", response_model=VenueCreateResponse)
 async def create_venue(
     data: VenueBase,
     current_user: dict = Depends(get_current_user),

@@ -3,21 +3,22 @@ from datetime import datetime
 from typing import List, Optional
 from uuid import UUID
 
-from src.schemas.menu import MenuRead
+from src.schemas.menu import CategoryRead, ItemRead, MenuRead
 
 class VenueBase(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
     name: str = Field(default="Jopa Caffe", max_length=100)
+    desc: Optional[str] = Field(default=None, max_length=100)
 
     phone: Optional[str] = Field(default="353079644297", max_length=20)
     wifiPassword: Optional[str] = Field(default="strongPassword", max_length=20)
 
-    address: Optional[str] = Field(default="70A Hillcreast Park", max_length=30)
-    google_maps_link: Optional[str] = Field(default=None, max_length=30)
-    inst_link: Optional[str] = Field(default=None, max_length=30)
-    facebook_link: Optional[str] = Field(default=None, max_length=30)
-    tiktok_link: Optional[str] = Field(default=None, max_length=30)
+    address: Optional[str] = Field(default="70A Hillcreast Park", max_length=255)
+    google_maps_link: Optional[str] = Field(default=None, max_length=255)
+    inst_link: Optional[str] = Field(default=None, max_length=255)
+    facebook_link: Optional[str] = Field(default=None, max_length=255)
+    tiktok_link: Optional[str] = Field(default=None, max_length=255)
 
     max_tables: Optional[int] = 20
     currency: str = "USD"
@@ -25,14 +26,20 @@ class VenueBase(BaseModel):
     logo: str = "default.png"
     background: str = "defaultBG.png"
 
+class VenueCreateResponse(BaseModel):
+    venue: VenueRead
+    menu: MenuRead
+    categories: List[CategoryRead]
+    items: List[ItemRead]
+
 class VenueUpdate(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
     name: Optional[str] = Field(default=None, max_length=100)
     phone: Optional[str] = Field(default=None, max_length=20)
     wifiPassword: Optional[str] = Field(default=None, max_length=20)
-
-    address: Optional[str] = Field(default=None, max_length=30)
+    desc: Optional[str] = Field(default=None, max_length=100)
+    address: Optional[str] = Field(default=None, max_length=255)
     google_maps_link: Optional[str] = Field(default=None, max_length=300)
     inst_link: Optional[str] = Field(default=None, max_length=300)
     facebook_link: Optional[str] = Field(default=None, max_length=300)

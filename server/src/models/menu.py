@@ -46,7 +46,7 @@ class Category(Base):
 
     name: Mapped[str] = mapped_column(String(20), nullable=False)
     desc: Mapped[Optional[str]] = mapped_column(String(100), nullable=True)
-    image: Mapped[Optional[str]] = mapped_column(String(100), nullable=True)
+    image: Mapped[Optional[str]] = mapped_column(String(255), nullable=True)
 
     menu: Mapped["Menu"] = relationship("Menu", back_populates="categories")
     items: Mapped[list["Item"]] = relationship(
@@ -71,5 +71,6 @@ class Item(Base):
     desc: Mapped[Optional[str]] = mapped_column(String(100), nullable=True)
     price: Mapped[Optional[Decimal]] = mapped_column(Numeric(10, 2), nullable=True)
     weight_g: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
+    image: Mapped[Optional[str]] = mapped_column(String(255), nullable=True)
 
     category: Mapped["Category"] = relationship("Category", back_populates="items")
