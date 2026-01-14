@@ -61,7 +61,7 @@ export function Details({ venue }: DetailsProps) {
     if (!items.length && !hasActions && !hasDesc) return null
 
     return (
-        <Card className="mx-auto sm:w-full max-w-[450px] border-0 shadow-none">
+        <Card className="sm:w-full border-0 shadow-none">
             <CardContent className="rounded-2xl bg-card/60 p-4 ring-1 ring-border/60">
                 {hasDesc && (
                     <div className="text-sm whitespace-pre-wrap break-words">

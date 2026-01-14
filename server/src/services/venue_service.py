@@ -41,6 +41,17 @@ class VenueService:
         )
         return response.data
     
+    async def get_venue_by_id_for_owner(self, venue_id: str, owner_id: str) -> dict:
+        response = (
+            self.supabase
+            .table("venues")
+            .select("""*, menus (*, categories (*, items ( * )))""")
+            .eq("owner_id", owner_id)
+            .eq("id", venue_id)
+            .execute()
+        )
+        return response.data
+    
     
     async def update_venue(self, venue_id: str, owner_id: str, patch: dict) -> dict:
         response = (
@@ -59,6 +70,7 @@ class VenueService:
         payload["owner_id"] = owner_id
         payload["slug"] = slugify(payload["name"])
 
+        # 1) Venue
         venue_resp = (
             self.supabase
             .table("venues")
@@ -68,19 +80,37 @@ class VenueService:
         venue = venue_resp.data[0]
         venue_id = venue["id"]
 
-        menu_resp = (
+        # 2) Two menus: Drinks + Food
+        menus_resp = (
             self.supabase
             .table("menus")
-            .insert({"venue_id": venue_id, "name": "Main menu"})
+            .insert([
+                {"venue_id": venue_id, "name": "Drinks", "position": 1},
+                {"venue_id": venue_id, "name": "Food", "position": 2},
+            ])
             .execute()
         )
-        menu = menu_resp.data[0]
-        menu_id = menu["id"]
+        menus = menus_resp.data
 
+        menu_id_by_name = {m["name"]: m["id"] for m in menus}
+        drinks_menu_id = menu_id_by_name["Drinks"]
+        food_menu_id = menu_id_by_name["Food"]
+
+        # 3) Categories
         default_categories = [
-            {"menu_id": menu_id, "name": "Coffee", "desc": "Default category", "image": None},
-            {"menu_id": menu_id, "name": "Tea", "desc": None, "image": None},
+            # Drinks
+            {"menu_id": drinks_menu_id, "name": "Coffee", "image": None},
+            {"menu_id": drinks_menu_id, "name": "Tea", "image": None},
+            {"menu_id": drinks_menu_id, "name": "Soft Drinks", "image": None},
+            {"menu_id": drinks_menu_id, "name": "Cocktails", "image": None},
+
+            # Food
+            {"menu_id": food_menu_id, "name": "Breakfast", "image": None},
+            {"menu_id": food_menu_id, "name": "Burgers", "image": None},
+            {"menu_id": food_menu_id, "name": "Salads", "image": None},
+            {"menu_id": food_menu_id, "name": "Desserts", "image": None},
         ]
+
         cats_resp = (
             self.supabase
             .table("categories")
@@ -89,31 +119,59 @@ class VenueService:
         )
         categories = cats_resp.data
 
-        cat_id_by_name = {c["name"]: c["id"] for c in categories}
+        cat_id_by_menu_and_name = {(c["menu_id"], c["name"]): c["id"] for c in categories}
 
+        def cid(menu_id: str, name: str) -> str:
+            return cat_id_by_menu_and_name[(menu_id, name)]
+
+        # 4) Items (more test data)
         default_items = [
-            {
-                "category_id": cat_id_by_name["Coffee"],
-                "name": "Espresso",
-                "desc": None,
-                "price": "2.50",
-                "weight_g": 30,
-            },
-            {
-                "category_id": cat_id_by_name["Coffee"],
-                "name": "Americano",
-                "desc": None,
-                "price": "3.00",
-                "weight_g": 250,
-            },
-            {
-                "category_id": cat_id_by_name["Tea"],
-                "name": "Black tea",
-                "desc": None,
-                "price": "2.80",
-                "weight_g": 250,
-            },
+            # Coffee
+            {"category_id": cid(drinks_menu_id, "Coffee"), "name": "Espresso", "desc": "Single shot", "price": "2.50", "weight_g": 30},
+            {"category_id": cid(drinks_menu_id, "Coffee"), "name": "Double Espresso", "desc": "Double shot", "price": "3.20", "weight_g": 60},
+            {"category_id": cid(drinks_menu_id, "Coffee"), "name": "Americano", "desc": "Espresso + hot water", "price": "3.00", "weight_g": 250},
+            {"category_id": cid(drinks_menu_id, "Coffee"), "name": "Cappuccino", "desc": "Foamy milk", "price": "3.60", "weight_g": 250},
+            {"category_id": cid(drinks_menu_id, "Coffee"), "name": "Latte", "desc": "Milky coffee", "price": "3.80", "weight_g": 300},
+            {"category_id": cid(drinks_menu_id, "Coffee"), "name": "Flat White", "desc": "Smooth microfoam", "price": "3.70", "weight_g": 200},
+            {"category_id": cid(drinks_menu_id, "Coffee"), "name": "Iced Latte", "desc": "With ice", "price": "4.20", "weight_g": 350},
+
+            # Tea
+            {"category_id": cid(drinks_menu_id, "Tea"), "name": "Black Tea", "desc": None, "price": "2.80", "weight_g": 250},
+            {"category_id": cid(drinks_menu_id, "Tea"), "name": "Green Tea", "desc": None, "price": "3.00", "weight_g": 250},
+            {"category_id": cid(drinks_menu_id, "Tea"), "name": "Earl Grey", "desc": "Bergamot", "price": "3.10", "weight_g": 250},
+            {"category_id": cid(drinks_menu_id, "Tea"), "name": "Chamomile", "desc": "Caffeine-free", "price": "3.20", "weight_g": 250},
+
+            # Soft Drinks
+            {"category_id": cid(drinks_menu_id, "Soft Drinks"), "name": "Coca-Cola", "desc": "330 ml can", "price": "2.50", "weight_g": 330},
+            {"category_id": cid(drinks_menu_id, "Soft Drinks"), "name": "Coca-Cola Zero", "desc": "330 ml can", "price": "2.50", "weight_g": 330},
+            {"category_id": cid(drinks_menu_id, "Soft Drinks"), "name": "Sparkling Water", "desc": "500 ml", "price": "2.20", "weight_g": 500},
+            {"category_id": cid(drinks_menu_id, "Soft Drinks"), "name": "Orange Juice", "desc": "Fresh", "price": "3.50", "weight_g": 300},
+
+            # Cocktails
+            {"category_id": cid(drinks_menu_id, "Cocktails"), "name": "Mojito", "desc": "Rum, mint, lime", "price": "9.50", "weight_g": 250},
+            {"category_id": cid(drinks_menu_id, "Cocktails"), "name": "Aperol Spritz", "desc": "Aperol, prosecco", "price": "10.00", "weight_g": 250},
+            {"category_id": cid(drinks_menu_id, "Cocktails"), "name": "Whiskey Sour", "desc": "Whiskey, lemon", "price": "11.00", "weight_g": 200},
+
+            # Breakfast
+            {"category_id": cid(food_menu_id, "Breakfast"), "name": "Avocado Toast", "desc": "Sourdough, chili flakes", "price": "8.90", "weight_g": 250},
+            {"category_id": cid(food_menu_id, "Breakfast"), "name": "Pancakes", "desc": "Maple syrup", "price": "7.50", "weight_g": 300},
+            {"category_id": cid(food_menu_id, "Breakfast"), "name": "Omelette", "desc": "Cheese & herbs", "price": "7.80", "weight_g": 280},
+
+            # Burgers
+            {"category_id": cid(food_menu_id, "Burgers"), "name": "Classic Beef Burger", "desc": "Cheddar, pickles", "price": "12.50", "weight_g": 420},
+            {"category_id": cid(food_menu_id, "Burgers"), "name": "Chicken Burger", "desc": "Spicy mayo", "price": "11.80", "weight_g": 400},
+            {"category_id": cid(food_menu_id, "Burgers"), "name": "Veggie Burger", "desc": "Plant-based patty", "price": "11.50", "weight_g": 380},
+
+            # Salads
+            {"category_id": cid(food_menu_id, "Salads"), "name": "Caesar Salad", "desc": "Chicken, parmesan", "price": "10.50", "weight_g": 320},
+            {"category_id": cid(food_menu_id, "Salads"), "name": "Greek Salad", "desc": "Feta, olives", "price": "9.80", "weight_g": 300},
+
+            # Desserts
+            {"category_id": cid(food_menu_id, "Desserts"), "name": "Cheesecake", "desc": "New York style", "price": "6.50", "weight_g": 180},
+            {"category_id": cid(food_menu_id, "Desserts"), "name": "Chocolate Brownie", "desc": "With ice cream", "price": "6.90", "weight_g": 200},
+            {"category_id": cid(food_menu_id, "Desserts"), "name": "Ice Cream", "desc": "Vanilla / chocolate", "price": "4.50", "weight_g": 150},
         ]
+
         items_resp = (
             self.supabase
             .table("items")
@@ -124,7 +182,7 @@ class VenueService:
 
         return {
             "venue": venue,
-            "menu": menu,
+            "menus": menus,
             "categories": categories,
             "items": items,
         }

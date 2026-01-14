@@ -20,7 +20,6 @@ class CategoryRead(ORMBase):
     id: UUID
     menu_id: UUID
     name: str = Field(max_length=20)
-    desc: Optional[str] = Field(default=None, max_length=100)
     image: Optional[str] = Field(default=None, max_length=255)
 
     items: list[ItemRead] = Field(default_factory=list)
@@ -30,6 +29,7 @@ class MenuRead(ORMBase):
     id: UUID
     venue_id: UUID
     name: str = Field(max_length=20)
+    position: int
 
     categories: list[CategoryRead] = Field(default_factory=list)
 
@@ -43,11 +43,11 @@ class ItemCreate(ORMBase):
 
 class CategoryCreate(ORMBase):
     name: str = Field(max_length=20)
-    desc: Optional[str] = Field(default=None, max_length=100)
     image: Optional[str] = Field(default=None, max_length=255)
 
 
 class MenuCreate(ORMBase):
     name: str = Field(max_length=20)
+    position: int
 
 MenuRead.model_rebuild()

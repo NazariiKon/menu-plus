@@ -20,7 +20,7 @@ export default function Header({ venue, onEdit }: HeaderProps) {
     const bgUrl = bgData.publicUrl
     const logoUrl = logoData.publicUrl
     return (
-        <div className="mx-auto sm:w-full max-w-[450px]">
+        <div className="sm:w-full">
             <header className="relative overflow-hidden rounded-b-3xl">
                 {/* BACK */}
                 <Button

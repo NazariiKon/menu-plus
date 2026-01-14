@@ -18,6 +18,7 @@ class Menu(Base):
         server_default=text("gen_random_uuid()")
     )    
     name: Mapped[str] = mapped_column(String(20), nullable=False)
+    position: Mapped[int] = mapped_column(nullable=False)
 
     categories: Mapped[list["Category"]] = relationship(
         "Category",
@@ -45,7 +46,6 @@ class Category(Base):
     )
 
     name: Mapped[str] = mapped_column(String(20), nullable=False)
-    desc: Mapped[Optional[str]] = mapped_column(String(100), nullable=True)
     image: Mapped[Optional[str]] = mapped_column(String(255), nullable=True)
 
     menu: Mapped["Menu"] = relationship("Menu", back_populates="categories")

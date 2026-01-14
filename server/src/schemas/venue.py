@@ -28,7 +28,7 @@ class VenueBase(BaseModel):
 
 class VenueCreateResponse(BaseModel):
     venue: VenueRead
-    menu: MenuRead
+    menus: List[MenuRead]
     categories: List[CategoryRead]
     items: List[ItemRead]
 

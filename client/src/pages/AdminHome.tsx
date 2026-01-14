@@ -2,7 +2,7 @@ import { useSelector } from "react-redux";
 import type { RootState } from "@/store/store";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Building2, ChevronRight } from "lucide-react";
+import { Building2, ChevronRight, Trash } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -10,9 +10,10 @@ import type { User } from "@supabase/supabase-js";
 import Verification from "@/components/ui/verification";
 import type { VenueRead } from "@/types/types";
 import { get_my_venues } from "@/api/profile";
-import { VenueModal, type VenueFormValues } from "@/components/VenueModal";
+import { VenueModal, type FormValues } from "@/components/VenueModal";
 import { create_venue, delete_venue } from "@/api/venue";
 import { Alert } from "@/components/Alert";
+
 
 export default function Admin() {
     const navigate = useNavigate();
@@ -23,7 +24,7 @@ export default function Admin() {
     const [openDelete, setOpenDelete] = useState(false);
     const [loading, setLoading] = useState(true);
 
-    const handleCreate = async (values: VenueFormValues) => {
+    const handleCreate = async (values: FormValues) => {
         const res = await create_venue(values);
         if (!res) return;
         await getVenues();
@@ -159,11 +160,21 @@ export default function Admin() {
 
                                         <div className="grid min-[350px]:grid-cols-[auto_1fr_auto] grid-cols-1 items-center gap-2 ml-auto lg:ml-0">
                                             <Alert
+                                                description="This action cannot be undone. This will permanently delete your venue and remove your venue's data from our servers."
                                                 open={openDelete}
                                                 onOpenChange={setOpenDelete}
                                                 onConfirm={handleDelete}
-                                                venueId={venue.id}
-                                            />
+                                                id={venue.id}
+                                            >
+                                                <Button
+                                                    variant="destructive"
+                                                    size="lg"
+                                                    className="px-6 h-12 rounded-xl font-medium border border-gray-200 hover:border-gray-400 inline-flex items-center"
+                                                >
+                                                    <Trash className="h-5 w-5" />
+                                                </Button>
+                                            </Alert>
+
 
                                             <Button
                                                 asChild

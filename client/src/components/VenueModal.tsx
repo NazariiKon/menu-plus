@@ -17,24 +17,24 @@ import {
     FormControl,
     FormField,
     FormItem,
-    FormLabel,
     FormMessage,
 } from "@/components/ui/form";
 
-const venueSchema = z.object({
-    name: z.string().trim().min(1, "Venue name is required."),
+const formSchema = z.object({
+    name: z.string().trim().min(1, "Name is required."),
 });
 
-export type VenueFormValues = z.infer<typeof venueSchema>;
+export type FormValues = z.infer<typeof formSchema>;
 
-export type VenueModalProps = {
+export type ModalProps = {
     open: boolean;
     onOpenChange: (open: boolean) => void;
-    onSubmit: (values: VenueFormValues) => void | Promise<void>;
+    onSubmit: (values: FormValues) => void | Promise<void>;
     title?: string;
     description?: string;
     initialName?: string;
     submitLabel?: string;
+    placeholder?: string;
 };
 
 export function VenueModal({
@@ -45,9 +45,10 @@ export function VenueModal({
     description = "Enter the venue name to continue.",
     initialName = "",
     submitLabel = "Save",
-}: VenueModalProps) {
-    const form = useForm<VenueFormValues>({
-        resolver: zodResolver(venueSchema),
+    placeholder = "e.g. The Green Bistro"
+}: ModalProps) {
+    const form = useForm<FormValues>({
+        resolver: zodResolver(formSchema),
         defaultValues: { name: initialName },
         mode: "onSubmit",
     });
@@ -79,10 +80,9 @@ export function VenueModal({
                             name="name"
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>Venue name</FormLabel>
                                     <FormControl>
                                         <Input
-                                            placeholder="e.g. The Green Bistro"
+                                            placeholder={placeholder}
                                             autoComplete="organization"
                                             {...field}
                                         />

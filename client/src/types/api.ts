@@ -188,8 +188,6 @@ export interface components {
             menu_id: string;
             /** Name */
             name: string;
-            /** Desc */
-            desc?: string | null;
             /** Image */
             image?: string | null;
             /** Items */
@@ -244,6 +242,7 @@ export interface components {
              * Format: uuid
              */
             id: string;
+            position: number;
             /**
              * Venue Id
              * Format: uuid

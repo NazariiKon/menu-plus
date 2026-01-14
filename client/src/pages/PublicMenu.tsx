@@ -2,11 +2,15 @@ import * as React from "react"
 import { useParams } from "react-router-dom"
 
 import { edit_venue, get_menu_by_slug } from "@/api/venue"
-import type { VenueRead, VenueUpdate } from "@/types/types"
+import type { MenuRead, VenueRead, VenueUpdate } from "@/types/types"
 import { useEffect, useState } from "react"
 import Header from "@/components/MenuComponents/Header"
 import EditVenueModal from "@/components/MenuComponents/EditMenuModal"
 import { Details } from "@/components/MenuComponents/Details"
+import { MenuSubmenuTabs } from "@/components/MenuComponents/MenuSubmenuTabs"
+import { VenueModal, type FormValues } from "@/components/VenueModal"
+import { create_menu, delete_menu } from "@/api/menu"
+import { Alert } from "@/components/Alert"
 
 const gradientBtn =
     "bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-lg hover:shadow-xl hover:from-indigo-700 hover:to-purple-700 hover:bg-primary/90 font-semibold"
@@ -20,9 +24,44 @@ export default function PublicMenu() {
     const { slug } = useParams<{ slug: string }>()
 
     const [venue, setVenue] = React.useState<VenueRead | null>(null)
+    const [menus, setMenus] = React.useState<MenuRead[] | null>(null)
     const [open, setOpen] = useState(false);
+    const [openCreate, setOpenCreate] = useState(false);
     const [loading, setLoading] = React.useState(true)
     const [error, setError] = React.useState<string | undefined>(undefined)
+    const [insertAfterMenu, setInsertAfterMenu] = useState<number>(0);
+
+    const handleLeftBtn = (menuId: string) => {
+        console.log(`Menu ${menuId} to the left`);
+    }
+    const handleRightBtn = (menuId: string) => {
+        console.log(`Menu ${menuId} to the right`);
+    }
+
+    const handleEditBtn = (menuId: string) => {
+        console.log(`Edit ${menuId} name`);
+    }
+
+    const deleteMenu = async (menuId: string) => {
+        if (!venue) return;
+        const res = await delete_menu(venue.id, menuId);
+        if (!res || !res.data) return;
+        setMenus(res.data);
+    }
+
+    const handleAddBetween = (position: number) => {
+        setInsertAfterMenu(position);
+        setOpenCreate(true);
+    }
+
+    const handleCreate = async (values: FormValues) => {
+        console.log(values, insertAfterMenu);
+        if (!venue) return;
+        const res = await create_menu(venue.id, values.name, insertAfterMenu);
+        if (!res || !res.data) return;
+        setMenus(res.data);
+    };
+
 
     const load = async () => {
         setLoading(true);
@@ -31,6 +70,7 @@ export default function PublicMenu() {
 
         if (result.success && result.data) {
             setVenue(result.data);
+            setMenus(result.data.menus ? result.data.menus : [])
         } else {
             setError(result.error);
         }
@@ -56,9 +96,29 @@ export default function PublicMenu() {
     if (!venue) return <>Loading...</>;
 
     return (
-        <div className="min-h-dvh w-full bg-background text-foreground">
+        <div className="min-h-dvh max-w-md mx-auto w-full max-w-[450px] bg-background text-foreground">
             <Header venue={venue} onEdit={setOpen} />
             <Details venue={venue} />
+            <MenuSubmenuTabs
+                menus={menus ?? []}
+                onMoveLeft={handleLeftBtn}
+                onMoveRight={handleRightBtn}
+                onEdit={handleEditBtn}
+                onDelete={deleteMenu}
+                onAddBetween={handleAddBetween}
+            // onValueChange={ }
+            />
+
+            <VenueModal
+                open={openCreate}
+                onOpenChange={setOpenCreate}
+                onSubmit={handleCreate}
+                title="Create menu"
+                description="Enter a menu name."
+                submitLabel="Create"
+                placeholder="e.g. Deserts"
+            />
+
             <EditVenueModal
                 open={open}
                 onOpenChange={setOpen}
