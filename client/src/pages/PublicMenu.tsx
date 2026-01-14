@@ -8,9 +8,10 @@ import Header from "@/components/MenuComponents/Header"
 import EditVenueModal from "@/components/MenuComponents/EditMenuModal"
 import { Details } from "@/components/MenuComponents/Details"
 import { MenuSubmenuTabs } from "@/components/MenuComponents/MenuSubmenuTabs"
-import { VenueModal, type FormValues } from "@/components/VenueModal"
+import { NameModal, type FormValues } from "@/components/NameModal"
 import { create_menu, delete_menu, edit_menu } from "@/api/menu"
-import { Alert } from "@/components/Alert"
+import { CategoriesList } from "@/components/MenuComponents/CategoriesList"
+import { useIsOwner } from "@/hooks/useIsOwner"
 
 const gradientBtn =
     "bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-lg hover:shadow-xl hover:from-indigo-700 hover:to-purple-700 hover:bg-primary/90 font-semibold"
@@ -25,6 +26,7 @@ export default function PublicMenu() {
 
     const [venue, setVenue] = React.useState<VenueRead | null>(null)
     const [menus, setMenus] = React.useState<MenuRead[] | null>(null)
+    const [activeMenu, setActiveMenu] = React.useState<MenuRead | null>(null)
     const [selectedMenu, setSelectedMenu] = React.useState<MenuRead | null>(null)
     const [open, setOpen] = useState(false);
     const [openCreate, setOpenCreate] = useState(false);
@@ -32,6 +34,7 @@ export default function PublicMenu() {
     const [loading, setLoading] = React.useState(true)
     const [error, setError] = React.useState<string | undefined>(undefined)
     const [insertAfterMenu, setInsertAfterMenu] = useState<number>(0);
+    const { isOwner: isAdminMode, loading: ownerLoading } = useIsOwner(venue);
 
     const getMenuById = (menuId: string) => {
         if (!menus) return;
@@ -41,7 +44,7 @@ export default function PublicMenu() {
     const changePosition = async (menuId: string, delta: number) => {
         if (!menus || !venue) return;
 
-        const currentMenu = menus.find(m => m.id === menuId);
+        const currentMenu = getMenuById(menuId);
         if (!currentMenu) return;
 
         const oldPos = currentMenu.position;
@@ -72,11 +75,15 @@ export default function PublicMenu() {
         }
     };
 
-
-
-
     const handleLeftBtn = async (menuId: string) => {
         changePosition(menuId, -1);
+    }
+
+    const onChangeMenu = async (menuId: string) => {
+        const selectedMenu = getMenuById(menuId);
+        if (!selectedMenu) return;
+        console.log(selectedMenu);
+        setActiveMenu(selectedMenu);
     }
 
     const handleRightBtn = async (menuId: string) => {
@@ -128,6 +135,7 @@ export default function PublicMenu() {
         if (result.success && result.data) {
             setVenue(result.data);
             setMenus(result.data.menus ? result.data.menus : [])
+            setActiveMenu(result.data.menus ? result.data.menus[1] : null);
         } else {
             setError(result.error);
         }
@@ -138,6 +146,7 @@ export default function PublicMenu() {
     useEffect(() => {
         load()
     }, [slug])
+
 
     const menu = venue?.menus?.[0] ?? null
     const categories = menu?.categories ?? []
@@ -150,7 +159,7 @@ export default function PublicMenu() {
         setVenue(updatedVenue.data)
     }
 
-    if (!venue || !menus || loading) return <>Loading...</>;
+    if (!venue || !menus || loading || ownerLoading) return <>Loading...</>;
     if (error) return <>{error}</>;
 
     return (
@@ -164,10 +173,24 @@ export default function PublicMenu() {
                 onEdit={handleEditBtn}
                 onDelete={deleteMenu}
                 onAddBetween={handleAddBetween}
-            // onValueChange={ }
+                onValueChange={onChangeMenu}
             />
 
-            <VenueModal
+            <CategoriesList
+                categories={activeMenu?.categories ?? []}
+                isAdmin={isAdminMode}
+                onAdminActions={{
+                    onAddCategory: (position) => console.log('Add at', position),
+                    onDeleteCategory: (id) => console.log('Delete', id),
+                    onEditCategory: (id) => console.log('Edit', id),
+                    onMoveUp: (id) => console.log('Move up', id),
+                    onMoveDown: (id) => console.log('Move down', id),
+                }}
+            />
+
+
+
+            <NameModal
                 open={openCreate}
                 onOpenChange={setOpenCreate}
                 onSubmit={handleCreate}
@@ -177,7 +200,7 @@ export default function PublicMenu() {
                 placeholder="e.g. Deserts"
             />
 
-            <VenueModal
+            <NameModal
                 open={openEdit}
                 onOpenChange={setOpenEdit}
                 onSubmit={handleEditSubmit}

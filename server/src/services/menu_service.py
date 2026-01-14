@@ -34,7 +34,7 @@ class MenuService:
         response = (
             self.supabase
             .table("menus")
-            .select("*")
+            .select("""*, categories (*, items ( * )))""")
             .eq("venue_id", venue_id)
             .execute()
         )

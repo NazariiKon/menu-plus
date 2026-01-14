@@ -37,7 +37,7 @@ export type ModalProps = {
     placeholder?: string;
 };
 
-export function VenueModal({
+export function NameModal({
     open,
     onOpenChange,
     onSubmit,

@@ -10,7 +10,7 @@ import type { User } from "@supabase/supabase-js";
 import Verification from "@/components/ui/verification";
 import type { VenueRead } from "@/types/types";
 import { get_my_venues } from "@/api/profile";
-import { VenueModal, type FormValues } from "@/components/VenueModal";
+import { NameModal, type FormValues } from "@/components/NameModal";
 import { create_venue, delete_venue } from "@/api/venue";
 import { Alert } from "@/components/Alert";
 
@@ -96,7 +96,7 @@ export default function Admin() {
                 </div>
 
                 <div className="space-y-4">
-                    <VenueModal
+                    <NameModal
                         open={open}
                         onOpenChange={setOpen}
                         onSubmit={handleCreate}

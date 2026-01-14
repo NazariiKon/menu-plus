@@ -99,16 +99,16 @@ class VenueService:
         # 3) Categories
         default_categories = [
             # Drinks
-            {"menu_id": drinks_menu_id, "name": "Coffee", "image": None},
-            {"menu_id": drinks_menu_id, "name": "Tea", "image": None},
-            {"menu_id": drinks_menu_id, "name": "Soft Drinks", "image": None},
-            {"menu_id": drinks_menu_id, "name": "Cocktails", "image": None},
+            {"menu_id": drinks_menu_id, "name": "Coffee", "image": "coffee.png"},
+            {"menu_id": drinks_menu_id, "name": "Tea", "image": "tea.png"},
+            {"menu_id": drinks_menu_id, "name": "Soft Drinks", "image": "drinks.png"},
+            {"menu_id": drinks_menu_id, "name": "Cocktails", "image": "cocktails.png"},
 
             # Food
-            {"menu_id": food_menu_id, "name": "Breakfast", "image": None},
-            {"menu_id": food_menu_id, "name": "Burgers", "image": None},
-            {"menu_id": food_menu_id, "name": "Salads", "image": None},
-            {"menu_id": food_menu_id, "name": "Desserts", "image": None},
+            {"menu_id": food_menu_id, "name": "Breakfast", "image": "breakfast.png"},
+            {"menu_id": food_menu_id, "name": "Burgers", "image": "burgers.png"},
+            {"menu_id": food_menu_id, "name": "Salads", "image": "salads.png"},
+            {"menu_id": food_menu_id, "name": "Desserts", "image": "desserts.png"},
         ]
 
         cats_resp = (
