@@ -81,9 +81,64 @@ class MenuService:
         await self._normalize_menu_positions(venue_id)
 
         return deleted_rows[0]
+
+    def _change_position(self, venue_id: str, menu_id: str, new_position: int) -> None:
+        current_resp = (
+            self.supabase
+            .table("menus")
+            .select("id, position")
+            .eq("id", menu_id)
+            .eq("venue_id", venue_id)
+            .limit(1)
+            .execute()
+        )
+        current_rows = current_resp.data or []
+        if not current_rows:
+            return
+
+        old_position = current_rows[0].get("position") or 0
+        if old_position == new_position:
+            return
+
+        target_resp = (
+            self.supabase
+            .table("menus")
+            .select("id, position")
+            .eq("venue_id", venue_id)
+            .eq("position", new_position)
+            .limit(1)
+            .execute()
+        )
+        target_rows = target_resp.data or []
+        target_menu = target_rows[0] if target_rows else None
+
+        (
+            self.supabase
+            .table("menus")
+            .update({"position": new_position})
+            .eq("id", menu_id)
+            .eq("venue_id", venue_id)
+            .execute()
+        )
+
+        if target_menu:
+            (
+                self.supabase
+                .table("menus")
+                .update({"position": old_position})
+                .eq("id", target_menu["id"])
+                .eq("venue_id", venue_id)
+                .execute()
+            )
+
+
     
     async def update_menu(self, data: MenuUpdate, venue_id: str, menu_id: str) -> dict:
         payload = data.model_dump(exclude_none=True)
+
+        if data.position is not None:
+            self._change_position(venue_id=venue_id, menu_id=menu_id, new_position=data.position)
+
         response = (
             self.supabase
             .table("menus")

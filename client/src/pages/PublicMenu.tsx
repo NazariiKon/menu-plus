@@ -9,7 +9,7 @@ import EditVenueModal from "@/components/MenuComponents/EditMenuModal"
 import { Details } from "@/components/MenuComponents/Details"
 import { MenuSubmenuTabs } from "@/components/MenuComponents/MenuSubmenuTabs"
 import { VenueModal, type FormValues } from "@/components/VenueModal"
-import { create_menu, delete_menu, edit_menu_name } from "@/api/menu"
+import { create_menu, delete_menu, edit_menu } from "@/api/menu"
 import { Alert } from "@/components/Alert"
 
 const gradientBtn =
@@ -33,21 +33,58 @@ export default function PublicMenu() {
     const [error, setError] = React.useState<string | undefined>(undefined)
     const [insertAfterMenu, setInsertAfterMenu] = useState<number>(0);
 
-    const handleLeftBtn = (menuId: string) => {
-        console.log(`Menu ${menuId} to the left`);
+    const getMenuById = (menuId: string) => {
+        if (!menus) return;
+        return menus.find(menu => menu.id === menuId);
     }
-    const handleRightBtn = (menuId: string) => {
-        console.log(`Menu ${menuId} to the right`);
+
+    const changePosition = async (menuId: string, delta: number) => {
+        if (!menus || !venue) return;
+
+        const currentMenu = menus.find(m => m.id === menuId);
+        if (!currentMenu) return;
+
+        const oldPos = currentMenu.position;
+        const newPos = oldPos + delta;
+
+        setMenus(prev => {
+            if (!prev) return prev;
+            return prev.map(m => {
+                if (m.id === menuId) {
+                    return { ...m, position: newPos };
+                }
+                if (m.position === newPos) {
+                    return { ...m, position: oldPos };
+                }
+                return m;
+            });
+        });
+
+        try {
+            const res = await edit_menu(null, newPos, menuId, venue.id);
+            if (!res || !res.data) {
+                console.error("Failed to update menu position on server");
+            } else {
+                setMenus(res.data);
+            }
+        } catch (e) {
+            console.error(e);
+        }
+    };
+
+
+
+
+    const handleLeftBtn = async (menuId: string) => {
+        changePosition(menuId, -1);
+    }
+
+    const handleRightBtn = async (menuId: string) => {
+        changePosition(menuId, 1);
     }
 
     const handleEditBtn = (menuId: string) => {
-        if (!menus) {
-            console.log('You dont have any menus');
-            return;
-        }
-
-        const currentMenu = menus.find(menu => menu.id === menuId);
-
+        const currentMenu = getMenuById(menuId);
         if (currentMenu) {
             setSelectedMenu(currentMenu);
             setOpenEdit(true);
@@ -58,7 +95,7 @@ export default function PublicMenu() {
 
     const handleEditSubmit = async (values: FormValues) => {
         if (selectedMenu?.name === values.name || !selectedMenu || !venue) return;
-        const res = await edit_menu_name(values.name, selectedMenu.id, venue.id);
+        const res = await edit_menu(values.name, null, selectedMenu.id, venue.id);
         if (!res || !res.data) return;
         setMenus(res.data);
     };
@@ -114,6 +151,7 @@ export default function PublicMenu() {
     }
 
     if (!venue || !menus || loading) return <>Loading...</>;
+    if (error) return <>{error}</>;
 
     return (
         <div className="min-h-dvh max-w-md mx-auto w-full max-w-[450px] bg-background text-foreground">

@@ -51,6 +51,7 @@ class MenuCreate(ORMBase):
     position: int
     
 class MenuUpdate(ORMBase):
-    name: str = Field(max_length=20)
+    name: Optional[str] = Field(max_length=20)
+    position: Optional[int]
 
 MenuRead.model_rebuild()
