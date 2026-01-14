@@ -49,5 +49,8 @@ class CategoryCreate(ORMBase):
 class MenuCreate(ORMBase):
     name: str = Field(max_length=20)
     position: int
+    
+class MenuUpdate(ORMBase):
+    name: str = Field(max_length=20)
 
 MenuRead.model_rebuild()

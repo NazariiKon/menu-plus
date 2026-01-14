@@ -9,7 +9,7 @@ import EditVenueModal from "@/components/MenuComponents/EditMenuModal"
 import { Details } from "@/components/MenuComponents/Details"
 import { MenuSubmenuTabs } from "@/components/MenuComponents/MenuSubmenuTabs"
 import { VenueModal, type FormValues } from "@/components/VenueModal"
-import { create_menu, delete_menu } from "@/api/menu"
+import { create_menu, delete_menu, edit_menu_name } from "@/api/menu"
 import { Alert } from "@/components/Alert"
 
 const gradientBtn =
@@ -25,8 +25,10 @@ export default function PublicMenu() {
 
     const [venue, setVenue] = React.useState<VenueRead | null>(null)
     const [menus, setMenus] = React.useState<MenuRead[] | null>(null)
+    const [selectedMenu, setSelectedMenu] = React.useState<MenuRead | null>(null)
     const [open, setOpen] = useState(false);
     const [openCreate, setOpenCreate] = useState(false);
+    const [openEdit, setOpenEdit] = useState(false);
     const [loading, setLoading] = React.useState(true)
     const [error, setError] = React.useState<string | undefined>(undefined)
     const [insertAfterMenu, setInsertAfterMenu] = useState<number>(0);
@@ -39,8 +41,27 @@ export default function PublicMenu() {
     }
 
     const handleEditBtn = (menuId: string) => {
-        console.log(`Edit ${menuId} name`);
-    }
+        if (!menus) {
+            console.log('You dont have any menus');
+            return;
+        }
+
+        const currentMenu = menus.find(menu => menu.id === menuId);
+
+        if (currentMenu) {
+            setSelectedMenu(currentMenu);
+            setOpenEdit(true);
+        } else {
+            console.log(`Menu ${menuId} doesn't exist`);
+        }
+    };
+
+    const handleEditSubmit = async (values: FormValues) => {
+        if (selectedMenu?.name === values.name || !selectedMenu || !venue) return;
+        const res = await edit_menu_name(values.name, selectedMenu.id, venue.id);
+        if (!res || !res.data) return;
+        setMenus(res.data);
+    };
 
     const deleteMenu = async (menuId: string) => {
         if (!venue) return;
@@ -55,7 +76,6 @@ export default function PublicMenu() {
     }
 
     const handleCreate = async (values: FormValues) => {
-        console.log(values, insertAfterMenu);
         if (!venue) return;
         const res = await create_menu(venue.id, values.name, insertAfterMenu);
         if (!res || !res.data) return;
@@ -93,7 +113,7 @@ export default function PublicMenu() {
         setVenue(updatedVenue.data)
     }
 
-    if (!venue) return <>Loading...</>;
+    if (!venue || !menus || loading) return <>Loading...</>;
 
     return (
         <div className="min-h-dvh max-w-md mx-auto w-full max-w-[450px] bg-background text-foreground">
@@ -118,6 +138,17 @@ export default function PublicMenu() {
                 submitLabel="Create"
                 placeholder="e.g. Deserts"
             />
+
+            <VenueModal
+                open={openEdit}
+                onOpenChange={setOpenEdit}
+                onSubmit={handleEditSubmit}
+                title="Edit menu name"
+                description="Enter a new menu name."
+                submitLabel="Save"
+                initialName={selectedMenu?.name ?? ""}
+            />
+
 
             <EditVenueModal
                 open={open}

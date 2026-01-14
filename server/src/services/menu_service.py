@@ -1,5 +1,5 @@
 from typing import List, Tuple
-from src.schemas.menu import MenuCreate
+from src.schemas.menu import MenuCreate, MenuUpdate
 from supabase import Client
 
 
@@ -81,3 +81,15 @@ class MenuService:
         await self._normalize_menu_positions(venue_id)
 
         return deleted_rows[0]
+    
+    async def update_menu(self, data: MenuUpdate, venue_id: str, menu_id: str) -> dict:
+        payload = data.model_dump(exclude_none=True)
+        response = (
+            self.supabase
+            .table("menus")
+            .update(payload)
+            .eq("id", menu_id)
+            .eq("venue_id", venue_id)
+            .execute()
+        )
+        return response.data[0] if response.data else {}
