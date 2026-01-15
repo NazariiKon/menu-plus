@@ -14,14 +14,14 @@ class ItemRead(ORMBase):
     image: Optional[str] = Field(default=None, max_length=255)
     price: Optional[Decimal] = None
     weight_g: Optional[int] = None
-
+    position: int
 
 class CategoryRead(ORMBase):
     id: UUID
     menu_id: UUID
     name: str = Field(max_length=20)
     image: Optional[str] = Field(default=None, max_length=255)
-
+    position: int
     items: list[ItemRead] = Field(default_factory=list)
 
 
@@ -39,12 +39,18 @@ class ItemCreate(ORMBase):
     image: Optional[str] = Field(default=None, max_length=255)
     price: Optional[Decimal] = None
     weight_g: Optional[int] = None
+    position: int
 
 
-class CategoryCreate(ORMBase):
-    name: str = Field(max_length=20)
-    image: Optional[str] = Field(default=None, max_length=255)
+class CategoryCreate(BaseModel):
+    name: str
+    image_bytes: bytes | None = None
+    position: int = 1
 
+class CategoryUpdate(BaseModel):
+    name: str | None = None
+    image_bytes: bytes | None = None
+    position: int | None = None
 
 class MenuCreate(ORMBase):
     name: str = Field(max_length=20)

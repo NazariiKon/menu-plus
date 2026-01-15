@@ -141,6 +141,41 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/venues/{venue_id}/menus/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Create Menu */
+        post: operations["create_menu_venues__venue_id__menus__post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/venues/{venue_id}/menus/{menu_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** Delete Menu */
+        delete: operations["delete_menu_venues__venue_id__menus__menu_id__delete"];
+        options?: never;
+        head?: never;
+        /** Update Menu */
+        patch: operations["update_menu_venues__venue_id__menus__menu_id__patch"];
+        trace?: never;
+    };
     "/": {
         parameters: {
             query?: never;
@@ -190,6 +225,8 @@ export interface components {
             name: string;
             /** Image */
             image?: string | null;
+            /** Position */
+            position: number;
             /** Items */
             items?: components["schemas"]["ItemRead"][];
         };
@@ -220,6 +257,8 @@ export interface components {
             price?: string | null;
             /** Weight G */
             weight_g?: number | null;
+            /** Position */
+            position: number;
         };
         /** Login */
         Login: {
@@ -235,6 +274,13 @@ export interface components {
              */
             password: string;
         };
+        /** MenuCreate */
+        MenuCreate: {
+            /** Name */
+            name: string;
+            /** Position */
+            position: number;
+        };
         /** MenuRead */
         MenuRead: {
             /**
@@ -242,7 +288,6 @@ export interface components {
              * Format: uuid
              */
             id: string;
-            position: number;
             /**
              * Venue Id
              * Format: uuid
@@ -250,8 +295,17 @@ export interface components {
             venue_id: string;
             /** Name */
             name: string;
+            /** Position */
+            position: number;
             /** Categories */
             categories?: components["schemas"]["CategoryRead"][];
+        };
+        /** MenuUpdate */
+        MenuUpdate: {
+            /** Name */
+            name: string | null;
+            /** Position */
+            position: number | null;
         };
         /** Register */
         Register: {
@@ -342,7 +396,8 @@ export interface components {
         /** VenueCreateResponse */
         VenueCreateResponse: {
             venue: components["schemas"]["VenueRead"];
-            menu: components["schemas"]["MenuRead"];
+            /** Menus */
+            menus: components["schemas"]["MenuRead"][];
             /** Categories */
             categories: components["schemas"]["CategoryRead"][];
             /** Items */
@@ -720,6 +775,109 @@ export interface operations {
                 };
                 content: {
                     "application/json": unknown;
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    create_menu_venues__venue_id__menus__post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                venue_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["MenuCreate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MenuRead"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    delete_menu_venues__venue_id__menus__menu_id__delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                venue_id: string;
+                menu_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            202: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MenuRead"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    update_menu_venues__venue_id__menus__menu_id__patch: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                venue_id: string;
+                menu_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["MenuUpdate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            206: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MenuRead"][];
                 };
             };
             /** @description Validation Error */

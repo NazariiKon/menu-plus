@@ -27,7 +27,7 @@ async def create_menu (
     await ms.create_menu(venue_id, data)
     return await ms.get_menus(venue_id)
 
-@router.delete("/{menu_id}", response_model=List[MenuRead], status_code=status.HTTP_201_CREATED)
+@router.delete("/{menu_id}", response_model=List[MenuRead], status_code=status.HTTP_202_ACCEPTED)
 async def delete_menu (
     venue_id: str,
     menu_id: str,
@@ -45,7 +45,7 @@ async def delete_menu (
     await ms.delete_menu(venue_id, menu_id)
     return await ms.get_menus(venue_id)
 
-@router.patch("/{menu_id}", response_model=List[MenuRead], status_code=status.HTTP_201_CREATED)
+@router.patch("/{menu_id}", response_model=List[MenuRead], status_code=status.HTTP_206_PARTIAL_CONTENT)
 async def update_menu (
     venue_id: str,
     menu_id: str,

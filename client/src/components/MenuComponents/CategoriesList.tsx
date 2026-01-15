@@ -7,13 +7,7 @@ import {
     ArrowDown
 } from "lucide-react";
 import { supabase } from "@/lib/supabase";
-
-interface Category {
-    id: string;
-    menu_id: string;
-    name: string;
-    image?: string | null;
-}
+import type { CategoryRead } from "@/types/types";
 
 interface AdminCallbacks {
     onAddCategory: (position: number) => void;
@@ -24,7 +18,7 @@ interface AdminCallbacks {
 }
 
 interface CategoriesListProps {
-    categories?: Category[];
+    categories?: CategoryRead[];
     isAdmin?: boolean;
     onAdminActions?: AdminCallbacks;
 }
@@ -61,7 +55,7 @@ export const CategoriesList: React.FC<CategoriesListProps> = ({
                         <CardContent className="p-0 relative h-32">
                             {category.image ? (
                                 <img
-                                    src={supabase.storage.from("images/categories").getPublicUrl(category.image).data.publicUrl}
+                                    src={supabase.storage.from("images/").getPublicUrl(category.image).data.publicUrl}
                                     alt={category.name}
                                     className="w-full h-full object-cover"
                                 />
@@ -77,7 +71,6 @@ export const CategoriesList: React.FC<CategoriesListProps> = ({
 
                             {isAdmin && onAdminActions && (
                                 <div className="absolute top-3 right-3 flex space-x-1 bg-black/95 backdrop-blur-sm rounded-lg p-1 shadow-lg border border-black/50">
-                                    {/* ✅ Черные кнопки */}
                                     <Button
                                         onClick={() => onAdminActions.onDeleteCategory(category.id)}
                                         variant="ghost"

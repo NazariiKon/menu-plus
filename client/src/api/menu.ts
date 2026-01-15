@@ -1,7 +1,6 @@
 import { supabase } from "@/lib/supabase";
 import type { ApiResponse, MenuRead } from "@/types/types";
 
-
 export async function create_menu(venueId: string, name: string, position: number): Promise<ApiResponse<MenuRead[]>> {
     try {
         const { data: sessionData, error } = await supabase.auth.getSession();

@@ -5,6 +5,7 @@ from jose import JWTError, jwt
 import requests
 from functools import lru_cache
 
+from src.services.category_service import CategoryService
 from src.services.menu_service import MenuService
 from src.services.profile_service import ProfileService
 from src.services.venue_service import VenueService
@@ -55,3 +56,6 @@ async def get_profile_service(supabase: Client = Depends(get_supabase_client)):
 
 async def get_menu_service(supabase: Client = Depends(get_supabase_client)):
     return MenuService(supabase)
+
+async def get_category_service(supabase: Client = Depends(get_supabase_client)):
+    return CategoryService(supabase)

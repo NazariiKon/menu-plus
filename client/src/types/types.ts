@@ -8,7 +8,9 @@ export type VenueRead = ApiComponents['schemas']['VenueRead'];
 export type VenueBase = ApiComponents['schemas']['VenueBase'];
 export type VenueUpdate = ApiComponents['schemas']['VenueUpdate'];
 // export type MenuUpdate = ApiComponents['schemas']['MenuUpdate'];
+
 export type MenuRead = ApiComponents['schemas']['MenuRead'];
+export type CategoryRead = ApiComponents['schemas']['CategoryRead'];
 export type HTTPValidationError = ApiComponents['schemas']['HTTPValidationError'];
 
 export interface ApiResponse<T> {

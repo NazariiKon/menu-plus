@@ -12,6 +12,7 @@ import { NameModal, type FormValues } from "@/components/NameModal"
 import { create_menu, delete_menu, edit_menu } from "@/api/menu"
 import { CategoriesList } from "@/components/MenuComponents/CategoriesList"
 import { useIsOwner } from "@/hooks/useIsOwner"
+import { create_category } from "@/api/category"
 
 const gradientBtn =
     "bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-lg hover:shadow-xl hover:from-indigo-700 hover:to-purple-700 hover:bg-primary/90 font-semibold"
@@ -30,11 +31,26 @@ export default function PublicMenu() {
     const [selectedMenu, setSelectedMenu] = React.useState<MenuRead | null>(null)
     const [open, setOpen] = useState(false);
     const [openCreate, setOpenCreate] = useState(false);
+    const [openCreateCategory, setOpenCreateCategory] = useState(false);
     const [openEdit, setOpenEdit] = useState(false);
     const [loading, setLoading] = React.useState(true)
     const [error, setError] = React.useState<string | undefined>(undefined)
     const [insertAfterMenu, setInsertAfterMenu] = useState<number>(0);
+    const [insertAfterCategory, setInsertAfterCategory] = useState<number>(0);
     const { isOwner: isAdminMode, loading: ownerLoading } = useIsOwner(venue);
+    const [previewImage, setPreviewImage] = useState<string | null>(null);
+
+    const handleImageChange = (file: File | null) => {
+        if (file) {
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                setPreviewImage(reader.result as string);
+            };
+            reader.readAsDataURL(file);
+        } else {
+            setPreviewImage(null);
+        }
+    };
 
     const getMenuById = (menuId: string) => {
         if (!menus) return;
@@ -126,6 +142,21 @@ export default function PublicMenu() {
         setMenus(res.data);
     };
 
+    const handleCreateCategory = (position: number) => {
+        setInsertAfterCategory(position);
+        setOpenCreateCategory(true);
+    }
+
+    const createCategory = async (values: FormValues) => {
+        if (!activeMenu || !venue) return;
+        const result = await create_category(venue.id, activeMenu.id, values.name, insertAfterCategory + 1, values.image || undefined);
+        console.log(result);
+
+        if (result.success) {
+            setOpenCreate(false);
+            load();
+        }
+    };
 
     const load = async () => {
         setLoading(true);
@@ -180,7 +211,7 @@ export default function PublicMenu() {
                 categories={activeMenu?.categories ?? []}
                 isAdmin={isAdminMode}
                 onAdminActions={{
-                    onAddCategory: (position) => console.log('Add at', position),
+                    onAddCategory: (id) => handleCreateCategory(id),
                     onDeleteCategory: (id) => console.log('Delete', id),
                     onEditCategory: (id) => console.log('Edit', id),
                     onMoveUp: (id) => console.log('Move up', id),
@@ -188,8 +219,21 @@ export default function PublicMenu() {
                 }}
             />
 
+            <NameModal
+                open={openCreateCategory}
+                onOpenChange={setOpenCreateCategory}
+                onSubmit={createCategory}
+                title="Create category"
+                description="Enter a category name and optionally add an image."
+                submitLabel="Create"
+                placeholder="e.g. Deserts"
+                showImage={true}
+                imagePreview={previewImage}
+                onImageChange={handleImageChange}
+            />
 
 
+            {/* Create a submenu */}
             <NameModal
                 open={openCreate}
                 onOpenChange={setOpenCreate}
@@ -200,6 +244,7 @@ export default function PublicMenu() {
                 placeholder="e.g. Deserts"
             />
 
+            {/* Edit the submenu */}
             <NameModal
                 open={openEdit}
                 onOpenChange={setOpenEdit}

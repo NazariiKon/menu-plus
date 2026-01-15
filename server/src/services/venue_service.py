@@ -99,16 +99,16 @@ class VenueService:
         # 3) Categories
         default_categories = [
             # Drinks
-            {"menu_id": drinks_menu_id, "name": "Coffee", "image": "coffee.png"},
-            {"menu_id": drinks_menu_id, "name": "Tea", "image": "tea.png"},
-            {"menu_id": drinks_menu_id, "name": "Soft Drinks", "image": "drinks.png"},
-            {"menu_id": drinks_menu_id, "name": "Cocktails", "image": "cocktails.png"},
+            {"menu_id": drinks_menu_id, "name": "Coffee", "image": "categories/coffee.png", "position": 1},
+            {"menu_id": drinks_menu_id, "name": "Tea", "image": "categories/tea.png", "position": 2},
+            {"menu_id": drinks_menu_id, "name": "Soft Drinks", "image": "categories/drinks.png", "position": 3},
+            {"menu_id": drinks_menu_id, "name": "Cocktails", "image": "categories/cocktails.png", "position": 4},
 
             # Food
-            {"menu_id": food_menu_id, "name": "Breakfast", "image": "breakfast.png"},
-            {"menu_id": food_menu_id, "name": "Burgers", "image": "burgers.png"},
-            {"menu_id": food_menu_id, "name": "Salads", "image": "salads.png"},
-            {"menu_id": food_menu_id, "name": "Desserts", "image": "desserts.png"},
+            {"menu_id": food_menu_id, "name": "Breakfast", "image": "categories/breakfast.png", "position": 1},
+            {"menu_id": food_menu_id, "name": "Burgers", "image": "categories/burgers.png", "position": 2},
+            {"menu_id": food_menu_id, "name": "Salads", "image": "categories/salads.png", "position": 3},
+            {"menu_id": food_menu_id, "name": "Desserts", "image": "categories/desserts.png", "position": 4},
         ]
 
         cats_resp = (
@@ -127,49 +127,49 @@ class VenueService:
         # 4) Items (more test data)
         default_items = [
             # Coffee
-            {"category_id": cid(drinks_menu_id, "Coffee"), "name": "Espresso", "desc": "Single shot", "price": "2.50", "weight_g": 30},
-            {"category_id": cid(drinks_menu_id, "Coffee"), "name": "Double Espresso", "desc": "Double shot", "price": "3.20", "weight_g": 60},
-            {"category_id": cid(drinks_menu_id, "Coffee"), "name": "Americano", "desc": "Espresso + hot water", "price": "3.00", "weight_g": 250},
-            {"category_id": cid(drinks_menu_id, "Coffee"), "name": "Cappuccino", "desc": "Foamy milk", "price": "3.60", "weight_g": 250},
-            {"category_id": cid(drinks_menu_id, "Coffee"), "name": "Latte", "desc": "Milky coffee", "price": "3.80", "weight_g": 300},
-            {"category_id": cid(drinks_menu_id, "Coffee"), "name": "Flat White", "desc": "Smooth microfoam", "price": "3.70", "weight_g": 200},
-            {"category_id": cid(drinks_menu_id, "Coffee"), "name": "Iced Latte", "desc": "With ice", "price": "4.20", "weight_g": 350},
+            {"position": 1, "category_id": cid(drinks_menu_id, "Coffee"), "name": "Espresso", "desc": "Single shot", "price": "2.50", "weight_g": 30},
+            {"position": 2, "category_id": cid(drinks_menu_id, "Coffee"), "name": "Double Espresso", "desc": "Double shot", "price": "3.20", "weight_g": 60},
+            {"position": 3, "category_id": cid(drinks_menu_id, "Coffee"), "name": "Americano", "desc": "Espresso + hot water", "price": "3.00", "weight_g": 250},
+            {"position": 4, "category_id": cid(drinks_menu_id, "Coffee"), "name": "Cappuccino", "desc": "Foamy milk", "price": "3.60", "weight_g": 250},
+            {"position": 5, "category_id": cid(drinks_menu_id, "Coffee"), "name": "Latte", "desc": "Milky coffee", "price": "3.80", "weight_g": 300},
+            {"position": 6, "category_id": cid(drinks_menu_id, "Coffee"), "name": "Flat White", "desc": "Smooth microfoam", "price": "3.70", "weight_g": 200},
+            {"position": 7, "category_id": cid(drinks_menu_id, "Coffee"), "name": "Iced Latte", "desc": "With ice", "price": "4.20", "weight_g": 350},
 
             # Tea
-            {"category_id": cid(drinks_menu_id, "Tea"), "name": "Black Tea", "desc": None, "price": "2.80", "weight_g": 250},
-            {"category_id": cid(drinks_menu_id, "Tea"), "name": "Green Tea", "desc": None, "price": "3.00", "weight_g": 250},
-            {"category_id": cid(drinks_menu_id, "Tea"), "name": "Earl Grey", "desc": "Bergamot", "price": "3.10", "weight_g": 250},
-            {"category_id": cid(drinks_menu_id, "Tea"), "name": "Chamomile", "desc": "Caffeine-free", "price": "3.20", "weight_g": 250},
+            {"position": 1, "category_id": cid(drinks_menu_id, "Tea"), "name": "Black Tea", "desc": None, "price": "2.80", "weight_g": 250},
+            {"position": 2, "category_id": cid(drinks_menu_id, "Tea"), "name": "Green Tea", "desc": None, "price": "3.00", "weight_g": 250},
+            {"position": 3, "category_id": cid(drinks_menu_id, "Tea"), "name": "Earl Grey", "desc": "Bergamot", "price": "3.10", "weight_g": 250},
+            {"position": 4, "category_id": cid(drinks_menu_id, "Tea"), "name": "Chamomile", "desc": "Caffeine-free", "price": "3.20", "weight_g": 250},
 
             # Soft Drinks
-            {"category_id": cid(drinks_menu_id, "Soft Drinks"), "name": "Coca-Cola", "desc": "330 ml can", "price": "2.50", "weight_g": 330},
-            {"category_id": cid(drinks_menu_id, "Soft Drinks"), "name": "Coca-Cola Zero", "desc": "330 ml can", "price": "2.50", "weight_g": 330},
-            {"category_id": cid(drinks_menu_id, "Soft Drinks"), "name": "Sparkling Water", "desc": "500 ml", "price": "2.20", "weight_g": 500},
-            {"category_id": cid(drinks_menu_id, "Soft Drinks"), "name": "Orange Juice", "desc": "Fresh", "price": "3.50", "weight_g": 300},
+            {"position": 1, "category_id": cid(drinks_menu_id, "Soft Drinks"), "name": "Coca-Cola", "desc": "330 ml can", "price": "2.50", "weight_g": 330},
+            {"position": 2, "category_id": cid(drinks_menu_id, "Soft Drinks"), "name": "Coca-Cola Zero", "desc": "330 ml can", "price": "2.50", "weight_g": 330},
+            {"position": 3, "category_id": cid(drinks_menu_id, "Soft Drinks"), "name": "Sparkling Water", "desc": "500 ml", "price": "2.20", "weight_g": 500},
+            {"position": 4, "category_id": cid(drinks_menu_id, "Soft Drinks"), "name": "Orange Juice", "desc": "Fresh", "price": "3.50", "weight_g": 300},
 
             # Cocktails
-            {"category_id": cid(drinks_menu_id, "Cocktails"), "name": "Mojito", "desc": "Rum, mint, lime", "price": "9.50", "weight_g": 250},
-            {"category_id": cid(drinks_menu_id, "Cocktails"), "name": "Aperol Spritz", "desc": "Aperol, prosecco", "price": "10.00", "weight_g": 250},
-            {"category_id": cid(drinks_menu_id, "Cocktails"), "name": "Whiskey Sour", "desc": "Whiskey, lemon", "price": "11.00", "weight_g": 200},
+            {"position": 1, "category_id": cid(drinks_menu_id, "Cocktails"), "name": "Mojito", "desc": "Rum, mint, lime", "price": "9.50", "weight_g": 250},
+            {"position": 2, "category_id": cid(drinks_menu_id, "Cocktails"), "name": "Aperol Spritz", "desc": "Aperol, prosecco", "price": "10.00", "weight_g": 250},
+            {"position": 3, "category_id": cid(drinks_menu_id, "Cocktails"), "name": "Whiskey Sour", "desc": "Whiskey, lemon", "price": "11.00", "weight_g": 200},
 
             # Breakfast
-            {"category_id": cid(food_menu_id, "Breakfast"), "name": "Avocado Toast", "desc": "Sourdough, chili flakes", "price": "8.90", "weight_g": 250},
-            {"category_id": cid(food_menu_id, "Breakfast"), "name": "Pancakes", "desc": "Maple syrup", "price": "7.50", "weight_g": 300},
-            {"category_id": cid(food_menu_id, "Breakfast"), "name": "Omelette", "desc": "Cheese & herbs", "price": "7.80", "weight_g": 280},
+            {"position": 1, "category_id": cid(food_menu_id, "Breakfast"), "name": "Avocado Toast", "desc": "Sourdough, chili flakes", "price": "8.90", "weight_g": 250},
+            {"position": 2, "category_id": cid(food_menu_id, "Breakfast"), "name": "Pancakes", "desc": "Maple syrup", "price": "7.50", "weight_g": 300},
+            {"position": 3, "category_id": cid(food_menu_id, "Breakfast"), "name": "Omelette", "desc": "Cheese & herbs", "price": "7.80", "weight_g": 280},
 
             # Burgers
-            {"category_id": cid(food_menu_id, "Burgers"), "name": "Classic Beef Burger", "desc": "Cheddar, pickles", "price": "12.50", "weight_g": 420},
-            {"category_id": cid(food_menu_id, "Burgers"), "name": "Chicken Burger", "desc": "Spicy mayo", "price": "11.80", "weight_g": 400},
-            {"category_id": cid(food_menu_id, "Burgers"), "name": "Veggie Burger", "desc": "Plant-based patty", "price": "11.50", "weight_g": 380},
+            {"position": 1, "category_id": cid(food_menu_id, "Burgers"), "name": "Classic Beef Burger", "desc": "Cheddar, pickles", "price": "12.50", "weight_g": 420},
+            {"position": 2, "category_id": cid(food_menu_id, "Burgers"), "name": "Chicken Burger", "desc": "Spicy mayo", "price": "11.80", "weight_g": 400},
+            {"position": 3, "category_id": cid(food_menu_id, "Burgers"), "name": "Veggie Burger", "desc": "Plant-based patty", "price": "11.50", "weight_g": 380},
 
             # Salads
-            {"category_id": cid(food_menu_id, "Salads"), "name": "Caesar Salad", "desc": "Chicken, parmesan", "price": "10.50", "weight_g": 320},
-            {"category_id": cid(food_menu_id, "Salads"), "name": "Greek Salad", "desc": "Feta, olives", "price": "9.80", "weight_g": 300},
+            {"position": 1, "category_id": cid(food_menu_id, "Salads"), "name": "Caesar Salad", "desc": "Chicken, parmesan", "price": "10.50", "weight_g": 320},
+            {"position": 2, "category_id": cid(food_menu_id, "Salads"), "name": "Greek Salad", "desc": "Feta, olives", "price": "9.80", "weight_g": 300},
 
             # Desserts
-            {"category_id": cid(food_menu_id, "Desserts"), "name": "Cheesecake", "desc": "New York style", "price": "6.50", "weight_g": 180},
-            {"category_id": cid(food_menu_id, "Desserts"), "name": "Chocolate Brownie", "desc": "With ice cream", "price": "6.90", "weight_g": 200},
-            {"category_id": cid(food_menu_id, "Desserts"), "name": "Ice Cream", "desc": "Vanilla / chocolate", "price": "4.50", "weight_g": 150},
+            {"position": 1, "category_id": cid(food_menu_id, "Desserts"), "name": "Cheesecake", "desc": "New York style", "price": "6.50", "weight_g": 180},
+            {"position": 2, "category_id": cid(food_menu_id, "Desserts"), "name": "Chocolate Brownie", "desc": "With ice cream", "price": "6.90", "weight_g": 200},
+            {"position": 3, "category_id": cid(food_menu_id, "Desserts"), "name": "Ice Cream", "desc": "Vanilla / chocolate", "price": "4.50", "weight_g": 150},
         ]
 
         items_resp = (
