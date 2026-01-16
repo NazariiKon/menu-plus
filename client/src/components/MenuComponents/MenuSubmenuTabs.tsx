@@ -8,7 +8,6 @@ import { Alert } from "../Alert"
 type Props = {
     menus: MenuRead[]
     value?: string
-    defaultValue?: string
     onValueChange?: (menuId: string) => void
 
     onAddBetween?: (insertAfterMenu: number) => void
@@ -24,7 +23,6 @@ type Props = {
 export function MenuSubmenuTabs({
     menus,
     value,
-    defaultValue,
     onValueChange,
     onAddBetween,
     onEdit,
@@ -51,6 +49,7 @@ export function MenuSubmenuTabs({
 
     React.useEffect(() => {
         if (!controlled && internalValue === undefined && firstMenu) {
+            onValueChange?.(firstMenu.id)
             setInternalValue(firstMenu.id)
         }
     }, [controlled, internalValue, firstMenu])

@@ -176,6 +176,41 @@ export interface paths {
         patch: operations["update_menu_venues__venue_id__menus__menu_id__patch"];
         trace?: never;
     };
+    "/venues/{venue_id}/menus/{menu_id}/categories/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Create Category */
+        post: operations["create_category_venues__venue_id__menus__menu_id__categories__post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/venues/{venue_id}/menus/{menu_id}/categories/{category_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** Delete Category By Id */
+        delete: operations["delete_category_by_id_venues__venue_id__menus__menu_id__categories__category_id__delete"];
+        options?: never;
+        head?: never;
+        /** Update Menu */
+        patch: operations["update_menu_venues__venue_id__menus__menu_id__categories__category_id__patch"];
+        trace?: never;
+    };
     "/": {
         parameters: {
             query?: never;
@@ -209,6 +244,21 @@ export interface components {
             /** Total */
             total: number;
         };
+        /** Body_create_category_venues__venue_id__menus__menu_id__categories__post */
+        Body_create_category_venues__venue_id__menus__menu_id__categories__post: {
+            /** Name */
+            name: string;
+            /**
+             * Image File
+             * Format: binary
+             */
+            image_file?: string;
+            /**
+             * Position
+             * @default 1
+             */
+            position: number;
+        };
         /** CategoryRead */
         CategoryRead: {
             /**
@@ -229,6 +279,15 @@ export interface components {
             position: number;
             /** Items */
             items?: components["schemas"]["ItemRead"][];
+        };
+        /** CategoryUpdate */
+        CategoryUpdate: {
+            /** Name */
+            name?: string | null;
+            /** Image Bytes */
+            image_bytes?: string | null;
+            /** Position */
+            position?: number | null;
         };
         /** HTTPValidationError */
         HTTPValidationError: {
@@ -878,6 +937,112 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["MenuRead"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    create_category_venues__venue_id__menus__menu_id__categories__post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                venue_id: string;
+                menu_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "multipart/form-data": components["schemas"]["Body_create_category_venues__venue_id__menus__menu_id__categories__post"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CategoryRead"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    delete_category_by_id_venues__venue_id__menus__menu_id__categories__category_id__delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                venue_id: string;
+                menu_id: string;
+                category_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            202: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CategoryRead"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    update_menu_venues__venue_id__menus__menu_id__categories__category_id__patch: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                venue_id: string;
+                menu_id: string;
+                category_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CategoryUpdate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            206: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CategoryRead"][];
                 };
             };
             /** @description Validation Error */

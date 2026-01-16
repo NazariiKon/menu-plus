@@ -2,7 +2,7 @@ import { supabase } from "@/lib/supabase";
 import type { ApiResponse, VenueBase, VenueRead, VenueUpdate } from "@/types/types";
 export type VenueCreateInput = Pick<VenueBase, "name">;
 
-export async function create_venue(data: VenueCreateInput): Promise<ApiResponse<VenueRead>> {
+export async function createVenue(data: VenueCreateInput): Promise<ApiResponse<VenueRead>> {
     try {
         const { data: sessionData, error } = await supabase.auth.getSession();
         const token = sessionData.session?.access_token;
@@ -24,7 +24,7 @@ export async function create_venue(data: VenueCreateInput): Promise<ApiResponse<
     }
 }
 
-export async function delete_venue(venueId: string): Promise<ApiResponse<VenueRead>> {
+export async function deleteVenue(venueId: string): Promise<ApiResponse<VenueRead>> {
     try {
         const { data: sessionData, error } = await supabase.auth.getSession();
         const token = sessionData.session?.access_token;
@@ -45,7 +45,7 @@ export async function delete_venue(venueId: string): Promise<ApiResponse<VenueRe
     }
 }
 
-export async function get_menu_by_slug(slug: string): Promise<ApiResponse<VenueRead>> {
+export async function getMenuBySlug(slug: string): Promise<ApiResponse<VenueRead>> {
     try {
         const { data: sessionData, error } = await supabase.auth.getSession();
         const token = sessionData.session?.access_token;
@@ -71,7 +71,7 @@ export async function get_menu_by_slug(slug: string): Promise<ApiResponse<VenueR
     }
 }
 
-export async function edit_venue(data: VenueUpdate, venue_id: string): Promise<ApiResponse<VenueRead>> {
+export async function editVenue(data: VenueUpdate, venue_id: string): Promise<ApiResponse<VenueRead>> {
     try {
         const { data: sessionData, error } = await supabase.auth.getSession();
         const token = sessionData.session?.access_token;

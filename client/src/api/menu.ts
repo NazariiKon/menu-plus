@@ -1,7 +1,7 @@
 import { supabase } from "@/lib/supabase";
 import type { ApiResponse, MenuRead } from "@/types/types";
 
-export async function create_menu(venueId: string, name: string, position: number): Promise<ApiResponse<MenuRead[]>> {
+export async function createMenu(venueId: string, name: string, position: number): Promise<ApiResponse<MenuRead[]>> {
     try {
         const { data: sessionData, error } = await supabase.auth.getSession();
         const token = sessionData.session?.access_token;
@@ -28,7 +28,7 @@ export async function create_menu(venueId: string, name: string, position: numbe
     }
 }
 
-export async function delete_menu(venueId: string, menuId: string): Promise<ApiResponse<MenuRead[]>> {
+export async function deleteMenu(venueId: string, menuId: string): Promise<ApiResponse<MenuRead[]>> {
     try {
         const { data: sessionData, error } = await supabase.auth.getSession();
         const token = sessionData.session?.access_token;
@@ -49,7 +49,7 @@ export async function delete_menu(venueId: string, menuId: string): Promise<ApiR
     }
 }
 
-export async function edit_menu(name: string | null = null, newPosition: number | null = null, menuId: string, venueId: string): Promise<ApiResponse<MenuRead[]>> {
+export async function editMenu(name: string | null = null, newPosition: number | null = null, menuId: string, venueId: string): Promise<ApiResponse<MenuRead[]>> {
     try {
         const { data: sessionData, error } = await supabase.auth.getSession();
         const token = sessionData.session?.access_token;
@@ -76,7 +76,7 @@ export async function edit_menu(name: string | null = null, newPosition: number 
     }
 }
 
-export async function change_position(newPosition: number, menuId: string, venueId: string): Promise<ApiResponse<MenuRead[]>> {
+export async function changePosition(newPosition: number, menuId: string, venueId: string): Promise<ApiResponse<MenuRead[]>> {
     try {
         const { data: sessionData, error } = await supabase.auth.getSession();
         const token = sessionData.session?.access_token;

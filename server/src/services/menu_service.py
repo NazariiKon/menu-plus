@@ -1,4 +1,8 @@
 from typing import List, Tuple
+
+import postgrest
+from src.services.category_service import CategoryService
+from src.utils.image_remove import ImageRemover
 from src.schemas.menu import MenuCreate, MenuUpdate
 from supabase import Client
 
@@ -6,7 +10,7 @@ from supabase import Client
 class MenuService:
     def __init__(self, supabase: Client):
         self.supabase = supabase
-
+    
     async def _fetch_positions(self, venue_id: str) -> list[dict]:
         resp = (
             self.supabase
@@ -40,6 +44,26 @@ class MenuService:
         )
         return response.data
 
+    async def get_menu_by_id(self, menu_id: str, venue_id: str) -> dict | None:
+        try:
+            resp = (
+                self.supabase
+                .table("menus")
+                .select("id")
+                .eq("id", menu_id)
+                .eq("venue_id", venue_id)
+                .maybe_single()
+                .execute()
+            )
+            return resp.data
+        except postgrest.exceptions.APIError as e:
+            if e.code == '204':
+                return None
+            raise
+
+
+
+
     async def create_menu(self, venue_id: str, data: MenuCreate) -> dict:
         payload = data.model_dump(exclude_none=True)
         payload["venue_id"] = venue_id
@@ -66,21 +90,47 @@ class MenuService:
         return created
 
     async def delete_menu(self, venue_id: str, menu_id: str) -> dict:
-        deleted_resp = (
-            self.supabase
-            .table("menus")
-            .delete()
-            .eq("id", menu_id)
-            .eq("venue_id", venue_id)
-            .execute()
-        )
-        deleted_rows = deleted_resp.data or []
-        if not deleted_rows:
-            return {}
-
+        check_resp = self.supabase.table("menus").select("id")\
+            .eq("id", menu_id).eq("venue_id", venue_id).maybe_single().execute()
+        
+        if not check_resp.data:
+            return {"success": False, "error": "Menu not found"}
+        
+        cs = CategoryService(self.supabase)
+        try:
+            categories_resp = self.supabase.table("categories").select("id")\
+                .eq("menu_id", menu_id).execute()
+            for cat in categories_resp.data or []:
+                await cs.delete_category(venue_id, menu_id, cat["id"])
+        except Exception as e:
+            print(f"Categories delete error: {e}")
+        
+        image_url = None
+        try:
+            menu_resp = self.supabase.table("menus").select("image")\
+                .eq("id", menu_id).eq("venue_id", venue_id).maybe_single().execute()
+            image_url = menu_resp.data.get("image") if menu_resp.data else None
+        except postgrest.exceptions.APIError:
+            pass
+        
+        if image_url:
+            ir = ImageRemover(self.supabase)
+            paths = ir.get_clean_file_paths([image_url])
+            try:
+                await ir.delete_non_default_images(paths)
+            except:
+                pass 
+        
+        try:
+            self.supabase.table("menus").delete().eq("id", menu_id).eq("venue_id", venue_id).execute()
+        except postgrest.exceptions.APIError as e:
+            if e.code != '204':
+                raise
+        
         await self._normalize_menu_positions(venue_id)
+        return {"success": True}
 
-        return deleted_rows[0]
+
 
     def _change_position(self, venue_id: str, menu_id: str, new_position: int) -> None:
         current_resp = (
@@ -130,8 +180,6 @@ class MenuService:
                 .eq("venue_id", venue_id)
                 .execute()
             )
-
-
     
     async def update_menu(self, data: MenuUpdate, venue_id: str, menu_id: str) -> dict:
         payload = data.model_dump(exclude_none=True)

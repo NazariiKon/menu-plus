@@ -2,6 +2,8 @@ from typing import List
 from supabase import Client
 import uuid
 
+from src.utils.image_remove import ImageRemover
+from src.services.item_service import ItemService
 from src.schemas.menu import CategoryCreate, CategoryUpdate
 
 class CategoryService:
@@ -42,7 +44,6 @@ class CategoryService:
         
         return full_path
 
-
     async def get_categories(self, menu_id: str) -> List[dict]:
         response = (
             self.supabase
@@ -81,7 +82,19 @@ class CategoryService:
         created = self.supabase.table("categories").insert(payload).execute().data[0]
         return created
 
-    async def delete_category(self, menu_id: str, category_id: str) -> dict:
+    async def delete_category(self, venue_id: str, menu_id: str, category_id: str) -> dict:
+        items_resp = (
+            self.supabase
+            .table("items")
+            .select("id")
+            .eq("category_id", category_id)
+            .execute()
+        )
+        
+        itemS = ItemService(self.supabase)
+        for item in items_resp.data or []:
+            await itemS.delete_item(venue_id, category_id, item["id"])
+
         category_resp = (
             self.supabase
             .table("categories")
@@ -91,10 +104,10 @@ class CategoryService:
             .execute()
         )
         
-        if category_resp.data:
-            image_path = category_resp.data[0].get("image")
-            if image_path:
-                self.supabase.storage.from_("categories").remove([image_path])
+        ir = ImageRemover(self.supabase)
+        category_images = [category_resp.data[0].get("image")] if category_resp.data else []
+        category_file_paths = ir.get_clean_file_paths(category_images)
+        await ir.delete_non_default_images(category_file_paths)
 
         deleted_resp = (
             self.supabase

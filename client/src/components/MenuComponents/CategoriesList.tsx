@@ -8,13 +8,15 @@ import {
 } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import type { CategoryRead } from "@/types/types";
+import React from "react";
+import { Alert } from "../Alert";
 
 interface AdminCallbacks {
     onAddCategory: (position: number) => void;
     onDeleteCategory: (categoryId: string) => void;
     onEditCategory: (categoryId: string) => void;
-    onMoveUp: (categoryId: string) => void;
-    onMoveDown: (categoryId: string) => void;
+    onMoveUp: (categoryId: string, position: number) => void;
+    onMoveDown: (categoryId: string, position: number) => void;
 }
 
 interface CategoriesListProps {
@@ -28,6 +30,21 @@ export const CategoriesList: React.FC<CategoriesListProps> = ({
     isAdmin = false,
     onAdminActions,
 }) => {
+    const [deleteCategoryId, setDeleteCategoryId] = React.useState<string | null>(null);
+
+    const sortedCategories = React.useMemo(() =>
+        (categories ?? []).sort((a, b) => a.position - b.position),
+        [categories]
+    );
+
+    React.useEffect(() => {
+        setDeleteCategoryId(null);
+    }, [categories]);
+
+    const toggleDeleteAlert = (categoryId: string | null) => {
+        setDeleteCategoryId(prev => prev === categoryId ? null : categoryId);
+    };
+
     return (
         <div className="w-full space-y-4 px-4 py-6">
             {isAdmin && (
@@ -49,7 +66,7 @@ export const CategoriesList: React.FC<CategoriesListProps> = ({
                 </Button>
             )}
 
-            {categories.map((category, index) => (
+            {sortedCategories.map((category, index) => (
                 <div key={category.id} className="w-full space-y-2">
                     <Card className="overflow-hidden shadow-sm hover:shadow-md transition-all">
                         <CardContent className="p-0 relative h-32">
@@ -71,15 +88,25 @@ export const CategoriesList: React.FC<CategoriesListProps> = ({
 
                             {isAdmin && onAdminActions && (
                                 <div className="absolute top-3 right-3 flex space-x-1 bg-black/95 backdrop-blur-sm rounded-lg p-1 shadow-lg border border-black/50">
-                                    <Button
-                                        onClick={() => onAdminActions.onDeleteCategory(category.id)}
-                                        variant="ghost"
-                                        size="sm"
-                                        className="h-8 w-8 p-0 bg-black text-white hover:bg-red-600 hover:text-white border border-transparent"
-                                        title="Delete"
+                                    <Alert
+                                        description="This action cannot be undone. This will permanently delete your category."
+                                        open={deleteCategoryId === category.id}
+                                        onOpenChange={() => toggleDeleteAlert(category.id)}
+                                        onConfirm={() => {
+                                            onAdminActions.onDeleteCategory(category.id);
+                                            setDeleteCategoryId(null);
+                                        }}
+                                        id={category.id}
                                     >
-                                        <Trash2 className="h-4 w-4" />
-                                    </Button>
+                                        <Button
+                                            variant="ghost"
+                                            size="sm"
+                                            className="h-8 w-8 p-0 bg-black text-white hover:bg-red-600 hover:text-white border border-transparent"
+                                            title="Delete"
+                                        >
+                                            <Trash2 className="h-4 w-4" />
+                                        </Button>
+                                    </Alert>
 
                                     <Button
                                         onClick={() => onAdminActions.onEditCategory(category.id)}
@@ -94,7 +121,7 @@ export const CategoriesList: React.FC<CategoriesListProps> = ({
                                     <div className="flex space-x-0.5 items-center">
                                         {index > 0 && (
                                             <Button
-                                                onClick={() => onAdminActions.onMoveUp(category.id)}
+                                                onClick={() => onAdminActions.onMoveUp(category.id, category.position)}
                                                 variant="ghost"
                                                 size="sm"
                                                 className="h-8 w-8 p-0 bg-black text-white hover:bg-black/90 border border-transparent"
@@ -104,9 +131,9 @@ export const CategoriesList: React.FC<CategoriesListProps> = ({
                                             </Button>
                                         )}
 
-                                        {index < categories.length - 1 && (
+                                        {index < sortedCategories.length - 1 && (
                                             <Button
-                                                onClick={() => onAdminActions.onMoveDown(category.id)}
+                                                onClick={() => onAdminActions.onMoveDown(category.id, category.position)}
                                                 variant="ghost"
                                                 size="sm"
                                                 className="h-8 w-8 p-0 bg-black text-white hover:bg-black/90 border border-transparent"

@@ -11,7 +11,7 @@ import Verification from "@/components/ui/verification";
 import type { VenueRead } from "@/types/types";
 import { get_my_venues } from "@/api/profile";
 import { NameModal, type FormValues } from "@/components/NameModal";
-import { create_venue, delete_venue } from "@/api/venue";
+import { createVenue, deleteVenue } from "@/api/venue";
 import { Alert } from "@/components/Alert";
 
 
@@ -25,7 +25,7 @@ export default function Admin() {
     const [loading, setLoading] = useState(true);
 
     const handleCreate = async (values: FormValues) => {
-        const res = await create_venue(values);
+        const res = await createVenue(values);
         if (!res) return;
         await getVenues();
     };
@@ -33,7 +33,7 @@ export default function Admin() {
     const handleDelete = async (venueId: string) => {
         if (venueId == null) return
         console.log("Delete", venueId)
-        await delete_venue(venueId);
+        await deleteVenue(venueId);
         await getVenues();
     }
 
