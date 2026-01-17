@@ -73,5 +73,5 @@ async def patch_venue(
     if not updated:
         raise HTTPException(status.HTTP_404_NOT_FOUND, "Venue not found")
 
-    return updated
+    return await vs.get_venue_by_id_for_owner(venue_id=venue_id, owner_id=current_user["sub"])
 

@@ -31,9 +31,9 @@ export function MenuSubmenuTabs({
     onMoveRight,
     className,
 }: Props) {
-    const [openDelete, setOpenDelete] = React.useState(false)
     const controlled = value !== undefined
     const [internalValue, setInternalValue] = React.useState<string | undefined>()
+    const [deleteMenuId, setDeleteMenuId] = React.useState<string | null>(null);
 
     const sortedMenus = React.useMemo(() => {
         return [...(menus ?? [])].sort((a: MenuRead, b: MenuRead) => {
@@ -76,6 +76,7 @@ export function MenuSubmenuTabs({
                         const active = m.id === activeId
                         const isFirst = idx === 0
                         const isLast = idx === sortedMenus.length - 1
+                        const isDeleteOpen = deleteMenuId === m.id;
 
                         return (
                             <div key={m.id} className="flex items-start gap-2 shrink-0">
@@ -123,14 +124,25 @@ export function MenuSubmenuTabs({
                                         <Alert
                                             key={`delete-${m.id}`}
                                             description="This action cannot be undone. This will permanently delete your submenu."
-                                            open={openDelete}
-                                            onOpenChange={setOpenDelete}
-                                            onConfirm={() => onDelete(m.id)}
+                                            open={isDeleteOpen}
+                                            onOpenChange={() => setDeleteMenuId(null)}
+                                            onConfirm={() => {
+                                                onDelete(m.id);
+                                                setDeleteMenuId(null);
+                                            }}
                                             id={m.id}
                                         >
-                                            <IconActionButton ariaLabel="Delete">
+                                            <IconActionButton
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    e.preventDefault();
+                                                    setDeleteMenuId(m.id);
+                                                }}
+                                                ariaLabel={`Delete ${m.name}`}
+                                            >
                                                 <Trash2 className="h-3 w-3 text-white" />
                                             </IconActionButton>
+
                                         </Alert>
                                     </div>
                                 </div>
@@ -177,19 +189,22 @@ function IconActionButton({
     ariaLabel,
     children,
 }: {
-    onClick?: () => void
-    ariaLabel: string
-    children: React.ReactNode
+    onClick?: (e: React.MouseEvent) => void;
+    ariaLabel: string;
+    children: React.ReactNode;
 }) {
     return (
         <button
             type="button"
-            onClick={onClick}
+            onClick={(e) => {
+                e.stopPropagation();
+                onClick?.(e);
+            }}
             aria-label={ariaLabel}
             title={ariaLabel}
             className="group grid h-8 w-7 place-items-center rounded-md bg-black hover:bg-white/20 transition-all"
         >
             {children}
         </button>
-    )
+    );
 }

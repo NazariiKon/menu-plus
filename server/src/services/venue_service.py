@@ -50,7 +50,7 @@ class VenueService:
             .eq("id", venue_id)
             .execute()
         )
-        return response.data
+        return response.data[0]
     
     
     async def update_venue(self, venue_id: str, owner_id: str, patch: dict) -> dict:
