@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Optional
 from fastapi import APIRouter, Depends, HTTPException, status, UploadFile
 
 from src.services.menu_service import MenuService
@@ -64,27 +64,29 @@ async def delete_category_by_id(
     await cs.delete_category(venue_id, menu_id, category_id)
     return await cs.get_categories(menu_id)
 
+
 @router.patch("/{category_id}")
 async def update_category(
     venue_id: str,
     menu_id: str,
     category_id: str,
-    data: CategoryUpdate = Depends(),
+    name: Optional[str] = Form(None),
+    position: Optional[int] = Form(None),
+    image_bytes: Optional[UploadFile] = File(None),
     current_user: dict = Depends(get_current_user),
     vs: VenueService = Depends(get_venue_service),
     cs: CategoryService = Depends(get_category_service)
 ):
     if not current_user:
-        raise HTTPException(status.HTTP_401_UNAUTHORIZED, "UNAUTHORIZED")
+        raise HTTPException(status.HTTP_401_UNAUTHORIZED)
 
     venue = await vs.get_venue_by_id_for_owner(venue_id=venue_id, owner_id=current_user["sub"])
     if not venue:
         raise HTTPException(status.HTTP_403_FORBIDDEN, "This venue is not yours")
     
-    if data.position is not None:
-        await cs.move_category(menu_id, category_id, data.position)
-    else:
-        await cs.update_category(data, menu_id, category_id)
+    data = CategoryUpdate(name=name, position=position)
+    if image_bytes:
+        data.image_bytes = image_bytes
     
+    await cs.update_category(data, menu_id, category_id)
     return await cs.get_categories(menu_id)
-

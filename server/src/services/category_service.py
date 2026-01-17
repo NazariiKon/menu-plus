@@ -172,21 +172,19 @@ class CategoryService:
                 .execute()
             )
 
+
     async def update_category(self, data: CategoryUpdate, menu_id: str, category_id: str) -> dict:
-        current_resp = (
-            self.supabase
-            .table("categories")
-            .select("image")
-            .eq("id", category_id)
-            .eq("menu_id", menu_id)
-            .execute()
-        )
+        current_resp = self.supabase.table("categories").select("image").eq("id", category_id).eq("menu_id", menu_id).execute()
         current_image = current_resp.data[0].get("image") if current_resp.data else None
 
         payload = data.model_dump(exclude_none=True)
 
         if data.image_bytes:
-            new_image_path = await self._upload_image(data.image_bytes, category_id)
+            image_bytes = data.image_bytes
+            if hasattr(image_bytes, 'read'):
+                image_bytes = await image_bytes.read()
+            
+            new_image_path = await self._upload_image(image_bytes, category_id)
             payload["image"] = new_image_path
             
             if current_image:
@@ -194,13 +192,8 @@ class CategoryService:
 
         if data.position is not None:
             self._change_position(menu_id=menu_id, category_id=category_id, new_position=data.position)
+            payload.pop("position", None)
 
-        response = (
-            self.supabase
-            .table("categories")
-            .update(payload)
-            .eq("id", category_id)
-            .eq("menu_id", menu_id)
-            .execute()
-        )
+        response = self.supabase.table("categories").update(payload).eq("id", category_id).eq("menu_id", menu_id).execute()
         return response.data[0] if response.data else {}
+

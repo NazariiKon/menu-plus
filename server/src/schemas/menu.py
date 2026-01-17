@@ -1,6 +1,8 @@
+from dataclasses import dataclass
+from fastapi import File, Form, UploadFile
 from pydantic import BaseModel, ConfigDict, Field
 from decimal import Decimal
-from typing import Optional
+from typing import Optional, Union
 from uuid import UUID
 
 class ORMBase(BaseModel):
@@ -47,10 +49,10 @@ class CategoryCreate(BaseModel):
     image_bytes: bytes | None = None
     position: int = 1
 
-class CategoryUpdate(BaseModel):
-    name: str | None = None
-    image_bytes: bytes | None = None
-    position: int | None = None
+class CategoryUpdate(ORMBase):
+    name: Optional[str] = Field(max_length=20)
+    position: Optional[int]
+    image_bytes: Optional[Union[bytes, UploadFile]] = None
 
 class MenuCreate(ORMBase):
     name: str = Field(max_length=20)

@@ -207,8 +207,8 @@ export interface paths {
         delete: operations["delete_category_by_id_venues__venue_id__menus__menu_id__categories__category_id__delete"];
         options?: never;
         head?: never;
-        /** Update Menu */
-        patch: operations["update_menu_venues__venue_id__menus__menu_id__categories__category_id__patch"];
+        /** Update Category */
+        patch: operations["update_category_venues__venue_id__menus__menu_id__categories__category_id__patch"];
         trace?: never;
     };
     "/": {
@@ -259,6 +259,11 @@ export interface components {
              */
             position: number;
         };
+        /** Body_update_category_venues__venue_id__menus__menu_id__categories__category_id__patch */
+        Body_update_category_venues__venue_id__menus__menu_id__categories__category_id__patch: {
+            /** Image Bytes */
+            image_bytes?: string | null;
+        };
         /** CategoryRead */
         CategoryRead: {
             /**
@@ -279,15 +284,6 @@ export interface components {
             position: number;
             /** Items */
             items?: components["schemas"]["ItemRead"][];
-        };
-        /** CategoryUpdate */
-        CategoryUpdate: {
-            /** Name */
-            name?: string | null;
-            /** Image Bytes */
-            image_bytes?: string | null;
-            /** Position */
-            position?: number | null;
         };
         /** HTTPValidationError */
         HTTPValidationError: {
@@ -1019,9 +1015,12 @@ export interface operations {
             };
         };
     };
-    update_menu_venues__venue_id__menus__menu_id__categories__category_id__patch: {
+    update_category_venues__venue_id__menus__menu_id__categories__category_id__patch: {
         parameters: {
-            query?: never;
+            query?: {
+                name?: string | null;
+                position?: number | null;
+            };
             header?: never;
             path: {
                 venue_id: string;
@@ -1030,19 +1029,19 @@ export interface operations {
             };
             cookie?: never;
         };
-        requestBody: {
+        requestBody?: {
             content: {
-                "application/json": components["schemas"]["CategoryUpdate"];
+                "multipart/form-data": components["schemas"]["Body_update_category_venues__venue_id__menus__menu_id__categories__category_id__patch"];
             };
         };
         responses: {
             /** @description Successful Response */
-            206: {
+            200: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["CategoryRead"][];
+                    "application/json": unknown;
                 };
             };
             /** @description Validation Error */
