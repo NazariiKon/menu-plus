@@ -27,7 +27,7 @@
 TABLE #7 [QR] → Scans to:
 🍺 Heineken 12€
 🍔 Classic Burger 6€ 
-🍟 Fries 2.5€
+🍟 Fries 2€
 🍹 Mojito 13€
 👉 [Order in WhatsApp]
 ```
@@ -50,24 +50,30 @@ TABLE #7 [QR] → Scans to:
 ## 📱 Screenshots
 
 ### 1. Landing Page
-  
+![Landing](images/home.jpg)
+
 QR Menu in 2 minutes — entry point for cafe owners.
 
 ### 2. Sign Up / Sign In
-  
-Supabase authentication for venue owners.
+![Sign Up](images/signInUp.jpg)
+![Confirm](images/confirm.jpg)
+
+Supabase authentication for venue owners with email verification.
 
 ### 3. Your Venues Dashboard
-  
+![Dashboard](images/adminCreated.jpg)
+
 Overview of created venues ("Pet Bar") with Open Menu/Edit options.
 
 ### 4. Edit Venue Details
-  
+![Edit Venue](images/edit.jpg)
+
 Full venue setup: logo, background, address, WiFi, social links.
 
 ### 5. Menu Editor
-  
-Admin panel for categories (Drinks/Food), dishes with photos, +Add buttons.
+![Menu](images/menu.jpg)
+
+Admin panel for submenus, categories, and dishes with photos.
 
 ### 6. QR Printer (Coming Soon)
 Generate universal QR codes for tables — print 10-20 identical stickers.
@@ -110,6 +116,3 @@ npm run dev
 2. Create feature branch
 3. PR with description
 Issues & feedback welcome!
-
-## 📄 License
-MIT License - use freely for your cafe! [LICENSE](LICENSE)
