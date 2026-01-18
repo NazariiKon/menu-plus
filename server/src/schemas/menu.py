@@ -51,6 +51,7 @@ class CategoryCreate(BaseModel):
 
 class CategoryUpdate(ORMBase):
     name: Optional[str] = Field(max_length=20)
+    menu_id: Optional[str] = None
     position: Optional[int]
     image_bytes: Optional[Union[bytes, UploadFile]] = None
 

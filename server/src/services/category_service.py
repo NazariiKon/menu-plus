@@ -32,7 +32,7 @@ class CategoryService:
                     .eq("id", r["id"])
                     .execute()
                 )
-
+    
     async def _upload_image(self, image_bytes: bytes | None, category_id: str | None = None) -> str:
         if not image_bytes:
             return ""
@@ -40,9 +40,19 @@ class CategoryService:
         file_name = f"{uuid.uuid4()}.jpg" if not category_id else f"{category_id}.jpg"
         full_path = f"categories/{file_name}"
         
-        self.supabase.storage.from_("images").upload(full_path, image_bytes)
+        try:
+            self.supabase.storage.from_("images").upload(full_path, image_bytes)
+        except Exception as e:
+            if "already exists" in str(e).lower():
+                self.supabase.storage.from_("images").remove([full_path])
+                self.supabase.storage.from_("images").upload(full_path, image_bytes)
+            else:
+                raise
         
         return full_path
+
+
+
 
     async def get_categories(self, menu_id: str) -> List[dict]:
         response = (
@@ -93,7 +103,7 @@ class CategoryService:
         
         itemS = ItemService(self.supabase)
         for item in items_resp.data or []:
-            await itemS.delete_item(venue_id, category_id, item["id"])
+            await itemS.delete_item(category_id, item["id"])
 
         category_resp = (
             self.supabase
@@ -172,13 +182,43 @@ class CategoryService:
                 .execute()
             )
 
+    async def _get_max_position(self, menu_id: str) -> int:
+        resp = self.supabase.table("categories") \
+            .select("position").eq("menu_id", menu_id) \
+            .order("position", desc=True).limit(1).execute()
+        return resp.data[0]["position"] if resp.data else 0
 
-    async def update_category(self, data: CategoryUpdate, menu_id: str, category_id: str) -> dict:
-        current_resp = self.supabase.table("categories").select("image").eq("id", category_id).eq("menu_id", menu_id).execute()
-        current_image = current_resp.data[0].get("image") if current_resp.data else None
+    async def _shift_positions_higher(self, menu_id: str, position: int) -> None:
+        cats = self.supabase.table("categories") \
+            .select("id, position") \
+            .eq("menu_id", menu_id) \
+            .gte("position", position) \
+            .order("position") \
+            .execute().data or []
+        
+        for cat in cats:
+            new_pos = cat["position"] - 1
+            self.supabase.table("categories") \
+                .update({"position": new_pos}) \
+                .eq("id", cat["id"]) \
+                .execute()
 
-        payload = data.model_dump(exclude_none=True)
 
+
+    async def update_category(self, data: CategoryUpdate, current_menu_id: str, category_id: str) -> dict:
+        current_resp = self.supabase.table("categories") \
+            .select("*, items(*)") \
+            .eq("id", category_id).eq("menu_id", current_menu_id).single().execute()
+        
+        if not current_resp.data:
+            raise ValueError("Category not found")
+        
+        current_cat = current_resp.data
+        current_image = current_cat.get("image")
+        current_position = current_cat.get("position", 0)
+        
+        payload = data.model_dump(exclude_none=True, exclude={"image_bytes", "menu_id"})
+        
         if data.image_bytes:
             image_bytes = data.image_bytes
             if hasattr(image_bytes, 'read'):
@@ -186,14 +226,28 @@ class CategoryService:
             
             new_image_path = await self._upload_image(image_bytes, category_id)
             payload["image"] = new_image_path
+        
+        if data.menu_id and data.menu_id != current_menu_id:
+            await self._shift_positions_higher(current_menu_id, current_position)
             
-            if current_image:
-                self.supabase.storage.from_("categories").remove([current_image])
-
-        if data.position is not None:
-            self._change_position(menu_id=menu_id, category_id=category_id, new_position=data.position)
+            new_position = await self._get_max_position(data.menu_id) + 1
+            payload["menu_id"] = data.menu_id
+            payload["position"] = new_position
+            
+            print(f"✅ Moved to menu '{data.menu_id}' at position {new_position}")
+        
+        elif data.position is not None and data.position != current_position:
+            self._change_position(current_menu_id, category_id, data.position)
             payload.pop("position", None)
-
-        response = self.supabase.table("categories").update(payload).eq("id", category_id).eq("menu_id", menu_id).execute()
-        return response.data[0] if response.data else {}
-
+        
+        if payload:
+            response = self.supabase.table("categories") \
+                .update(payload).eq("id", category_id).execute()
+            result = response.data[0] if response.data else current_cat
+        else:
+            result = current_cat
+        
+        if not data.menu_id:
+            await self._normalize_category_positions(current_menu_id)
+        
+        return result

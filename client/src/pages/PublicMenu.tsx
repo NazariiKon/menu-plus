@@ -14,7 +14,7 @@ import { useCategories } from "@/hooks/useCategories";
 interface AdminActions {
     onAddCategory: (position: number) => void;
     onDeleteCategory: (categoryId: string) => void;
-    onEditCategory: (categoryId: string) => void;
+    onUpdateCategory: (categoryId: string) => void;
     onMoveUp: (categoryId: string, position: number) => void;
     onMoveDown: (categoryId: string, position: number) => void;
 }
@@ -54,10 +54,14 @@ export default function PublicMenu() {
     const {
         previewImage,
         isCategoryCreateOpen,
+        selectedCategory,
         setIsCategoryCreateOpen,
         handleImageChange,
+        isCategoryUpdateOpen,
+        setIsCategoryUpdateOpen,
         handleAddCategory,
-        handleEditCategory,
+        handleUpdateCategory,
+        handleUpdateCategoryModal,
         handleCreateCategory,
         handleDeleteCategory,
         changeCategoryPosition,
@@ -66,6 +70,7 @@ export default function PublicMenu() {
         activeMenuId,
         menus,
         setMenus,
+        setActiveMenuId
     });
 
     const { isOwner: isAdminMode, loading: ownerLoading } = useIsOwner(venue);
@@ -89,11 +94,11 @@ export default function PublicMenu() {
         () => ({
             onAddCategory: handleAddCategory,
             onDeleteCategory: handleDeleteCategory,
-            onEditCategory: handleEditCategory,
+            onUpdateCategory: handleUpdateCategoryModal,
             onMoveUp: (id, pos) => changeCategoryPosition(id, pos, -1),
             onMoveDown: (id, pos) => changeCategoryPosition(id, pos, 1),
         }),
-        [handleAddCategory, handleDeleteCategory, handleEditCategory, changeCategoryPosition]
+        [handleAddCategory, handleDeleteCategory, handleUpdateCategoryModal, changeCategoryPosition]
     );
 
     const isLoading = venueLoading || menusLoading || ownerLoading;
@@ -132,9 +137,14 @@ export default function PublicMenu() {
 
             <NameModal
                 open={isCategoryCreateOpen}
-                onOpenChange={setIsCategoryCreateOpen}
+                onOpenChange={(open) => {
+                    setIsCategoryCreateOpen(open);
+                    if (!open) {
+                        handleImageChange(null);
+                    }
+                }}
                 onSubmit={handleCreateCategory}
-                title="Create category"
+                title="Create a category"
                 description="Enter a category name and optionally add an image."
                 submitLabel="Create"
                 placeholder="e.g. Desserts"
@@ -143,6 +153,27 @@ export default function PublicMenu() {
                 onImageChange={handleImageChange}
             />
 
+            <NameModal
+                open={isCategoryUpdateOpen}
+                onOpenChange={(open) => {
+                    setIsCategoryUpdateOpen(open);
+                    if (!open) {
+                        handleImageChange(null);
+                    }
+                }}
+                onSubmit={handleUpdateCategory}
+                title="Edit the category"
+                description="Enter new category name and optionally add an image."
+                submitLabel="Save"
+                placeholder="e.g. Desserts"
+                initialName={selectedCategory?.name ?? ""}
+                showImage={true}
+                currentMenu={selectedCategory?.menu_id}
+                showDropList={true}
+                dropListData={menus ?? null}
+                imagePreview={previewImage ?? undefined}
+                onImageChange={handleImageChange}
+            />
 
             <NameModal
                 open={menuCreateOpen}

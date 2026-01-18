@@ -4,7 +4,8 @@ import {
     Trash2,
     Edit3,
     ArrowUp,
-    ArrowDown
+    ArrowDown,
+    Loader2
 } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import type { CategoryRead } from "@/types/types";
@@ -14,7 +15,7 @@ import { Alert } from "../Alert";
 interface AdminCallbacks {
     onAddCategory: (position: number) => void;
     onDeleteCategory: (categoryId: string) => void;
-    onEditCategory: (categoryId: string) => void;
+    onUpdateCategory: (categoryId: string) => void;
     onMoveUp: (categoryId: string, position: number) => void;
     onMoveDown: (categoryId: string, position: number) => void;
 }
@@ -31,6 +32,7 @@ export const CategoriesList: React.FC<CategoriesListProps> = ({
     onAdminActions,
 }) => {
     const [deleteCategoryId, setDeleteCategoryId] = React.useState<string | null>(null);
+    const [deletingCategoryId, setDeletingCategoryId] = React.useState<string | null>(null);
 
     const sortedCategories = React.useMemo(() =>
         (categories ?? []).sort((a, b) => a.position - b.position),
@@ -72,7 +74,7 @@ export const CategoriesList: React.FC<CategoriesListProps> = ({
                         <CardContent className="p-0 relative h-32">
                             {category.image ? (
                                 <img
-                                    src={supabase.storage.from("images/").getPublicUrl(category.image).data.publicUrl}
+                                    src={`${supabase.storage.from("images/").getPublicUrl(category.image).data.publicUrl}?t=${Date.now()}`}
                                     alt={category.name}
                                     className="w-full h-full object-cover"
                                 />
@@ -92,24 +94,37 @@ export const CategoriesList: React.FC<CategoriesListProps> = ({
                                         description="This action cannot be undone. This will permanently delete your category."
                                         open={deleteCategoryId === category.id}
                                         onOpenChange={() => toggleDeleteAlert(category.id)}
-                                        onConfirm={() => {
-                                            onAdminActions.onDeleteCategory(category.id);
+                                        onConfirm={async () => {
+                                            setDeletingCategoryId(category.id);
+
+                                            try {
+                                                await onAdminActions.onDeleteCategory(category.id);
+                                            } finally {
+                                                setDeletingCategoryId(null);
+                                            }
+
                                             setDeleteCategoryId(null);
                                         }}
                                         id={category.id}
+                                        isLoading={deletingCategoryId === category.id}
                                     >
                                         <Button
                                             variant="ghost"
                                             size="sm"
-                                            className="h-8 w-8 p-0 bg-black text-white hover:bg-red-600 hover:text-white border border-transparent"
+                                            className="h-8 w-8 p-0 bg-black text-white hover:bg-red-600 hover:text-white border border-transparent disabled:opacity-50"
                                             title="Delete"
+                                            disabled={deletingCategoryId === category.id}
                                         >
-                                            <Trash2 className="h-4 w-4" />
+                                            {deletingCategoryId === category.id ? (
+                                                <Loader2 className="h-4 w-4 animate-spin" />
+                                            ) : (
+                                                <Trash2 className="h-4 w-4" />
+                                            )}
                                         </Button>
                                     </Alert>
 
                                     <Button
-                                        onClick={() => onAdminActions.onEditCategory(category.id)}
+                                        onClick={() => onAdminActions.onUpdateCategory(category.id)}
                                         variant="ghost"
                                         size="sm"
                                         className="h-8 w-8 p-0 bg-black text-white hover:bg-black/90 border border-transparent"

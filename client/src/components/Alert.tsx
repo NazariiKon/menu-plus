@@ -9,6 +9,7 @@ import {
     AlertDialogTitle,
     AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
+import { Loader2 } from "lucide-react"
 
 export type VenueAlertProps = {
     open: boolean
@@ -18,7 +19,7 @@ export type VenueAlertProps = {
     title?: string
     description?: string
     submitLabel?: string
-
+    isLoading?: boolean;
     children: React.ReactNode
 }
 
@@ -30,6 +31,7 @@ export function Alert({
     description = "This action cannot be undone...",
     submitLabel = "Continue",
     id,
+    isLoading = false,
     children,
 }: VenueAlertProps) {
     return (
@@ -46,8 +48,18 @@ export function Alert({
 
                 <AlertDialogFooter>
                     <AlertDialogCancel>Cancel</AlertDialogCancel>
-                    <AlertDialogAction onClick={() => onConfirm(id)}>
-                        {submitLabel}
+                    <AlertDialogAction disabled={isLoading} onClick={() => onConfirm(id)}>
+                        {isLoading ? (
+                            <>
+                                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                Deleting...
+                            </>
+                        ) : (
+                            <>
+                                {submitLabel}
+                            </>
+                        )}
+
                     </AlertDialogAction>
                 </AlertDialogFooter>
             </AlertDialogContent>

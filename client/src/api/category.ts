@@ -66,6 +66,7 @@ export async function updateCategory(
     venueId: string,
     menuId: string,
     categoryId: string,
+    newMenuId?: string,
     name?: string,
     position?: number,
     image?: File | null
@@ -79,7 +80,8 @@ export async function updateCategory(
         const formData = new FormData();
         if (name !== undefined) formData.append('name', name);
         if (position !== undefined) formData.append('position', position.toString());
-        if (image) formData.append('image_bytes', image);
+        if (newMenuId !== undefined) formData.append('new_menu_id', newMenuId);
+        if (image) formData.append('image_file', image);
 
         const response = await fetch(
             `${import.meta.env.VITE_API_URL}/venues/${venueId}/menus/${menuId}/categories/${categoryId}`,

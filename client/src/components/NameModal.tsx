@@ -12,17 +12,24 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Loader2 } from "lucide-react";
 import {
     Form,
     FormControl,
+    FormDescription,
     FormField,
     FormItem,
+    FormLabel,
     FormMessage,
 } from "@/components/ui/form";
+import { supabase } from "@/lib/supabase";
+import type { MenuRead } from "@/types/types";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
 
 const formSchema = z.object({
     name: z.string().trim().min(1, "Name is required."),
     image: z.instanceof(File).nullable().optional(),
+    menuId: z.string().optional(),
 });
 
 export type FormValues = z.infer<typeof formSchema>;
@@ -37,6 +44,9 @@ export type NameModalProps = {
     submitLabel?: string;
     placeholder?: string;
     showImage?: boolean;
+    currentMenu?: string;
+    showDropList?: boolean;
+    dropListData?: MenuRead[] | null;
     imagePreview?: string | null;
     onImageChange?: (file: File | null) => void;
     accept?: string;
@@ -53,23 +63,42 @@ export function NameModal({
     submitLabel = "Save",
     placeholder = "e.g. The Green Bistro",
     showImage = false,
+    showDropList = false,
+    dropListData = [],
+    currentMenu,
     imagePreview,
     onImageChange,
     accept = "image/*",
     maxSizeMB = 5,
 }: NameModalProps) {
+    const [localPreview, setLocalPreview] = React.useState<string | null>(null);
+
     const form = useForm<FormValues>({
         resolver: zodResolver(formSchema),
-        defaultValues: { name: initialName, image: null },
+        defaultValues: { name: initialName, image: null, menuId: currentMenu || "" },
         mode: "onSubmit",
     });
 
     React.useEffect(() => {
         if (open) {
-            form.reset({ name: initialName, image: null });
+            form.reset({
+                name: initialName,
+                image: null,
+                menuId: currentMenu || ""
+            });
             form.clearErrors();
+            setLocalPreview(null);
         }
-    }, [open, initialName, form]);
+    }, [open, initialName, currentMenu, form]);
+
+
+    React.useEffect(() => {
+        return () => {
+            if (localPreview) {
+                URL.revokeObjectURL(localPreview);
+            }
+        };
+    }, [localPreview]);
 
     const handleSubmit = form.handleSubmit(async (values) => {
         await onSubmit(values);
@@ -80,10 +109,19 @@ export function NameModal({
         const file = e.target.files?.[0];
         if (file && file.size > maxSizeMB * 1024 * 1024) {
             alert(`File too large. Max ${maxSizeMB}MB`);
+            e.target.value = '';
+            setLocalPreview(null);
             return;
         }
         form.setValue("image", file || null);
         onImageChange?.(file || null);
+
+        if (file) {
+            const url = URL.createObjectURL(file);
+            setLocalPreview(url);
+        } else {
+            setLocalPreview(null);
+        }
     };
 
     return (
@@ -112,6 +150,43 @@ export function NameModal({
                                 </FormItem>
                             )}
                         />
+                        {showDropList && dropListData && dropListData.length > 0 && (
+                            <FormField
+                                control={form.control}
+                                name="menuId"
+                                render={({ field }) => (
+                                    <FormItem className="w-full">
+                                        <FormLabel>Menu:</FormLabel>
+                                        <Select
+                                            onValueChange={field.onChange}
+                                            defaultValue={currentMenu || ""}
+                                        >
+                                            <FormControl>
+                                                <SelectTrigger className="w-full">
+                                                    <SelectValue />
+                                                </SelectTrigger>
+                                            </FormControl>
+                                            <SelectContent>
+                                                {dropListData.map((menu) => (
+                                                    <SelectItem
+                                                        key={menu.id}
+                                                        value={menu.id}
+                                                    >
+                                                        {menu.name}
+                                                    </SelectItem>
+                                                ))}
+                                            </SelectContent>
+                                        </Select>
+                                        <FormDescription>
+                                            Change which menu this category belongs to.
+                                        </FormDescription>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                        )}
+
+
 
                         {showImage && (
                             <FormField
@@ -121,10 +196,10 @@ export function NameModal({
                                     <FormItem>
                                         <FormControl>
                                             <div className="space-y-2">
-                                                {imagePreview && (
+                                                {(localPreview || imagePreview) && (
                                                     <div className="w-full h-32 bg-muted rounded-lg flex items-center justify-center overflow-hidden">
                                                         <img
-                                                            src={imagePreview}
+                                                            src={localPreview || supabase.storage.from("images/").getPublicUrl(imagePreview!).data.publicUrl}
                                                             alt="Preview"
                                                             className="h-full w-full object-cover"
                                                         />
@@ -143,11 +218,13 @@ export function NameModal({
                             />
                         )}
 
+
                         <DialogFooter className="gap-2">
                             <Button
                                 type="button"
                                 variant="outline"
                                 onClick={() => onOpenChange(false)}
+                                disabled={form.formState.isSubmitting}
                             >
                                 Cancel
                             </Button>
@@ -156,8 +233,16 @@ export function NameModal({
                                 disabled={form.formState.isSubmitting}
                                 className="bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white shadow-xl hover:shadow-2xl transition-all"
                             >
-                                {submitLabel}
+                                {form.formState.isSubmitting ? (
+                                    <>
+                                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                        Loading...
+                                    </>
+                                ) : (
+                                    submitLabel
+                                )}
                             </Button>
+
                         </DialogFooter>
                     </form>
                 </Form>

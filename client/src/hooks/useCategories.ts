@@ -7,19 +7,21 @@ interface UseCategoriesProps {
     activeMenuId: string | null;
     menus: MenuRead[] | null | undefined;
     setMenus: React.Dispatch<React.SetStateAction<MenuRead[] | null>> | undefined;
+    setActiveMenuId: React.Dispatch<React.SetStateAction<string | null>>;
 }
-
 
 export const useCategories = ({
     venueId,
     activeMenuId,
     menus,
     setMenus,
+    setActiveMenuId
 }: UseCategoriesProps) => {
     const [selectedCategory, setSelectedCategory] = useState<CategoryRead | null>(null);
     const [previewImage, setPreviewImage] = useState<string | null>(null);
     const [insertAfterCategory, setInsertAfterCategory] = useState(0);
     const [isCategoryCreateOpen, setIsCategoryCreateOpen] = useState(false);
+    const [isCategoryUpdateOpen, setIsCategoryUpdateOpen] = useState(false);
 
     const getCategoryById = useCallback(
         (categoryId: string): CategoryRead | undefined => {
@@ -55,7 +57,7 @@ export const useCategories = ({
             });
 
             try {
-                await updateCategory(venueId, activeMenuId, categoryId, undefined, newPos);
+                await updateCategory(venueId, activeMenuId, categoryId, undefined, undefined, newPos);
             } catch (e) {
                 console.error(e);
             }
@@ -118,14 +120,79 @@ export const useCategories = ({
     const handleAddCategory = useCallback((position: number) => {
         setInsertAfterCategory(position);
         setIsCategoryCreateOpen(true);
-    }, []);
+    }, [setIsCategoryCreateOpen, setInsertAfterCategory]);
 
-    const handleEditCategory = useCallback((categoryId: string) => {
-        const category = getCategoryById(categoryId);
-        if (category) {
-            setSelectedCategory(category);
+    const handleUpdateCategoryModal = useCallback((categoryId: string) => {
+        const category = getCategoryById(categoryId) ?? null;
+        console.log("UPDATE MODAL OPEN", category);
+        setSelectedCategory(category);
+        if (category?.image)
+            setPreviewImage(category?.image)
+        setIsCategoryUpdateOpen(true);
+    }, [setSelectedCategory, setIsCategoryUpdateOpen, setPreviewImage, getCategoryById]);
+
+    const handleUpdateCategory = useCallback(async (values: {
+        name: string;
+        image?: File | null;
+        menuId?: string
+    }) => {
+        if (!activeMenuId || !selectedCategory || !venueId || !setMenus) return;
+
+        const newMenuId = values.menuId || activeMenuId;
+        const hasChanges =
+            values.name !== selectedCategory.name ||
+            values.image !== null ||
+            newMenuId !== activeMenuId;
+
+        if (!hasChanges) {
+            setIsCategoryUpdateOpen(false);
+            return;
         }
-    }, [getCategoryById]);
+
+        try {
+            const result = await updateCategory(
+                venueId,
+                activeMenuId,
+                selectedCategory.id,
+                newMenuId,
+                values.name,
+                undefined,
+                values.image || null
+            );
+
+            if (result.success && result.data) {
+                setMenus((prev: MenuRead[] | null): MenuRead[] | null => {
+                    if (!prev) return prev;
+
+                    return prev.map(menu => {
+                        if (menu.id === activeMenuId) {
+                            return {
+                                ...menu,
+                                categories: menu.id === newMenuId
+                                    ? result.data
+                                    : menu.categories?.filter(c => c.id !== selectedCategory.id) || []
+                            };
+                        }
+                        if (menu.id === newMenuId) {
+                            return {
+                                ...menu,
+                                categories: result.data
+                            };
+                        }
+                        return menu;
+                    });
+                });
+
+                setIsCategoryUpdateOpen(false);
+            }
+        } catch (e) {
+            console.error("Update failed:", e);
+            alert("Failed to update category");
+        }
+    }, [activeMenuId, venueId, selectedCategory, setMenus]);
+
+
+
 
     const handleImageChange = useCallback((file: File | null | undefined) => {
         if (!file) {
@@ -142,15 +209,18 @@ export const useCategories = ({
         previewImage,
         insertAfterCategory,
         isCategoryCreateOpen,
+        isCategoryUpdateOpen,
         setIsCategoryCreateOpen,
 
         getCategoryById,
         handleImageChange,
         handleAddCategory,
-        handleEditCategory,
+        handleUpdateCategory,
+        handleUpdateCategoryModal,
         handleCreateCategory,
         handleDeleteCategory,
         changeCategoryPosition,
+        setIsCategoryUpdateOpen
     };
 
 };
