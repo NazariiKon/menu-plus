@@ -42,7 +42,6 @@ async def get_venue_by_slug(
     current_user: Optional[dict] = Depends(get_current_user_optional),
     vs: VenueService = Depends(get_venue_service)
 ):
-    print(current_user)
     if not slug:
         raise HTTPException(status.HTTP_400_BAD_REQUEST, "This slug doesn't exist")
     

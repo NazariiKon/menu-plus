@@ -8,23 +8,14 @@ import {
     Loader2
 } from "lucide-react";
 import { supabase } from "@/lib/supabase";
-import type { CategoryRead } from "@/types/types";
+import type { AdminCallbacksCategories, CategoryRead } from "@/types/types";
 import React from "react";
 import { Alert } from "../Alert";
-
-interface AdminCallbacks {
-    onAddCategory: (position: number) => void;
-    onDeleteCategory: (categoryId: string) => void;
-    onUpdateCategory: (categoryId: string) => void;
-    onImageUpdated?: (categoryId: string) => void;
-    onMoveUp: (categoryId: string, position: number) => void;
-    onMoveDown: (categoryId: string, position: number) => void;
-}
 
 interface CategoriesListProps {
     categories?: CategoryRead[];
     isAdmin?: boolean;
-    onAdminActions?: AdminCallbacks;
+    onAdminActions?: AdminCallbacksCategories;
 }
 
 export const CategoriesList: React.FC<CategoriesListProps> = ({
@@ -90,7 +81,7 @@ export const CategoriesList: React.FC<CategoriesListProps> = ({
                 return (
                     <div key={category.id} className="w-full space-y-2">
                         <Card className="overflow-hidden shadow-sm hover:shadow-md transition-all">
-                            <CardContent className="p-0 relative h-32">
+                            <CardContent className="p-0 relative h-32" onClick={() => onAdminActions?.setActiveCategoryId(category.id)}>
                                 {imageUrl ? (
                                     <img
                                         src={imageUrl}

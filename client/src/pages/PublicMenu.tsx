@@ -1,5 +1,5 @@
 import { useParams } from "react-router-dom";
-import { useEffect, useCallback, useMemo } from "react";
+import { useEffect, useCallback, useMemo, useState } from "react";
 import Header from "@/components/MenuComponents/Header";
 import EditVenueModal from "@/components/MenuComponents/EditMenuModal";
 import { Details } from "@/components/MenuComponents/Details";
@@ -10,17 +10,12 @@ import { useIsOwner } from "@/hooks/useIsOwner";
 import { useMenus } from "@/hooks/useMenus";
 import { useVenueBySlug } from "@/hooks/useVenue";
 import { useCategories } from "@/hooks/useCategories";
-
-interface AdminActions {
-    onAddCategory: (position: number) => void;
-    onDeleteCategory: (categoryId: string) => void;
-    onUpdateCategory: (categoryId: string) => void;
-    onMoveUp: (categoryId: string, position: number) => void;
-    onMoveDown: (categoryId: string, position: number) => void;
-}
+import { ItemsList } from "./ItemsList";
+import type { AdminCallbacksCategories, AdminCallbacksItems } from "@/types/types";
 
 export default function PublicMenu() {
     const { slug } = useParams<{ slug: string }>();
+    const [activeCategoryId, setActiveCategoryId] = useState<string | null>(null);
 
     const {
         venue,
@@ -74,8 +69,8 @@ export default function PublicMenu() {
     });
 
     const { isOwner: isAdminMode, loading: ownerLoading } = useIsOwner(venue);
-
     const activeMenu = menus?.find((m) => m.id === activeMenuId) || null;
+    const activeCategory = activeMenu?.categories?.find(c => c.id === activeCategoryId);
 
     const handleMoveLeft = useCallback(
         (menuId: string) => changeMenuPosition(menuId, -1),
@@ -90,15 +85,27 @@ export default function PublicMenu() {
         loadVenue();
     }, [loadVenue]);
 
-    const adminActions = useMemo<AdminActions>(
+    const categoryAdminActions = useMemo<AdminCallbacksCategories>(
         () => ({
             onAddCategory: handleAddCategory,
             onDeleteCategory: handleDeleteCategory,
             onUpdateCategory: handleUpdateCategoryModal,
             onMoveUp: (id, pos) => changeCategoryPosition(id, pos, -1),
             onMoveDown: (id, pos) => changeCategoryPosition(id, pos, 1),
+            setActiveCategoryId: (id) => setActiveCategoryId(id)
         }),
-        [handleAddCategory, handleDeleteCategory, handleUpdateCategoryModal, changeCategoryPosition]
+        [handleAddCategory, handleDeleteCategory, handleUpdateCategoryModal, changeCategoryPosition, setActiveCategoryId]
+    );
+
+    const ItemsAdminActions = useMemo<AdminCallbacksItems>(
+        () => ({
+            onAddItem: (position: number) => { console.log(`Add item after ${position}`); },
+            onDeleteItem: (itemId: string) => { console.log(`Delete ${itemId}`); },
+            onUpdateItem: (itemId: string) => { console.log(`Update  ${itemId}`); },
+            onMoveUp: (itemId: string, position: number) => { console.log(`Up ${itemId}, ${position}`); },
+            onMoveDown: (itemId: string, position: number) => { console.log(`Down ${itemId}, ${position}`); },
+        }),
+        [handleAddCategory, handleDeleteCategory, handleUpdateCategoryModal, changeCategoryPosition, setActiveCategoryId]
     );
 
     const isLoading = venueLoading || menusLoading || ownerLoading;
@@ -129,12 +136,24 @@ export default function PublicMenu() {
                 isAdmin={isAdminMode}
             />
 
-            <CategoriesList
-                key={activeMenuId}
-                categories={activeMenu?.categories ?? []}
-                isAdmin={isAdminMode}
-                onAdminActions={adminActions}
-            />
+
+            {activeCategoryId ? (
+                <ItemsList
+                    key={activeCategoryId}
+                    items={activeCategory?.items ?? []}
+                    category={activeCategory}
+                    onBack={() => setActiveCategoryId(null)}
+                    isAdmin={isAdminMode}
+                    onAdminActions={ItemsAdminActions}
+                />
+            ) : (
+                <CategoriesList
+                    key={activeMenuId}
+                    categories={activeMenu?.categories ?? []}
+                    isAdmin={isAdminMode}
+                    onAdminActions={categoryAdminActions}
+                />
+            )}
 
             <NameModal
                 open={isCategoryCreateOpen}
