@@ -115,7 +115,7 @@ export default function PublicMenu() {
 
     return (
         <div className="min-h-dvh max-w-md mx-auto w-full max-w-[450px] bg-background text-foreground">
-            <Header venue={venue} onEdit={openVenueEdit} />
+            <Header venue={venue} onEdit={openVenueEdit} isAdmin={isAdminMode} />
             <Details venue={venue} />
 
             <MenuSubmenuTabs
@@ -126,6 +126,7 @@ export default function PublicMenu() {
                 onDelete={handleDeleteMenu}
                 onAddBetween={handleAddMenuBetween}
                 onValueChange={setActiveMenuId}
+                isAdmin={isAdminMode}
             />
 
             <CategoriesList

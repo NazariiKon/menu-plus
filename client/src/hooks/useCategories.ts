@@ -124,7 +124,6 @@ export const useCategories = ({
 
     const handleUpdateCategoryModal = useCallback((categoryId: string) => {
         const category = getCategoryById(categoryId) ?? null;
-        console.log("UPDATE MODAL OPEN", category);
         setSelectedCategory(category);
         if (category?.image)
             setPreviewImage(category?.image)

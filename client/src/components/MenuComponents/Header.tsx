@@ -7,9 +7,10 @@ import { ArrowLeft } from "lucide-react"
 type HeaderProps = {
     venue: VenueRead
     onEdit: React.Dispatch<React.SetStateAction<boolean>>
+    isAdmin: boolean
 }
 
-export default function Header({ venue, onEdit }: HeaderProps) {
+export default function Header({ venue, onEdit, isAdmin = false }: HeaderProps) {
     const navigate = useNavigate()
     const bgPath = venue?.background ?? "logos/defaultBG.png"
     const logoPath = venue?.logo ?? "logos/default.png"
@@ -22,16 +23,17 @@ export default function Header({ venue, onEdit }: HeaderProps) {
     return (
         <div className="sm:w-full">
             <header className="relative overflow-hidden rounded-b-3xl">
-                {/* BACK */}
-                <Button
-                    type="button"
-                    variant="default"
-                    size="sm"
-                    className="absolute left-3 top-3 z-20"
-                    onClick={() => navigate(-1)}
-                >
-                    <ArrowLeft />
-                </Button>
+                {isAdmin &&
+                    <Button
+                        type="button"
+                        variant="default"
+                        size="sm"
+                        className="absolute left-3 top-3 z-20"
+                        onClick={() => navigate(-1)}
+                    >
+                        <ArrowLeft />
+                    </Button>
+                }
                 <div
                     className="h-56 w-full bg-cover bg-center"
                     style={{ backgroundImage: `url(${bgUrl})` }}
@@ -58,15 +60,17 @@ export default function Header({ venue, onEdit }: HeaderProps) {
                             </div>
                         </div>
 
-                        <Button
-                            type="button"
-                            variant="secondary"
-                            size="sm"
-                            className="shrink-0 bg-white/85 text-black hover:bg-white"
-                            onClick={() => onEdit(true)}
-                        >
-                            Edit
-                        </Button>
+                        {isAdmin &&
+                            <Button
+                                type="button"
+                                variant="secondary"
+                                size="sm"
+                                className="shrink-0 bg-white/85 text-black hover:bg-white"
+                                onClick={() => onEdit(true)}
+                            >
+                                Edit
+                            </Button>
+                        }
                     </div>
                 </div>
             </header>

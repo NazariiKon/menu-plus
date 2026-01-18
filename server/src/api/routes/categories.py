@@ -77,9 +77,6 @@ async def update_category(
     cs: CategoryService = Depends(get_category_service),
     ms: MenuService = Depends(get_menu_service)
 ):
-    if not current_user:
-        raise HTTPException(status.HTTP_401_UNAUTHORIZED)
-
     venue = await vs.get_venue_by_id_for_owner(venue_id=venue_id, owner_id=current_user["sub"])
     if not venue:
         raise HTTPException(status.HTTP_403_FORBIDDEN, "This venue is not yours")

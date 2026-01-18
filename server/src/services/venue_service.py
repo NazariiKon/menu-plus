@@ -1,8 +1,9 @@
 import re
+from realtime import Optional
 from supabase import Client
 from typing import Any, Tuple, List
 
-from src.schemas.venue import VenueBase
+from src.schemas.venue import VenueBase, VenueRead
 
 
 class VenueService:
@@ -30,16 +31,21 @@ class VenueService:
         )
         return response.data
     
-    async def get_venue_menu_by_slug(self, slug: str, owner_id: str) -> dict:
+    async def get_venue_menu_by_slug(self, slug: str) -> Optional[VenueRead]:
         response = (
             self.supabase
             .table("venues")
-            .select("""*, menus (*, categories (*, items ( * )))""")
+            .select("""*, menus (*, categories (*, items (*)))""")
             .eq("slug", slug)
-            .eq("owner_id", owner_id)
             .execute()
         )
-        return response.data
+        if not response.data:
+            return None
+        
+        venue_dict = response.data[0]
+        
+        return VenueRead.model_validate(venue_dict) 
+
     
     async def get_venue_by_id_for_owner(self, venue_id: str, owner_id: str) -> dict:
         response = (

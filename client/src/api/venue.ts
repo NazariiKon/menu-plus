@@ -50,26 +50,32 @@ export async function getMenuBySlug(slug: string): Promise<ApiResponse<VenueRead
         const { data: sessionData, error } = await supabase.auth.getSession();
         const token = sessionData.session?.access_token;
 
-        if (error || !token) return { success: false, error: "Not authenticated" };
+        const headers: Record<string, string> = {
+            "Content-Type": "application/json"
+        };
+
+        if (token) {
+            headers["Authorization"] = `Bearer ${token}`;
+        }
 
         const response = await fetch(`${import.meta.env.VITE_API_URL}/venues/p/${slug}`, {
-            headers: {
-                "Authorization": `Bearer ${token}`,
-                "Content-Type": "application/json"
-            }
+            headers
         });
 
-        const result = await response.json();
-
-        if (response.ok) {
-            return { success: true, data: result[0] };
-        } else {
-            return { success: false, error: result.error || "Unknown error" };
+        if (!response.ok) {
+            const errorData = await response.json().catch(() => ({}));
+            return { success: false, error: errorData.error || `HTTP ${response.status}` };
         }
+
+        const result = await response.json();
+        return { success: true, data: result };
+
     } catch (error) {
+        console.error("getMenuBySlug error:", error);
         return { success: false, error: "Network error" };
     }
 }
+
 
 export async function editVenue(data: VenueUpdate, venue_id: string): Promise<ApiResponse<VenueRead>> {
     try {

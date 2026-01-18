@@ -57,6 +57,7 @@ class VenueRead(VenueBase):
     slug: str = Field(max_length=50)
     owner_id: UUID
     created_at: datetime
+    is_editable: Optional[bool] = False
     menus: list["MenuRead"] = Field(default_factory=list)
 
 class ApiResponse(BaseModel):

@@ -1,5 +1,6 @@
 from fastapi import Depends, HTTPException, Request, Security, status
-from fastapi.security import APIKeyHeader, HTTPBearer
+from fastapi.security import APIKeyHeader, HTTPAuthorizationCredentials, HTTPBearer
+from realtime import Optional
 from supabase import Client, create_client
 from jose import JWTError, jwt
 import requests
@@ -17,6 +18,23 @@ security_scheme = APIKeyHeader(
     auto_error=False
 )
 
+from fastapi import Header, Depends
+from typing import Optional, Annotated
+
+async def get_current_user_optional(authorization: Optional[str] = Security(security_scheme)) -> Optional[dict]:
+    if not authorization:
+        return None
+    
+    if "Bearer" not in authorization:
+        return None
+    
+    _, token = authorization.split(" ", 1)
+    try:
+        jwk = get_jwks()['keys'][0]
+        payload = jwt.decode(token, jwk, algorithms=["ES256"], audience="authenticated")
+        return payload
+    except JWTError:
+        return None
 
 def get_supabase_client(request: Request) -> Client:
     token = request.headers.get("Authorization", "").replace("Bearer ", "")

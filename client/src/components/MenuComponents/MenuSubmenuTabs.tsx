@@ -8,6 +8,7 @@ import { Alert } from "../Alert"
 type Props = {
     menus: MenuRead[]
     value?: string
+    isAdmin?: boolean
     onValueChange?: (menuId: string) => void
 
     onAddBetween?: (insertAfterMenu: number) => void
@@ -30,6 +31,7 @@ export function MenuSubmenuTabs({
     onMoveLeft,
     onMoveRight,
     className,
+    isAdmin = false
 }: Props) {
     const controlled = value !== undefined
     const [internalValue, setInternalValue] = React.useState<string | undefined>()
@@ -52,7 +54,7 @@ export function MenuSubmenuTabs({
             onValueChange?.(firstMenu.id)
             setInternalValue(firstMenu.id)
         }
-    }, [controlled, internalValue, firstMenu])
+    }, [controlled, internalValue, firstMenu, onValueChange])
 
     const activeId = controlled ? value : internalValue
 
@@ -65,12 +67,14 @@ export function MenuSubmenuTabs({
         <div className={cn("w-full", className)}>
             <div className="overflow-x-auto overflow-y-hidden px-2">
                 <div className="flex items-start gap-2 w-max">
-                    <div className="shrink-0 pt-1.5">
-                        <IconPlusButton
-                            onClick={() => onAddBetween?.(0)}
-                            ariaLabel="Add submenu"
-                        />
-                    </div>
+                    {isAdmin && (
+                        <div className="shrink-0 pt-1.5">
+                            <IconPlusButton
+                                onClick={() => onAddBetween?.(0)}
+                                ariaLabel="Add submenu"
+                            />
+                        </div>
+                    )}
 
                     {sortedMenus.map((m, idx) => {
                         const active = m.id === activeId
@@ -95,64 +99,67 @@ export function MenuSubmenuTabs({
                                         {m.name}
                                     </button>
 
-                                    <div className="flex items-center gap-1 rounded-xl bg-black p-0.5">
-                                        {!isFirst && (
+                                    {isAdmin && (
+                                        <div className="flex items-center gap-1 rounded-xl bg-black p-0.5">
+                                            {!isFirst && (
+                                                <IconActionButton
+                                                    onClick={() => onMoveLeft?.(m.id)}
+                                                    ariaLabel="Move left"
+                                                >
+                                                    <ArrowLeft className="h-3 w-3 text-white" />
+                                                </IconActionButton>
+                                            )}
+
+                                            {!isLast && (
+                                                <IconActionButton
+                                                    onClick={() => onMoveRight?.(m.id)}
+                                                    ariaLabel="Move right"
+                                                >
+                                                    <ArrowRight className="h-3 w-3 text-white" />
+                                                </IconActionButton>
+                                            )}
+
                                             <IconActionButton
-                                                onClick={() => onMoveLeft?.(m.id)}
-                                                ariaLabel="Move left"
+                                                onClick={() => onEdit?.(m.id)}
+                                                ariaLabel="Edit"
                                             >
-                                                <ArrowLeft className="h-3 w-3 text-white" />
+                                                <Pencil className="h-3 w-3 text-white" />
                                             </IconActionButton>
-                                        )}
 
-                                        {!isLast && (
-                                            <IconActionButton
-                                                onClick={() => onMoveRight?.(m.id)}
-                                                ariaLabel="Move right"
-                                            >
-                                                <ArrowRight className="h-3 w-3 text-white" />
-                                            </IconActionButton>
-                                        )}
-
-                                        <IconActionButton
-                                            onClick={() => onEdit?.(m.id)}
-                                            ariaLabel="Edit"
-                                        >
-                                            <Pencil className="h-3 w-3 text-white" />
-                                        </IconActionButton>
-
-                                        <Alert
-                                            key={`delete-${m.id}`}
-                                            description="This action cannot be undone. This will permanently delete your submenu."
-                                            open={isDeleteOpen}
-                                            onOpenChange={() => setDeleteMenuId(null)}
-                                            onConfirm={() => {
-                                                onDelete(m.id);
-                                                setDeleteMenuId(null);
-                                            }}
-                                            id={m.id}
-                                        >
-                                            <IconActionButton
-                                                onClick={(e) => {
-                                                    e.stopPropagation();
-                                                    e.preventDefault();
-                                                    setDeleteMenuId(m.id);
+                                            <Alert
+                                                key={`delete-${m.id}`}
+                                                description="This action cannot be undone. This will permanently delete your submenu."
+                                                open={isDeleteOpen}
+                                                onOpenChange={() => setDeleteMenuId(null)}
+                                                onConfirm={() => {
+                                                    onDelete(m.id);
+                                                    setDeleteMenuId(null);
                                                 }}
-                                                ariaLabel={`Delete ${m.name}`}
+                                                id={m.id}
                                             >
-                                                <Trash2 className="h-3 w-3 text-white" />
-                                            </IconActionButton>
+                                                <IconActionButton
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        e.preventDefault();
+                                                        setDeleteMenuId(m.id);
+                                                    }}
+                                                    ariaLabel={`Delete ${m.name}`}
+                                                >
+                                                    <Trash2 className="h-3 w-3 text-white" />
+                                                </IconActionButton>
+                                            </Alert>
+                                        </div>
+                                    )}
+                                </div>
 
-                                        </Alert>
+                                {isAdmin && (
+                                    <div className="shrink-0 pt-1.5">
+                                        <IconPlusButton
+                                            onClick={() => onAddBetween?.(idx + 1)}
+                                            ariaLabel={`Add submenu after ${m.name}`}
+                                        />
                                     </div>
-                                </div>
-
-                                <div className="shrink-0 pt-1.5">
-                                    <IconPlusButton
-                                        onClick={() => onAddBetween?.(idx + 1)}
-                                        ariaLabel={`Add submenu after ${m.name}`}
-                                    />
-                                </div>
+                                )}
                             </div>
                         )
                     })}

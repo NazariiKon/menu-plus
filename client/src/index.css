@@ -117,7 +117,44 @@
   * {
     @apply border-border outline-ring/50;
   }
+
   body {
     @apply bg-background text-foreground;
+  }
+}
+
+@layer base {
+
+  *,
+  *::before,
+  *::after {
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    -webkit-touch-callout: none;
+  }
+
+  .prose,
+  .prose *,
+  span,
+  strong,
+  p,
+  h1,
+  h2,
+  h3,
+  h4,
+  [contenteditable="true"],
+  input,
+  textarea {
+    user-select: text !important;
+    -webkit-user-select: text !important;
+  }
+
+  button,
+  [role="button"],
+  .btn,
+  .card {
+    user-select: none !important;
   }
 }
