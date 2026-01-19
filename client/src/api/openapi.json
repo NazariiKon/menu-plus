@@ -372,7 +372,7 @@
                                                                                      "content":  {
                                                                                                      "application/json":  {
                                                                                                                               "schema":  {
-
+                                                                                                                                             "$ref":  "#/components/schemas/VenueRead"
                                                                                                                                          }
                                                                                                                           }
                                                                                                  }
@@ -662,8 +662,8 @@
                                                                                                      "tags":  [
                                                                                                                   "Category"
                                                                                                               ],
-                                                                                                     "summary":  "Delete Category By Id",
-                                                                                                     "operationId":  "delete_category_by_id_venues__venue_id__menus__menu_id__categories__category_id__delete",
+                                                                                                     "summary":  "Delete Category",
+                                                                                                     "operationId":  "delete_category_venues__venue_id__menus__menu_id__categories__category_id__delete",
                                                                                                      "security":  [
                                                                                                                       {
                                                                                                                           "APIKeyHeader":  [
@@ -710,7 +710,7 @@
                                                                                                                                                                                            "items":  {
                                                                                                                                                                                                          "$ref":  "#/components/schemas/CategoryRead"
                                                                                                                                                                                                      },
-                                                                                                                                                                                           "title":  "Response Delete Category By Id Venues  Venue Id  Menus  Menu Id  Categories  Category Id  Delete"
+                                                                                                                                                                                           "title":  "Response Delete Category Venues  Venue Id  Menus  Menu Id  Categories  Category Id  Delete"
                                                                                                                                                                                        }
                                                                                                                                                                         }
                                                                                                                                                }
@@ -767,38 +767,6 @@
                                                                                                                                           "type":  "string",
                                                                                                                                           "title":  "Category Id"
                                                                                                                                       }
-                                                                                                                       },
-                                                                                                                       {
-                                                                                                                           "name":  "name",
-                                                                                                                           "in":  "query",
-                                                                                                                           "required":  false,
-                                                                                                                           "schema":  {
-                                                                                                                                          "anyOf":  [
-                                                                                                                                                        {
-                                                                                                                                                            "type":  "string"
-                                                                                                                                                        },
-                                                                                                                                                        {
-                                                                                                                                                            "type":  "null"
-                                                                                                                                                        }
-                                                                                                                                                    ],
-                                                                                                                                          "title":  "Name"
-                                                                                                                                      }
-                                                                                                                       },
-                                                                                                                       {
-                                                                                                                           "name":  "position",
-                                                                                                                           "in":  "query",
-                                                                                                                           "required":  false,
-                                                                                                                           "schema":  {
-                                                                                                                                          "anyOf":  [
-                                                                                                                                                        {
-                                                                                                                                                            "type":  "integer"
-                                                                                                                                                        },
-                                                                                                                                                        {
-                                                                                                                                                            "type":  "null"
-                                                                                                                                                        }
-                                                                                                                                                    ],
-                                                                                                                                          "title":  "Position"
-                                                                                                                                      }
                                                                                                                        }
                                                                                                                    ],
                                                                                                     "requestBody":  {
@@ -834,6 +802,83 @@
                                                                                                                   }
                                                                                                 }
                                                                                   },
+                  "/venues/{venue_id}/menus/{menu_id}/categories/{category_id}/items/":  {
+                                                                                             "post":  {
+                                                                                                          "tags":  [
+                                                                                                                       "Items"
+                                                                                                                   ],
+                                                                                                          "summary":  "Create Item",
+                                                                                                          "operationId":  "create_item_venues__venue_id__menus__menu_id__categories__category_id__items__post",
+                                                                                                          "security":  [
+                                                                                                                           {
+                                                                                                                               "APIKeyHeader":  [
+
+                                                                                                                                                ]
+                                                                                                                           }
+                                                                                                                       ],
+                                                                                                          "parameters":  [
+                                                                                                                             {
+                                                                                                                                 "name":  "venue_id",
+                                                                                                                                 "in":  "path",
+                                                                                                                                 "required":  true,
+                                                                                                                                 "schema":  {
+                                                                                                                                                "type":  "string",
+                                                                                                                                                "title":  "Venue Id"
+                                                                                                                                            }
+                                                                                                                             },
+                                                                                                                             {
+                                                                                                                                 "name":  "menu_id",
+                                                                                                                                 "in":  "path",
+                                                                                                                                 "required":  true,
+                                                                                                                                 "schema":  {
+                                                                                                                                                "type":  "string",
+                                                                                                                                                "title":  "Menu Id"
+                                                                                                                                            }
+                                                                                                                             },
+                                                                                                                             {
+                                                                                                                                 "name":  "category_id",
+                                                                                                                                 "in":  "path",
+                                                                                                                                 "required":  true,
+                                                                                                                                 "schema":  {
+                                                                                                                                                "type":  "string",
+                                                                                                                                                "title":  "Category Id"
+                                                                                                                                            }
+                                                                                                                             }
+                                                                                                                         ],
+                                                                                                          "requestBody":  {
+                                                                                                                              "required":  true,
+                                                                                                                              "content":  {
+                                                                                                                                              "application/x-www-form-urlencoded":  {
+                                                                                                                                                                                        "schema":  {
+                                                                                                                                                                                                       "$ref":  "#/components/schemas/ItemCreate"
+                                                                                                                                                                                                   }
+                                                                                                                                                                                    }
+                                                                                                                                          }
+                                                                                                                          },
+                                                                                                          "responses":  {
+                                                                                                                            "201":  {
+                                                                                                                                        "description":  "Successful Response",
+                                                                                                                                        "content":  {
+                                                                                                                                                        "application/json":  {
+                                                                                                                                                                                 "schema":  {
+
+                                                                                                                                                                                            }
+                                                                                                                                                                             }
+                                                                                                                                                    }
+                                                                                                                                    },
+                                                                                                                            "422":  {
+                                                                                                                                        "description":  "Validation Error",
+                                                                                                                                        "content":  {
+                                                                                                                                                        "application/json":  {
+                                                                                                                                                                                 "schema":  {
+                                                                                                                                                                                                "$ref":  "#/components/schemas/HTTPValidationError"
+                                                                                                                                                                                            }
+                                                                                                                                                                             }
+                                                                                                                                                    }
+                                                                                                                                    }
+                                                                                                                        }
+                                                                                                      }
+                                                                                         },
                   "/":  {
                             "get":  {
                                         "summary":  "Root",
@@ -908,18 +953,44 @@
                                                                                                                    },
                                        "Body_update_category_venues__venue_id__menus__menu_id__categories__category_id__patch":  {
                                                                                                                                      "properties":  {
-                                                                                                                                                        "image_bytes":  {
+                                                                                                                                                        "name":  {
+                                                                                                                                                                     "anyOf":  [
+                                                                                                                                                                                   {
+                                                                                                                                                                                       "type":  "string"
+                                                                                                                                                                                   },
+                                                                                                                                                                                   {
+                                                                                                                                                                                       "type":  "null"
+                                                                                                                                                                                   }
+                                                                                                                                                                               ],
+                                                                                                                                                                     "title":  "Name"
+                                                                                                                                                                 },
+                                                                                                                                                        "position":  {
+                                                                                                                                                                         "anyOf":  [
+                                                                                                                                                                                       {
+                                                                                                                                                                                           "type":  "integer"
+                                                                                                                                                                                       },
+                                                                                                                                                                                       {
+                                                                                                                                                                                           "type":  "null"
+                                                                                                                                                                                       }
+                                                                                                                                                                                   ],
+                                                                                                                                                                         "title":  "Position"
+                                                                                                                                                                     },
+                                                                                                                                                        "new_menu_id":  {
                                                                                                                                                                             "anyOf":  [
                                                                                                                                                                                           {
-                                                                                                                                                                                              "type":  "string",
-                                                                                                                                                                                              "format":  "binary"
+                                                                                                                                                                                              "type":  "string"
                                                                                                                                                                                           },
                                                                                                                                                                                           {
                                                                                                                                                                                               "type":  "null"
                                                                                                                                                                                           }
                                                                                                                                                                                       ],
-                                                                                                                                                                            "title":  "Image Bytes"
-                                                                                                                                                                        }
+                                                                                                                                                                            "title":  "New Menu Id"
+                                                                                                                                                                        },
+                                                                                                                                                        "image_file":  {
+                                                                                                                                                                           "type":  "string",
+                                                                                                                                                                           "format":  "binary",
+                                                                                                                                                                           "title":  "Image File"
+                                                                                                                                                                       }
                                                                                                                                                     },
                                                                                                                                      "type":  "object",
                                                                                                                                      "title":  "Body_update_category_venues__venue_id__menus__menu_id__categories__category_id__patch"
@@ -987,6 +1058,81 @@
                                                                    "type":  "object",
                                                                    "title":  "HTTPValidationError"
                                                                },
+                                       "ItemCreate":  {
+                                                          "properties":  {
+                                                                             "name":  {
+                                                                                          "type":  "string",
+                                                                                          "maxLength":  50,
+                                                                                          "title":  "Name"
+                                                                                      },
+                                                                             "desc":  {
+                                                                                          "anyOf":  [
+                                                                                                        {
+                                                                                                            "type":  "string",
+                                                                                                            "maxLength":  100
+                                                                                                        },
+                                                                                                        {
+                                                                                                            "type":  "null"
+                                                                                                        }
+                                                                                                    ],
+                                                                                          "title":  "Desc"
+                                                                                      },
+                                                                             "price":  {
+                                                                                           "anyOf":  [
+                                                                                                         {
+                                                                                                             "type":  "number"
+                                                                                                         },
+                                                                                                         {
+                                                                                                             "type":  "string",
+                                                                                                             "pattern":  "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$"
+                                                                                                         },
+                                                                                                         {
+                                                                                                             "type":  "null"
+                                                                                                         }
+                                                                                                     ],
+                                                                                           "title":  "Price"
+                                                                                       },
+                                                                             "weight_g":  {
+                                                                                              "anyOf":  [
+                                                                                                            {
+                                                                                                                "type":  "integer"
+                                                                                                            },
+                                                                                                            {
+                                                                                                                "type":  "null"
+                                                                                                            }
+                                                                                                        ],
+                                                                                              "title":  "Weight G"
+                                                                                          },
+                                                                             "position":  {
+                                                                                              "anyOf":  [
+                                                                                                            {
+                                                                                                                "type":  "integer"
+                                                                                                            },
+                                                                                                            {
+                                                                                                                "type":  "null"
+                                                                                                            }
+                                                                                                        ],
+                                                                                              "title":  "Position"
+                                                                                          },
+                                                                             "image":  {
+                                                                                           "anyOf":  [
+                                                                                                         {
+                                                                                                             "type":  "string",
+                                                                                                             "format":  "binary"
+                                                                                                         },
+                                                                                                         {
+                                                                                                             "type":  "null"
+                                                                                                         }
+                                                                                                     ],
+                                                                                           "title":  "Image"
+                                                                                       }
+                                                                         },
+                                                          "type":  "object",
+                                                          "required":  [
+                                                                           "name"
+                                                                       ],
+                                                          "title":  "ItemCreate"
+                                                      },
                                        "ItemRead":  {
                                                         "properties":  {
                                                                            "id":  {
@@ -1565,6 +1711,18 @@
                                                                                                "format":  "date-time",
                                                                                                "title":  "Created At"
                                                                                            },
+                                                                            "is_editable":  {
+                                                                                                "anyOf":  [
+                                                                                                              {
+                                                                                                                  "type":  "boolean"
+                                                                                                              },
+                                                                                                              {
+                                                                                                                  "type":  "null"
+                                                                                                              }
+                                                                                                          ],
+                                                                                                "title":  "Is Editable",
+                                                                                                "default":  false
+                                                                                            },
                                                                             "menus":  {
                                                                                           "items":  {
                                                                                                         "$ref":  "#/components/schemas/MenuRead"

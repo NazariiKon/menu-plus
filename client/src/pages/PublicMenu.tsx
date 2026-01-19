@@ -12,6 +12,7 @@ import { useVenueBySlug } from "@/hooks/useVenue";
 import { useCategories } from "@/hooks/useCategories";
 import { ItemsList } from "./ItemsList";
 import type { AdminCallbacksCategories, AdminCallbacksItems } from "@/types/types";
+import { useItem } from "@/hooks/useItem";
 
 export default function PublicMenu() {
     const { slug } = useParams<{ slug: string }>();
@@ -67,10 +68,25 @@ export default function PublicMenu() {
         setMenus,
         setActiveMenuId
     });
-
-    const { isOwner: isAdminMode, loading: ownerLoading } = useIsOwner(venue);
     const activeMenu = menus?.find((m) => m.id === activeMenuId) || null;
     const activeCategory = activeMenu?.categories?.find(c => c.id === activeCategoryId);
+
+
+    const {
+        insertAfterItem,
+        isItemCreateOpen,
+        setIsItemCreateOpen,
+        handleAddItem,
+        handleCreateItem,
+    } = useItem({
+        venueId: venue?.id,
+        activeMenuId,
+        activeCategoryId,
+        setMenus
+    });
+
+
+    const { isOwner: isAdminMode, loading: ownerLoading } = useIsOwner(venue);
 
     const handleMoveLeft = useCallback(
         (menuId: string) => changeMenuPosition(menuId, -1),
@@ -99,13 +115,13 @@ export default function PublicMenu() {
 
     const ItemsAdminActions = useMemo<AdminCallbacksItems>(
         () => ({
-            onAddItem: (position: number) => { console.log(`Add item after ${position}`); },
+            onAddItem: (position: number) => { handleAddItem(position); },
             onDeleteItem: (itemId: string) => { console.log(`Delete ${itemId}`); },
             onUpdateItem: (itemId: string) => { console.log(`Update  ${itemId}`); },
             onMoveUp: (itemId: string, position: number) => { console.log(`Up ${itemId}, ${position}`); },
             onMoveDown: (itemId: string, position: number) => { console.log(`Down ${itemId}, ${position}`); },
         }),
-        [handleAddCategory, handleDeleteCategory, handleUpdateCategoryModal, changeCategoryPosition, setActiveCategoryId]
+        []
     );
 
     const isLoading = venueLoading || menusLoading || ownerLoading;
@@ -136,7 +152,6 @@ export default function PublicMenu() {
                 isAdmin={isAdminMode}
             />
 
-
             {activeCategoryId ? (
                 <ItemsList
                     key={activeCategoryId}
@@ -154,6 +169,19 @@ export default function PublicMenu() {
                     onAdminActions={categoryAdminActions}
                 />
             )}
+
+            <NameModal
+                open={isItemCreateOpen}
+                onOpenChange={(open) => setIsItemCreateOpen(open)}
+                onSubmit={handleCreateItem}
+                title="Create a new item"
+                description="Enter a item's name and optionally add an image."
+                submitLabel="Create"
+                placeholder="e.g. Puncake"
+            //  showImage={true}
+            //  imagePreview={previewImage ?? undefined}
+            // onImageChange={handleImageChange}
+            />
 
             <NameModal
                 open={isCategoryCreateOpen}

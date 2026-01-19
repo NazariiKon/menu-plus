@@ -203,12 +203,29 @@ export interface paths {
         get?: never;
         put?: never;
         post?: never;
-        /** Delete Category By Id */
-        delete: operations["delete_category_by_id_venues__venue_id__menus__menu_id__categories__category_id__delete"];
+        /** Delete Category */
+        delete: operations["delete_category_venues__venue_id__menus__menu_id__categories__category_id__delete"];
         options?: never;
         head?: never;
         /** Update Category */
         patch: operations["update_category_venues__venue_id__menus__menu_id__categories__category_id__patch"];
+        trace?: never;
+    };
+    "/venues/{venue_id}/menus/{menu_id}/categories/{category_id}/items/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Create Item */
+        post: operations["create_item_venues__venue_id__menus__menu_id__categories__category_id__items__post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
         trace?: never;
     };
     "/": {
@@ -261,8 +278,17 @@ export interface components {
         };
         /** Body_update_category_venues__venue_id__menus__menu_id__categories__category_id__patch */
         Body_update_category_venues__venue_id__menus__menu_id__categories__category_id__patch: {
-            /** Image Bytes */
-            image_bytes?: string | null;
+            /** Name */
+            name?: string | null;
+            /** Position */
+            position?: number | null;
+            /** New Menu Id */
+            new_menu_id?: string | null;
+            /**
+             * Image File
+             * Format: binary
+             */
+            image_file?: string;
         };
         /** CategoryRead */
         CategoryRead: {
@@ -289,6 +315,21 @@ export interface components {
         HTTPValidationError: {
             /** Detail */
             detail?: components["schemas"]["ValidationError"][];
+        };
+        /** ItemCreate */
+        ItemCreate: {
+            /** Name */
+            name: string;
+            /** Desc */
+            desc?: string | null;
+            /** Price */
+            price?: number | string | null;
+            /** Weight G */
+            weight_g?: number | null;
+            /** Position */
+            position?: number | null;
+            /** Image */
+            image?: string | null;
         };
         /** ItemRead */
         ItemRead: {
@@ -532,6 +573,11 @@ export interface components {
              * Format: date-time
              */
             created_at: string;
+            /**
+             * Is Editable
+             * @default false
+             */
+            is_editable: boolean | null;
             /** Menus */
             menus?: components["schemas"]["MenuRead"][];
         };
@@ -829,7 +875,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": unknown;
+                    "application/json": components["schemas"]["VenueRead"];
                 };
             };
             /** @description Validation Error */
@@ -982,7 +1028,7 @@ export interface operations {
             };
         };
     };
-    delete_category_by_id_venues__venue_id__menus__menu_id__categories__category_id__delete: {
+    delete_category_venues__venue_id__menus__menu_id__categories__category_id__delete: {
         parameters: {
             query?: never;
             header?: never;
@@ -1017,10 +1063,7 @@ export interface operations {
     };
     update_category_venues__venue_id__menus__menu_id__categories__category_id__patch: {
         parameters: {
-            query?: {
-                name?: string | null;
-                position?: number | null;
-            };
+            query?: never;
             header?: never;
             path: {
                 venue_id: string;
@@ -1037,6 +1080,43 @@ export interface operations {
         responses: {
             /** @description Successful Response */
             200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    create_item_venues__venue_id__menus__menu_id__categories__category_id__items__post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                venue_id: string;
+                menu_id: string;
+                category_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/x-www-form-urlencoded": components["schemas"]["ItemCreate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
                 headers: {
                     [name: string]: unknown;
                 };

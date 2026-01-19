@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from fastapi import File, Form, UploadFile
 from pydantic import BaseModel, ConfigDict, Field
 from decimal import Decimal
-from typing import Optional, Union
+from typing import Annotated, Optional, Union
 from uuid import UUID
 
 class ORMBase(BaseModel):
@@ -36,12 +36,12 @@ class MenuRead(ORMBase):
     categories: list[CategoryRead] = Field(default_factory=list)
 
 class ItemCreate(ORMBase):
-    name: str = Field(max_length=50)
-    desc: Optional[str] = Field(default=None, max_length=100)
-    image: Optional[str] = Field(default=None, max_length=255)
-    price: Optional[Decimal] = None
-    weight_g: Optional[int] = None
-    position: int
+    name: Annotated[str, Field(max_length=50)]
+    desc: Annotated[Optional[str], Field(None, max_length=100)]
+    price: Annotated[Optional[Decimal], Field(None)]
+    weight_g: Annotated[Optional[int], Field(None)]
+    position: Annotated[Optional[int], Field(None)]
+    image: Annotated[Optional[UploadFile], File(None)]
 
 
 class CategoryCreate(BaseModel):

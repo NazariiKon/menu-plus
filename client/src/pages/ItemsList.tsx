@@ -60,7 +60,6 @@ export const ItemsList: React.FC<ItemsListProps> = ({
 
     return (
         <div className="w-full space-y-4 px-4 py-6">
-            {/* Заголовок + back */}
             <div className="flex items-center gap-4 mb-6 pb-6 border-b border-border">
                 <Button
                     variant="ghost"
@@ -75,7 +74,7 @@ export const ItemsList: React.FC<ItemsListProps> = ({
                         {category?.name || "Items"}
                     </p>
                 </div>
-                {/* Добавить item в начало (position 0) */}
+
                 {isAdmin && onAdminActions && (
                     <Button
                         onClick={() => onAdminActions.onAddItem(0)}
@@ -99,7 +98,6 @@ export const ItemsList: React.FC<ItemsListProps> = ({
                         <Card className="overflow-hidden shadow-sm hover:shadow-md transition-all">
                             <CardContent className="p-4 relative">
                                 <div className="flex gap-4">
-                                    {/* Изображение */}
                                     {imageUrl ? (
                                         <img
                                             src={imageUrl}
@@ -110,29 +108,27 @@ export const ItemsList: React.FC<ItemsListProps> = ({
                                         <div className="w-20 h-20 bg-gradient-to-br from-muted to-muted-foreground/20 rounded-lg flex-shrink-0" />
                                     )}
 
-                                    {/* Контент */}
                                     <div className="flex-1 min-w-0">
                                         <div className="flex justify-between items-start gap-2">
                                             <div className="flex-1 min-w-0">
                                                 <h3 className="font-semibold text-lg leading-tight truncate">
                                                     {item.name}
                                                 </h3>
-                                                {item.desc && (
-                                                    <p className="text-muted-foreground text-sm line-clamp-2">
-                                                        {item.desc}
-                                                    </p>
+                                                {(item.price || item.weight_g) && (
+                                                    <div className="flex items-center gap-2 mt-2 text-lg font-bold text-foreground">
+                                                        {item.price && Number(item.price) > 0 && (
+                                                            <span>{item.price}</span>
+                                                        )}
+                                                        {item.weight_g && Number(item.weight_g) > 0 && (
+                                                            <span>({item.weight_g}g)</span>
+                                                        )}
+
+                                                    </div>
                                                 )}
-                                                <div className="flex items-center gap-2 mt-2 text-lg font-bold text-foreground">
-                                                    <span>{item.price}</span>
-                                                    {item.weight_g && (
-                                                        <span className="text-sm text-muted-foreground font-normal">
-                                                            ({item.weight_g}g)
-                                                        </span>
-                                                    )}
-                                                </div>
+
                                             </div>
 
-                                            {/* Кнопка добавить в корзину (всегда видна) */}
+
                                             {onAddToCart && (
                                                 <Button
                                                     size="sm"
@@ -145,7 +141,6 @@ export const ItemsList: React.FC<ItemsListProps> = ({
                                             )}
                                         </div>
 
-                                        {/* Admin actions (как в CategoriesList) */}
                                         {isAdmin && onAdminActions && (
                                             <div className="mt-3 flex justify-end">
                                                 <div className="flex space-x-1 bg-black/95 backdrop-blur-sm rounded-lg p-1 shadow-lg border border-black/50">
@@ -229,7 +224,6 @@ export const ItemsList: React.FC<ItemsListProps> = ({
                             </CardContent>
                         </Card>
 
-                        {/* Кнопка “+” после каждого item (как в CategoriesList) */}
                         {isAdmin && onAdminActions && (
                             <Button
                                 onClick={() => onAdminActions.onAddItem(index + 1)}

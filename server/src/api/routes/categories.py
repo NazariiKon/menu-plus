@@ -1,8 +1,9 @@
 from typing import List, Optional
 from fastapi import APIRouter, Depends, HTTPException, status, UploadFile
 
+from src.schemas.venue import VenueRead
 from src.services.menu_service import MenuService
-from src.api.dependencies import get_category_service, get_current_user, get_menu_service, get_venue_service
+from src.api.dependencies import get_category_service, get_current_user, get_menu_service, get_owned_venue, get_venue_service
 from src.services.category_service import CategoryService
 from src.services.venue_service import VenueService
 from src.schemas.menu import CategoryCreate, CategoryRead, CategoryUpdate
@@ -22,15 +23,9 @@ async def create_category(
     current_user: dict = Depends(get_current_user),
     vs: VenueService = Depends(get_venue_service),
     ms: MenuService = Depends(get_menu_service),
-    cs: CategoryService = Depends(get_category_service)
+    cs: CategoryService = Depends(get_category_service),
+    venue: VenueRead = Depends(get_owned_venue)
 ):
-    if not current_user:
-        raise HTTPException(status.HTTP_401_UNAUTHORIZED, "UNAUTHORIZED")
-
-    venue = await vs.get_venue_by_id_for_owner(venue_id=venue_id, owner_id=current_user["sub"])
-    if not venue:
-        raise HTTPException(status.HTTP_403_FORBIDDEN, "This venue is not yours")
-
     menu = await ms.get_menu_by_id(menu_id, venue_id) 
     if not menu:
         raise HTTPException(status.HTTP_404_NOT_FOUND, "Menu not found or access denied")
@@ -44,24 +39,17 @@ async def create_category(
     return await cs.get_categories(menu_id)
 
 @router.delete("/{category_id}", response_model=List[CategoryRead], status_code=status.HTTP_202_ACCEPTED)
-async def delete_category_by_id(
+async def delete_category(
     venue_id: str,
     menu_id: str,
     category_id: str,
     current_user: dict = Depends(get_current_user),
     vs: VenueService = Depends(get_venue_service),
-    cs: CategoryService = Depends(get_category_service)
+    cs: CategoryService = Depends(get_category_service),
+    venue: VenueRead = Depends(get_owned_venue)
 ):
-    if not current_user:
-        raise HTTPException(status.HTTP_401_UNAUTHORIZED, "UNAUTHORIZED")
-
-    venue = await vs.get_venue_by_id_for_owner(venue_id=venue_id, owner_id=current_user["sub"])
-    if not venue:
-        raise HTTPException(status.HTTP_403_FORBIDDEN, "This venue is not yours")
-    
     await cs.delete_category(venue_id, menu_id, category_id)
     return await cs.get_categories(menu_id)
-
 
 @router.patch("/{category_id}")
 async def update_category(
@@ -75,12 +63,9 @@ async def update_category(
     current_user: dict = Depends(get_current_user),
     vs: VenueService = Depends(get_venue_service),
     cs: CategoryService = Depends(get_category_service),
-    ms: MenuService = Depends(get_menu_service)
+    ms: MenuService = Depends(get_menu_service),
+    venue: VenueRead = Depends(get_owned_venue)
 ):
-    venue = await vs.get_venue_by_id_for_owner(venue_id=venue_id, owner_id=current_user["sub"])
-    if not venue:
-        raise HTTPException(status.HTTP_403_FORBIDDEN, "This venue is not yours")
-
     new_menu = await ms.get_menu_by_id(new_menu_id, venue_id)
     if new_menu_id and not new_menu:
         raise HTTPException(status.HTTP_404_NOT_FOUND, "This menu doesn't exist")

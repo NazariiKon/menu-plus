@@ -30,6 +30,9 @@ const formSchema = z.object({
     name: z.string().trim().min(1, "Name is required."),
     image: z.instanceof(File).nullable().optional(),
     menuId: z.string().optional(),
+    desc: z.string().optional(),
+    price: z.number().min(0, "Price must be positive.").optional(),
+    weight_g: z.number().min(10, "Wight must be positive").optional(),
 });
 
 export type FormValues = z.infer<typeof formSchema>;
@@ -44,6 +47,7 @@ export type NameModalProps = {
     submitLabel?: string;
     placeholder?: string;
     showImage?: boolean;
+    isItem?: boolean
     currentMenu?: string;
     showDropList?: boolean;
     dropListData?: MenuRead[] | null;
@@ -63,6 +67,7 @@ export function NameModal({
     submitLabel = "Save",
     placeholder = "e.g. The Green Bistro",
     showImage = false,
+    isItem = false,
     showDropList = false,
     dropListData = [],
     currentMenu,
@@ -78,6 +83,7 @@ export function NameModal({
         defaultValues: { name: initialName, image: null, menuId: currentMenu || "" },
         mode: "onSubmit",
     });
+
 
     React.useEffect(() => {
         if (open) {

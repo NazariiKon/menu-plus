@@ -1,7 +1,8 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from typing import Any, List
 
-from src.api.dependencies import get_current_user, get_menu_service, get_venue_service
+from src.schemas.venue import VenueRead
+from src.api.dependencies import get_current_user, get_menu_service, get_owned_venue, get_venue_service
 from src.schemas.menu import MenuCreate, MenuRead, MenuUpdate
 from src.services.menu_service import MenuService
 from src.services.venue_service import VenueService
@@ -16,14 +17,8 @@ async def create_menu (
     current_user: dict = Depends(get_current_user),
     vs: VenueService = Depends(get_venue_service),
     ms: MenuService = Depends(get_menu_service),
+    venue: VenueRead = Depends(get_owned_venue)
 ):
-    if not current_user:
-        raise HTTPException(status.HTTP_401_UNAUTHORIZED, "UNAUTHORIZED")
-
-    venue = await vs.get_venue_by_id_for_owner(venue_id=venue_id, owner_id=current_user["sub"])
-    if not venue:
-        raise HTTPException(status.HTTP_403_FORBIDDEN, "This venue is not yours")
-
     await ms.create_menu(venue_id, data)
     return await ms.get_menus(venue_id)
 
@@ -34,14 +29,8 @@ async def delete_menu (
     current_user: dict = Depends(get_current_user),
     vs: VenueService = Depends(get_venue_service),
     ms: MenuService = Depends(get_menu_service),
+    venue: VenueRead = Depends(get_owned_venue)
 ):
-    if not current_user:
-        raise HTTPException(status.HTTP_401_UNAUTHORIZED, "UNAUTHORIZED")
-
-    venue = await vs.get_venue_by_id_for_owner(venue_id=venue_id, owner_id=current_user["sub"])
-    if not venue:
-        raise HTTPException(status.HTTP_403_FORBIDDEN, "This venue is not yours")
-
     await ms.delete_menu(venue_id, menu_id)
     return await ms.get_menus(venue_id)
 
@@ -53,14 +42,8 @@ async def update_menu (
     current_user: dict = Depends(get_current_user),
     vs: VenueService = Depends(get_venue_service),
     ms: MenuService = Depends(get_menu_service),
+    venue: VenueRead = Depends(get_owned_venue)
 ):
-    if not current_user:
-        raise HTTPException(status.HTTP_401_UNAUTHORIZED, "UNAUTHORIZED")
-
-    venue = await vs.get_venue_by_id_for_owner(venue_id=venue_id, owner_id=current_user["sub"])
-    if not venue:
-        raise HTTPException(status.HTTP_403_FORBIDDEN, "This venue is not yours")
-
     await ms.update_menu(data, venue_id, menu_id)
     return await ms.get_menus(venue_id)
 

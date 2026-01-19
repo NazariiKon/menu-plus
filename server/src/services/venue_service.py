@@ -47,7 +47,7 @@ class VenueService:
         return VenueRead.model_validate(venue_dict) 
 
     
-    async def get_venue_by_id_for_owner(self, venue_id: str, owner_id: str) -> dict:
+    async def get_venue_by_id_for_owner(self, venue_id: str, owner_id: str) -> VenueRead:
         response = (
             self.supabase
             .table("venues")

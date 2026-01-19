@@ -3,7 +3,7 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from realtime import Optional
 
 from src.schemas.venue import VenueBase, VenueCreateResponse, VenueRead, VenueUpdate
-from src.api.dependencies import get_current_user, get_current_user_optional, get_venue_service
+from src.api.dependencies import get_current_user, get_current_user_optional, get_owned_venue, get_venue_service
 from src.services.venue_service import VenueService
 
 
@@ -26,11 +26,9 @@ async def create_venue(
 async def delete_venue_by_id(
     venue_id: str,
     current_user: dict = Depends(get_current_user),
-    vs: VenueService = Depends(get_venue_service)
+    vs: VenueService = Depends(get_venue_service),
+    venue: VenueRead = Depends(get_owned_venue)
 ):
-    if not venue_id:
-        raise HTTPException(status.HTTP_400_BAD_REQUEST, "No data sent")
-    
     result = await vs.delete_venue_by_id(venue_id=venue_id, owner_id=current_user["sub"])
     if not result:
         raise HTTPException(status.HTTP_404_NOT_FOUND, "Nothing was removed")
@@ -60,10 +58,8 @@ async def patch_venue(
     data: VenueUpdate,
     current_user: dict = Depends(get_current_user),
     vs: VenueService = Depends(get_venue_service),
+    venue: VenueRead = Depends(get_owned_venue)
 ):
-    if not current_user:
-        raise HTTPException(status.HTTP_401_UNAUTHORIZED, "UNAUTHORIZED")
-
     patch = data.model_dump(exclude_unset=True)
     if not patch:
         raise HTTPException(status.HTTP_400_BAD_REQUEST, "No fields to update")
@@ -72,5 +68,5 @@ async def patch_venue(
     if not updated:
         raise HTTPException(status.HTTP_404_NOT_FOUND, "Venue not found")
 
-    return await vs.get_venue_by_id_for_owner(venue_id=venue_id, owner_id=current_user["sub"])
+    return await venue
 

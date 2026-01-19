@@ -6,6 +6,8 @@ from jose import JWTError, jwt
 import requests
 from functools import lru_cache
 
+from src.services.item_service import ItemService
+from src.schemas.venue import VenueRead
 from src.services.category_service import CategoryService
 from src.services.menu_service import MenuService
 from src.services.profile_service import ProfileService
@@ -64,11 +66,20 @@ async def get_current_user(authorization: str = Security(security_scheme)):
         return payload
     except JWTError:
         raise HTTPException(status.HTTP_401_UNAUTHORIZED, "Invalid token 2")
-    
-# Services: 
+
 async def get_venue_service(supabase: Client = Depends(get_supabase_client)):
     return VenueService(supabase)
-
+    
+async def get_owned_venue(
+    venue_id: str,
+    current_user: dict = Depends(get_current_user),
+    vs: VenueService = Depends(get_venue_service)
+) -> VenueRead:
+    venue = await vs.get_venue_by_id_for_owner(venue_id=venue_id, owner_id=current_user["sub"])
+    if not venue:
+        raise HTTPException(status.HTTP_403_FORBIDDEN, "This venue is not yours")
+    return venue 
+    
 async def get_profile_service(supabase: Client = Depends(get_supabase_client)):
     return ProfileService(supabase)
 
@@ -77,3 +88,6 @@ async def get_menu_service(supabase: Client = Depends(get_supabase_client)):
 
 async def get_category_service(supabase: Client = Depends(get_supabase_client)):
     return CategoryService(supabase)
+
+async def get_item_service(supabase: Client = Depends(get_supabase_client)):
+    return ItemService(supabase)
