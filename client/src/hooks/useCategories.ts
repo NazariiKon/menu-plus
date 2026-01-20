@@ -7,7 +7,6 @@ interface UseCategoriesProps {
     activeMenuId: string | null;
     menus: MenuRead[] | null | undefined;
     setMenus: React.Dispatch<React.SetStateAction<MenuRead[] | null>> | undefined;
-    setActiveMenuId: React.Dispatch<React.SetStateAction<string | null>>;
 }
 
 export const useCategories = ({
@@ -15,10 +14,8 @@ export const useCategories = ({
     activeMenuId,
     menus,
     setMenus,
-    setActiveMenuId
 }: UseCategoriesProps) => {
     const [selectedCategory, setSelectedCategory] = useState<CategoryRead | null>(null);
-    const [previewImage, setPreviewImage] = useState<string | null>(null);
     const [insertAfterCategory, setInsertAfterCategory] = useState(0);
     const [isCategoryCreateOpen, setIsCategoryCreateOpen] = useState(false);
     const [isCategoryUpdateOpen, setIsCategoryUpdateOpen] = useState(false);
@@ -125,10 +122,8 @@ export const useCategories = ({
     const handleUpdateCategoryModal = useCallback((categoryId: string) => {
         const category = getCategoryById(categoryId) ?? null;
         setSelectedCategory(category);
-        if (category?.image)
-            setPreviewImage(category?.image)
         setIsCategoryUpdateOpen(true);
-    }, [setSelectedCategory, setIsCategoryUpdateOpen, setPreviewImage, getCategoryById]);
+    }, [setSelectedCategory, setIsCategoryUpdateOpen, getCategoryById]);
 
     const handleUpdateCategory = useCallback(async (values: {
         name: string;
@@ -191,28 +186,14 @@ export const useCategories = ({
     }, [activeMenuId, venueId, selectedCategory, setMenus]);
 
 
-
-
-    const handleImageChange = useCallback((file: File | null | undefined) => {
-        if (!file) {
-            setPreviewImage(null);
-            return;
-        }
-        const reader = new FileReader();
-        reader.onloadend = () => setPreviewImage(reader.result as string);
-        reader.readAsDataURL(file);
-    }, []);
-
     return {
         selectedCategory,
-        previewImage,
         insertAfterCategory,
         isCategoryCreateOpen,
         isCategoryUpdateOpen,
         setIsCategoryCreateOpen,
 
         getCategoryById,
-        handleImageChange,
         handleAddCategory,
         handleUpdateCategory,
         handleUpdateCategoryModal,

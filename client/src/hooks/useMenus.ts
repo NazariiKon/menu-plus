@@ -100,6 +100,7 @@ export const useMenus = (menus: MenuRead[] | null | undefined, venueId: string |
 
     const [insertAfterMenu, setInsertAfterMenu] = useState(0);
     const handleAddMenuBetween = useCallback((position: number) => {
+        console.log(position);
         setInsertAfterMenu(position);
         setMenuCreateOpen(true);
     }, []);
@@ -108,7 +109,7 @@ export const useMenus = (menus: MenuRead[] | null | undefined, venueId: string |
         async (values: FormValues) => {
             if (!venueId) return;
             try {
-                const res = await createMenu(venueId, values.name, insertAfterMenu);
+                const res = await createMenu(venueId, values.name, insertAfterMenu + 1);
                 if (res?.data) {
                     setLocalMenus(res.data);
                 }

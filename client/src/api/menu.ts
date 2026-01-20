@@ -10,7 +10,7 @@ export async function createMenu(venueId: string, name: string, position: number
 
         const data = {
             "name": name,
-            "position": position + 1,
+            "position": position,
         }
 
         const response = await fetch(`${import.meta.env.VITE_API_URL}/venues/${venueId}/menus`, {

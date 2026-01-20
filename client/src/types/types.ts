@@ -15,10 +15,9 @@ export type MenuRead = ApiComponents['schemas']['MenuRead'];
 export type CategoryRead = ApiComponents['schemas']['CategoryRead'];
 
 export type ItemRead = ApiComponents['schemas']['ItemRead'];
-type ItemCreateBack = ApiComponents['schemas']['ItemCreate'];
-export interface ItemCreate extends Omit<ItemCreateBack, 'image'> {
-    image?: File | null;
-}
+export type ItemCreate = ApiComponents['schemas']['ItemCreate'];
+export type ItemUpdate = ApiComponents['schemas']['ItemUpdate'];
+
 export type HTTPValidationError = ApiComponents['schemas']['HTTPValidationError'];
 
 export interface ApiResponse<T> {

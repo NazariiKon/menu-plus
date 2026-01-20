@@ -41,8 +41,15 @@ class ItemCreate(ORMBase):
     price: Annotated[Optional[Decimal], Field(None)]
     weight_g: Annotated[Optional[int], Field(None)]
     position: Annotated[Optional[int], Field(None)]
-    image: Annotated[Optional[UploadFile], File(None)]
+    image_bytes: bytes | None = None
 
+class ItemUpdate(BaseModel):
+    name: Optional[str] = Field(None, max_length=50)
+    desc: Optional[str] = Field(None, max_length=100)
+    price: Optional[Decimal] = Field(None)
+    weight_g: Optional[int] = Field(None)
+    position: Optional[int] = Field(None)
+    image_bytes: bytes | None = None
 
 class CategoryCreate(BaseModel):
     name: str

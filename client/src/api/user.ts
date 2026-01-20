@@ -1,5 +1,5 @@
 import { supabase } from "@/lib/supabase";
-import type { LoginRequest, RegisterRequest, ApiResponse } from "@/types/types";
+import type { RegisterRequest, ApiResponse } from "@/types/types";
 import type { User } from "@supabase/supabase-js";
 
 export async function signup(data: RegisterRequest): Promise<ApiResponse<User>> {

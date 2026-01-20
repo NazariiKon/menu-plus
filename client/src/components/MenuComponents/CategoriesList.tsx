@@ -51,6 +51,10 @@ export const CategoriesList: React.FC<CategoriesListProps> = ({
         setDeleteCategoryId(prev => prev === categoryId ? null : categoryId);
     };
 
+    const handleCategoryClick = (categoryId: string) => {
+        onAdminActions?.setActiveCategoryId(categoryId);
+    };
+
     return (
         <div className="w-full space-y-4 px-4 py-6">
             {isAdmin && (
@@ -64,7 +68,7 @@ export const CategoriesList: React.FC<CategoriesListProps> = ({
             {isAdmin && onAdminActions && (
                 <Button
                     onClick={() => onAdminActions.onAddCategory(0)}
-                    className="w-full h-10 text-2xl border-2 border-black"
+                    className="w-full h-auto text-3xl border-3 rounded-md bg-black text-white transition-all"
                     variant="outline"
                     size="lg"
                 >
@@ -80,8 +84,8 @@ export const CategoriesList: React.FC<CategoriesListProps> = ({
 
                 return (
                     <div key={category.id} className="w-full space-y-2">
-                        <Card className="overflow-hidden shadow-sm hover:shadow-md transition-all">
-                            <CardContent className="p-0 relative h-32" onClick={() => onAdminActions?.setActiveCategoryId(category.id)}>
+                        <Card className="overflow-hidden shadow-sm hover:shadow-md transition-all relative group">
+                            <CardContent className="p-0 relative h-32">
                                 {imageUrl ? (
                                     <img
                                         src={imageUrl}
@@ -92,14 +96,17 @@ export const CategoriesList: React.FC<CategoriesListProps> = ({
                                     <div className="w-full h-full bg-gradient-to-br from-muted to-muted-foreground/20" />
                                 )}
 
-                                <div className="absolute inset-0 bg-black/40 flex items-end p-4">
-                                    <h3 className="text-white font-semibold text-lg truncate">
+                                <div
+                                    className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent flex items-end p-4 cursor-pointer hover:bg-black/80 transition-all duration-300"
+                                    onClick={() => handleCategoryClick(category.id)}
+                                >
+                                    <h3 className="text-white font-bold text-lg truncate drop-shadow-lg">
                                         {category.name}
                                     </h3>
                                 </div>
 
                                 {isAdmin && onAdminActions && (
-                                    <div className="absolute top-3 right-3 flex space-x-1 bg-black/95 backdrop-blur-sm rounded-lg p-1 shadow-lg border border-black/50">
+                                    <div className="absolute top-3 right-3 flex space-x-1 bg-black/95 backdrop-blur-sm rounded-xl p-1.5 shadow-2xl border border-black/50">
                                         <Alert
                                             description="This action cannot be undone. This will permanently delete your category."
                                             open={deleteCategoryId === category.id}
@@ -121,7 +128,7 @@ export const CategoriesList: React.FC<CategoriesListProps> = ({
                                             <Button
                                                 variant="ghost"
                                                 size="sm"
-                                                className="h-8 w-8 p-0 bg-black text-white hover:bg-red-600 hover:text-white border border-transparent disabled:opacity-50"
+                                                className="h-9 w-9 p-0 bg-black text-white hover:bg-red-600 hover:text-white border-transparent shadow-md hover:shadow-lg disabled:opacity-50 transition-all"
                                                 title="Delete"
                                                 disabled={deletingCategoryId === category.id}
                                             >
@@ -134,13 +141,14 @@ export const CategoriesList: React.FC<CategoriesListProps> = ({
                                         </Alert>
 
                                         <Button
-                                            onClick={async () => {
-                                                await onAdminActions.onUpdateCategory(category.id);
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                onAdminActions.onUpdateCategory(category.id);
                                                 handleImageUpdated(category.id);
                                             }}
                                             variant="ghost"
                                             size="sm"
-                                            className="h-8 w-8 p-0 bg-black text-white hover:bg-black/90 border border-transparent"
+                                            className="h-9 w-9 p-0 bg-black text-white hover:bg-gray-800 shadow-md hover:shadow-lg border-transparent transition-all"
                                             title="Edit"
                                         >
                                             <Edit3 className="h-4 w-4" />
@@ -149,10 +157,13 @@ export const CategoriesList: React.FC<CategoriesListProps> = ({
                                         <div className="flex space-x-0.5 items-center">
                                             {index > 0 && (
                                                 <Button
-                                                    onClick={() => onAdminActions.onMoveUp(category.id, category.position)}
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        onAdminActions.onMoveUp(category.id, category.position);
+                                                    }}
                                                     variant="ghost"
                                                     size="sm"
-                                                    className="h-8 w-8 p-0 bg-black text-white hover:bg-black/90 border border-transparent"
+                                                    className="h-9 w-9 p-0 bg-black text-white hover:bg-gray-800 shadow-md hover:shadow-lg border-transparent transition-all"
                                                     title="Move Up"
                                                 >
                                                     <ArrowUp className="h-4 w-4" />
@@ -161,10 +172,13 @@ export const CategoriesList: React.FC<CategoriesListProps> = ({
 
                                             {index < sortedCategories.length - 1 && (
                                                 <Button
-                                                    onClick={() => onAdminActions.onMoveDown(category.id, category.position)}
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        onAdminActions.onMoveDown(category.id, category.position);
+                                                    }}
                                                     variant="ghost"
                                                     size="sm"
-                                                    className="h-8 w-8 p-0 bg-black text-white hover:bg-black/90 border border-transparent"
+                                                    className="h-9 w-9 p-0 bg-black text-white hover:bg-gray-800 shadow-md hover:shadow-lg border-transparent transition-all"
                                                     title="Move Down"
                                                 >
                                                     <ArrowDown className="h-4 w-4" />
@@ -179,7 +193,7 @@ export const CategoriesList: React.FC<CategoriesListProps> = ({
                         {isAdmin && onAdminActions && (
                             <Button
                                 onClick={() => onAdminActions.onAddCategory(index + 1)}
-                                className="w-full h-10 text-2xl border-2 border-black"
+                                className="w-full h-auto text-3xl border-3 rounded-md bg-black text-white transition-all"
                                 variant="outline"
                                 size="lg"
                             >

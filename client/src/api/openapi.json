@@ -433,7 +433,8 @@
                                                                                                                                         "schema":  {
                                                                                                                                                        "type":  "array",
                                                                                                                                                        "items":  {
-                                                                                                                                                                     "$ref":  "#/components/schemas/MenuRead"
+                                                                                                                                                                     "type":  "object",
+                                                                                                                                                                     "additionalProperties":  true
                                                                                                                                                                  },
                                                                                                                                                        "title":  "Response Create Menu Venues  Venue Id  Menus  Post"
                                                                                                                                                    }
@@ -495,7 +496,8 @@
                                                                                                                                                    "schema":  {
                                                                                                                                                                   "type":  "array",
                                                                                                                                                                   "items":  {
-                                                                                                                                                                                "$ref":  "#/components/schemas/MenuRead"
+                                                                                                                                                                                "type":  "object",
+                                                                                                                                                                                "additionalProperties":  true
                                                                                                                                                                             },
                                                                                                                                                                   "title":  "Response Delete Menu Venues  Venue Id  Menus  Menu Id  Delete"
                                                                                                                                                               }
@@ -558,14 +560,15 @@
                                                                                                            }
                                                                                            },
                                                                            "responses":  {
-                                                                                             "206":  {
+                                                                                             "200":  {
                                                                                                          "description":  "Successful Response",
                                                                                                          "content":  {
                                                                                                                          "application/json":  {
                                                                                                                                                   "schema":  {
                                                                                                                                                                  "type":  "array",
                                                                                                                                                                  "items":  {
-                                                                                                                                                                               "$ref":  "#/components/schemas/MenuRead"
+                                                                                                                                                                               "type":  "object",
+                                                                                                                                                                               "additionalProperties":  true
                                                                                                                                                                            },
                                                                                                                                                                  "title":  "Response Update Menu Venues  Venue Id  Menus  Menu Id  Patch"
                                                                                                                                                              }
@@ -861,7 +864,11 @@
                                                                                                                                         "content":  {
                                                                                                                                                         "application/json":  {
                                                                                                                                                                                  "schema":  {
-
+                                                                                                                                                                                                "type":  "array",
+                                                                                                                                                                                                "items":  {
+                                                                                                                                                                                                              "$ref":  "#/components/schemas/ItemRead"
+                                                                                                                                                                                                          },
+                                                                                                                                                                                                "title":  "Response Create Item Venues  Venue Id  Menus  Menu Id  Categories  Category Id  Items  Post"
                                                                                                                                                                                             }
                                                                                                                                                                              }
                                                                                                                                                     }
@@ -879,6 +886,174 @@
                                                                                                                         }
                                                                                                       }
                                                                                          },
+                  "/venues/{venue_id}/menus/{menu_id}/categories/{category_id}/items/{item_id}":  {
+                                                                                                      "delete":  {
+                                                                                                                     "tags":  [
+                                                                                                                                  "Items"
+                                                                                                                              ],
+                                                                                                                     "summary":  "Delete Item",
+                                                                                                                     "operationId":  "delete_item_venues__venue_id__menus__menu_id__categories__category_id__items__item_id__delete",
+                                                                                                                     "security":  [
+                                                                                                                                      {
+                                                                                                                                          "APIKeyHeader":  [
+
+                                                                                                                                                           ]
+                                                                                                                                      }
+                                                                                                                                  ],
+                                                                                                                     "parameters":  [
+                                                                                                                                        {
+                                                                                                                                            "name":  "venue_id",
+                                                                                                                                            "in":  "path",
+                                                                                                                                            "required":  true,
+                                                                                                                                            "schema":  {
+                                                                                                                                                           "type":  "string",
+                                                                                                                                                           "title":  "Venue Id"
+                                                                                                                                                       }
+                                                                                                                                        },
+                                                                                                                                        {
+                                                                                                                                            "name":  "menu_id",
+                                                                                                                                            "in":  "path",
+                                                                                                                                            "required":  true,
+                                                                                                                                            "schema":  {
+                                                                                                                                                           "type":  "string",
+                                                                                                                                                           "title":  "Menu Id"
+                                                                                                                                                       }
+                                                                                                                                        },
+                                                                                                                                        {
+                                                                                                                                            "name":  "category_id",
+                                                                                                                                            "in":  "path",
+                                                                                                                                            "required":  true,
+                                                                                                                                            "schema":  {
+                                                                                                                                                           "type":  "string",
+                                                                                                                                                           "title":  "Category Id"
+                                                                                                                                                       }
+                                                                                                                                        },
+                                                                                                                                        {
+                                                                                                                                            "name":  "item_id",
+                                                                                                                                            "in":  "path",
+                                                                                                                                            "required":  true,
+                                                                                                                                            "schema":  {
+                                                                                                                                                           "type":  "string",
+                                                                                                                                                           "title":  "Item Id"
+                                                                                                                                                       }
+                                                                                                                                        }
+                                                                                                                                    ],
+                                                                                                                     "responses":  {
+                                                                                                                                       "202":  {
+                                                                                                                                                   "description":  "Successful Response",
+                                                                                                                                                   "content":  {
+                                                                                                                                                                   "application/json":  {
+                                                                                                                                                                                            "schema":  {
+                                                                                                                                                                                                           "type":  "array",
+                                                                                                                                                                                                           "items":  {
+                                                                                                                                                                                                                         "$ref":  "#/components/schemas/ItemRead"
+                                                                                                                                                                                                                     },
+                                                                                                                                                                                                           "title":  "Response Delete Item Venues  Venue Id  Menus  Menu Id  Categories  Category Id  Items  Item Id  Delete"
+                                                                                                                                                                                                       }
+                                                                                                                                                                                        }
+                                                                                                                                                               }
+                                                                                                                                               },
+                                                                                                                                       "422":  {
+                                                                                                                                                   "description":  "Validation Error",
+                                                                                                                                                   "content":  {
+                                                                                                                                                                   "application/json":  {
+                                                                                                                                                                                            "schema":  {
+                                                                                                                                                                                                           "$ref":  "#/components/schemas/HTTPValidationError"
+                                                                                                                                                                                                       }
+                                                                                                                                                                                        }
+                                                                                                                                                               }
+                                                                                                                                               }
+                                                                                                                                   }
+                                                                                                                 },
+                                                                                                      "patch":  {
+                                                                                                                    "tags":  [
+                                                                                                                                 "Items"
+                                                                                                                             ],
+                                                                                                                    "summary":  "Update Item",
+                                                                                                                    "operationId":  "update_item_venues__venue_id__menus__menu_id__categories__category_id__items__item_id__patch",
+                                                                                                                    "security":  [
+                                                                                                                                     {
+                                                                                                                                         "APIKeyHeader":  [
+
+                                                                                                                                                          ]
+                                                                                                                                     }
+                                                                                                                                 ],
+                                                                                                                    "parameters":  [
+                                                                                                                                       {
+                                                                                                                                           "name":  "venue_id",
+                                                                                                                                           "in":  "path",
+                                                                                                                                           "required":  true,
+                                                                                                                                           "schema":  {
+                                                                                                                                                          "type":  "string",
+                                                                                                                                                          "title":  "Venue Id"
+                                                                                                                                                      }
+                                                                                                                                       },
+                                                                                                                                       {
+                                                                                                                                           "name":  "menu_id",
+                                                                                                                                           "in":  "path",
+                                                                                                                                           "required":  true,
+                                                                                                                                           "schema":  {
+                                                                                                                                                          "type":  "string",
+                                                                                                                                                          "title":  "Menu Id"
+                                                                                                                                                      }
+                                                                                                                                       },
+                                                                                                                                       {
+                                                                                                                                           "name":  "category_id",
+                                                                                                                                           "in":  "path",
+                                                                                                                                           "required":  true,
+                                                                                                                                           "schema":  {
+                                                                                                                                                          "type":  "string",
+                                                                                                                                                          "title":  "Category Id"
+                                                                                                                                                      }
+                                                                                                                                       },
+                                                                                                                                       {
+                                                                                                                                           "name":  "item_id",
+                                                                                                                                           "in":  "path",
+                                                                                                                                           "required":  true,
+                                                                                                                                           "schema":  {
+                                                                                                                                                          "type":  "string",
+                                                                                                                                                          "title":  "Item Id"
+                                                                                                                                                      }
+                                                                                                                                       }
+                                                                                                                                   ],
+                                                                                                                    "requestBody":  {
+                                                                                                                                        "required":  true,
+                                                                                                                                        "content":  {
+                                                                                                                                                        "application/x-www-form-urlencoded":  {
+                                                                                                                                                                                                  "schema":  {
+                                                                                                                                                                                                                 "$ref":  "#/components/schemas/ItemUpdate"
+                                                                                                                                                                                                             }
+                                                                                                                                                                                              }
+                                                                                                                                                    }
+                                                                                                                                    },
+                                                                                                                    "responses":  {
+                                                                                                                                      "206":  {
+                                                                                                                                                  "description":  "Successful Response",
+                                                                                                                                                  "content":  {
+                                                                                                                                                                  "application/json":  {
+                                                                                                                                                                                           "schema":  {
+                                                                                                                                                                                                          "type":  "array",
+                                                                                                                                                                                                          "items":  {
+                                                                                                                                                                                                                        "$ref":  "#/components/schemas/ItemRead"
+                                                                                                                                                                                                                    },
+                                                                                                                                                                                                          "title":  "Response Update Item Venues  Venue Id  Menus  Menu Id  Categories  Category Id  Items  Item Id  Patch"
+                                                                                                                                                                                                      }
+                                                                                                                                                                                       }
+                                                                                                                                                              }
+                                                                                                                                              },
+                                                                                                                                      "422":  {
+                                                                                                                                                  "description":  "Validation Error",
+                                                                                                                                                  "content":  {
+                                                                                                                                                                  "application/json":  {
+                                                                                                                                                                                           "schema":  {
+                                                                                                                                                                                                          "$ref":  "#/components/schemas/HTTPValidationError"
+                                                                                                                                                                                                      }
+                                                                                                                                                                                       }
+                                                                                                                                                              }
+                                                                                                                                              }
+                                                                                                                                  }
+                                                                                                                }
+                                                                                                  },
                   "/":  {
                             "get":  {
                                         "summary":  "Root",
@@ -1114,18 +1289,18 @@
                                                                                                         ],
                                                                                               "title":  "Position"
                                                                                           },
-                                                                             "image":  {
-                                                                                           "anyOf":  [
-                                                                                                         {
-                                                                                                             "type":  "string",
-                                                                                                             "format":  "binary"
-                                                                                                         },
-                                                                                                         {
-                                                                                                             "type":  "null"
-                                                                                                         }
-                                                                                                     ],
-                                                                                           "title":  "Image"
-                                                                                       }
+                                                                             "image_bytes":  {
+                                                                                                 "anyOf":  [
+                                                                                                               {
+                                                                                                                   "type":  "string",
+                                                                                                                   "format":  "binary"
+                                                                                                               },
+                                                                                                               {
+                                                                                                                   "type":  "null"
+                                                                                                               }
+                                                                                                           ],
+                                                                                                 "title":  "Image Bytes"
+                                                                                             }
                                                                          },
                                                           "type":  "object",
                                                           "required":  [
@@ -1211,6 +1386,85 @@
                                                                      ],
                                                         "title":  "ItemRead"
                                                     },
+                                       "ItemUpdate":  {
+                                                          "properties":  {
+                                                                             "name":  {
+                                                                                          "anyOf":  [
+                                                                                                        {
+                                                                                                            "type":  "string",
+                                                                                                            "maxLength":  50
+                                                                                                        },
+                                                                                                        {
+                                                                                                            "type":  "null"
+                                                                                                        }
+                                                                                                    ],
+                                                                                          "title":  "Name"
+                                                                                      },
+                                                                             "desc":  {
+                                                                                          "anyOf":  [
+                                                                                                        {
+                                                                                                            "type":  "string",
+                                                                                                            "maxLength":  100
+                                                                                                        },
+                                                                                                        {
+                                                                                                            "type":  "null"
+                                                                                                        }
+                                                                                                    ],
+                                                                                          "title":  "Desc"
+                                                                                      },
+                                                                             "price":  {
+                                                                                           "anyOf":  [
+                                                                                                         {
+                                                                                                             "type":  "number"
+                                                                                                         },
+                                                                                                         {
+                                                                                                             "type":  "string",
+                                                                                                             "pattern":  "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$"
+                                                                                                         },
+                                                                                                         {
+                                                                                                             "type":  "null"
+                                                                                                         }
+                                                                                                     ],
+                                                                                           "title":  "Price"
+                                                                                       },
+                                                                             "weight_g":  {
+                                                                                              "anyOf":  [
+                                                                                                            {
+                                                                                                                "type":  "integer"
+                                                                                                            },
+                                                                                                            {
+                                                                                                                "type":  "null"
+                                                                                                            }
+                                                                                                        ],
+                                                                                              "title":  "Weight G"
+                                                                                          },
+                                                                             "position":  {
+                                                                                              "anyOf":  [
+                                                                                                            {
+                                                                                                                "type":  "integer"
+                                                                                                            },
+                                                                                                            {
+                                                                                                                "type":  "null"
+                                                                                                            }
+                                                                                                        ],
+                                                                                              "title":  "Position"
+                                                                                          },
+                                                                             "image_bytes":  {
+                                                                                                 "anyOf":  [
+                                                                                                               {
+                                                                                                                   "type":  "string",
+                                                                                                                   "format":  "binary"
+                                                                                                               },
+                                                                                                               {
+                                                                                                                   "type":  "null"
+                                                                                                               }
+                                                                                                           ],
+                                                                                                 "title":  "Image Bytes"
+                                                                                             }
+                                                                         },
+                                                          "type":  "object",
+                                                          "title":  "ItemUpdate"
+                                                      },
                                        "Login":  {
                                                      "properties":  {
                                                                         "email":  {

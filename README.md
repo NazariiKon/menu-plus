@@ -115,8 +115,8 @@ npm run dev
 **Prerequisites:** Python 3.12+, Node.js 18+, Supabase account
 
 ## 🌐 Live Demo
-- **Frontend:**
-- **Backend:**
+- **Frontend:** https://menu-plus-client.vercel.app/
+- **Backend:** https://menu-plus-server.onrender.com/docs
 
 ## 🤝 Contributing
 1. Fork repo

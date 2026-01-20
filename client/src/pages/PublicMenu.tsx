@@ -10,7 +10,7 @@ import { useIsOwner } from "@/hooks/useIsOwner";
 import { useMenus } from "@/hooks/useMenus";
 import { useVenueBySlug } from "@/hooks/useVenue";
 import { useCategories } from "@/hooks/useCategories";
-import { ItemsList } from "./ItemsList";
+import { ItemsList } from "../components/MenuComponents/ItemsList";
 import type { AdminCallbacksCategories, AdminCallbacksItems } from "@/types/types";
 import { useItem } from "@/hooks/useItem";
 
@@ -48,11 +48,9 @@ export default function PublicMenu() {
     } = useMenus(venue?.menus, venue?.id);
 
     const {
-        previewImage,
         isCategoryCreateOpen,
         selectedCategory,
         setIsCategoryCreateOpen,
-        handleImageChange,
         isCategoryUpdateOpen,
         setIsCategoryUpdateOpen,
         handleAddCategory,
@@ -66,25 +64,39 @@ export default function PublicMenu() {
         activeMenuId,
         menus,
         setMenus,
-        setActiveMenuId
     });
     const activeMenu = menus?.find((m) => m.id === activeMenuId) || null;
     const activeCategory = activeMenu?.categories?.find(c => c.id === activeCategoryId);
 
+    const [previewImage, setPreviewImage] = useState<string | null>(null);
+    const handleImageChange = useCallback((file: File | null | undefined) => {
+        if (!file) {
+            setPreviewImage(null);
+            return;
+        }
+        const reader = new FileReader();
+        reader.onloadend = () => setPreviewImage(reader.result as string);
+        reader.readAsDataURL(file);
+    }, []);
 
     const {
-        insertAfterItem,
         isItemCreateOpen,
         setIsItemCreateOpen,
         handleAddItem,
         handleCreateItem,
+        handleDeleteItem,
+        changeItemPosition,
+        setIsItemUpdateOpen,
+        isItemUpdateOpen,
+        handleUpdateItemModel,
+        handleUpdateItem,
+        selectedItem
     } = useItem({
         venueId: venue?.id,
-        activeMenuId,
-        activeCategoryId,
+        activeMenuId: activeMenuId,
+        category: activeCategory,
         setMenus
     });
-
 
     const { isOwner: isAdminMode, loading: ownerLoading } = useIsOwner(venue);
 
@@ -115,13 +127,13 @@ export default function PublicMenu() {
 
     const ItemsAdminActions = useMemo<AdminCallbacksItems>(
         () => ({
-            onAddItem: (position: number) => { handleAddItem(position); },
-            onDeleteItem: (itemId: string) => { console.log(`Delete ${itemId}`); },
-            onUpdateItem: (itemId: string) => { console.log(`Update  ${itemId}`); },
-            onMoveUp: (itemId: string, position: number) => { console.log(`Up ${itemId}, ${position}`); },
-            onMoveDown: (itemId: string, position: number) => { console.log(`Down ${itemId}, ${position}`); },
+            onAddItem: handleAddItem,
+            onDeleteItem: handleDeleteItem,
+            onUpdateItem: handleUpdateItemModel,
+            onMoveUp: (id, pos) => changeItemPosition(id, pos, -1),
+            onMoveDown: (id, pos) => changeItemPosition(id, pos, 1),
         }),
-        []
+        [handleAddItem, handleDeleteItem, changeItemPosition]
     );
 
     const isLoading = venueLoading || menusLoading || ownerLoading;
@@ -148,13 +160,17 @@ export default function PublicMenu() {
                 onEdit={handleEditMenu}
                 onDelete={handleDeleteMenu}
                 onAddBetween={handleAddMenuBetween}
-                onValueChange={setActiveMenuId}
+                onValueChange={(menuId) => {
+                    setActiveMenuId(menuId);
+                    setActiveCategoryId(null);
+                }}
                 isAdmin={isAdminMode}
             />
 
             {activeCategoryId ? (
                 <ItemsList
                     key={activeCategoryId}
+                    currency={venue.currency}
                     items={activeCategory?.items ?? []}
                     category={activeCategory}
                     onBack={() => setActiveCategoryId(null)}
@@ -169,18 +185,94 @@ export default function PublicMenu() {
                     onAdminActions={categoryAdminActions}
                 />
             )}
+            <NameModal
+                defaultItem={selectedItem ?? undefined}
+                open={isItemUpdateOpen}
+                onOpenChange={(open) => {
+                    setIsItemUpdateOpen(open);
+                    if (!open) {
+                        handleImageChange(null);
+                    }
+                }}
+                onSubmit={async (values) => {
+                    if (!selectedItem) return;
+                    let imageBytes: string | null = null;
+                    if (values.image) {
+                        imageBytes = await new Promise<string>((resolve, reject) => {
+                            const reader = new FileReader();
+                            reader.onload = () => {
+                                const result = reader.result as string;
+                                resolve(result.split(',')[1]);
+                            };
+                            reader.onerror = () => reject(new Error('Something wrong with your file'));
+                            reader.readAsDataURL(values.image!);
+                        });
+                    }
+
+                    const itemData = {
+                        ...values,
+                        price: values.price ? parseFloat(values.price) : null,
+                        weight_g: values.weight_g ? parseInt(values.weight_g, 10) : null,
+                        image_bytes: imageBytes,
+                    };
+
+
+                    await handleUpdateItem(itemData);
+                }}
+                title="Edit the item"
+                description="Enter the new item's name and optionally add an image."
+                submitLabel="Save"
+                placeholder="e.g. Puncake"
+                showImage={true}
+                isItem={true}
+                showDropList={true}
+                dropListData={activeMenu?.categories ?? null}
+                currentId={selectedItem?.category_id}
+                imagePreview={selectedItem?.image}
+                onImageChange={handleImageChange}
+                dropDataLabel="Category"
+            />
 
             <NameModal
                 open={isItemCreateOpen}
-                onOpenChange={(open) => setIsItemCreateOpen(open)}
-                onSubmit={handleCreateItem}
+                onOpenChange={(open) => {
+                    setIsItemCreateOpen(open);
+                    if (!open) {
+                        handleImageChange(null);
+                    }
+                }}
+                onSubmit={async (values) => {
+                    let imageBytes: string | null = null;
+                    if (values.image) {
+                        imageBytes = await new Promise<string>((resolve, reject) => {
+                            const reader = new FileReader();
+                            reader.onload = () => {
+                                const result = reader.result as string;
+                                resolve(result.split(',')[1]);
+                            };
+                            reader.onerror = () => reject(new Error('Something wrong with your file'));
+                            reader.readAsDataURL(values.image!);
+                        });
+                    }
+
+                    const itemData = {
+                        ...values,
+                        price: values.price ? parseFloat(values.price) : null,
+                        weight_g: values.weight_g ? parseInt(values.weight_g, 10) : null,
+                        image_bytes: imageBytes,
+                    };
+
+                    console.log(values.image);
+                    await handleCreateItem(itemData);
+                }}
                 title="Create a new item"
                 description="Enter a item's name and optionally add an image."
                 submitLabel="Create"
                 placeholder="e.g. Puncake"
-            //  showImage={true}
-            //  imagePreview={previewImage ?? undefined}
-            // onImageChange={handleImageChange}
+                showImage={true}
+                isItem={true}
+                imagePreview={previewImage ?? undefined}
+                onImageChange={handleImageChange}
             />
 
             <NameModal
@@ -216,10 +308,11 @@ export default function PublicMenu() {
                 placeholder="e.g. Desserts"
                 initialName={selectedCategory?.name ?? ""}
                 showImage={true}
-                currentMenu={selectedCategory?.menu_id}
+                currentId={selectedCategory?.menu_id}
                 showDropList={true}
+                dropDataLabel="Menu"
                 dropListData={menus ?? null}
-                imagePreview={previewImage ?? undefined}
+                imagePreview={selectedCategory?.image}
                 onImageChange={handleImageChange}
             />
 

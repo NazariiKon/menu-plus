@@ -1,7 +1,7 @@
 from supabase import Client
 
 
-class ImageRemover:
+class ImageHandler:
     def __init__(self, supabase: Client):
         self.supabase = supabase
 
@@ -33,3 +33,18 @@ class ImageRemover:
         except Exception as e:
             print(f"Storage delete ignored: {e}")
             pass
+
+    async def upload_image(self, image_bytes: bytes | None, file_path: str) -> str:
+        if not image_bytes:
+            return ""
+        
+        try:
+            self.supabase.storage.from_("images").upload(file_path, image_bytes)
+        except Exception as e:
+            if "already exists" in str(e).lower():
+                self.supabase.storage.from_("images").remove([file_path])
+                self.supabase.storage.from_("images").upload(file_path, image_bytes)
+            else:
+                raise
+        
+        return file_path

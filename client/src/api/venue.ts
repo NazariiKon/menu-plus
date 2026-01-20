@@ -19,7 +19,7 @@ export async function createVenue(data: VenueCreateInput): Promise<ApiResponse<V
         return response.ok
             ? result
             : { success: false, error: result.detail || "Unknown error" };
-    } catch (error) {
+    } catch (error_) {
         return { success: false, error: "Network error" };
     }
 }
@@ -47,7 +47,7 @@ export async function deleteVenue(venueId: string): Promise<ApiResponse<VenueRea
 
 export async function getMenuBySlug(slug: string): Promise<ApiResponse<VenueRead>> {
     try {
-        const { data: sessionData, error } = await supabase.auth.getSession();
+        const { data: sessionData } = await supabase.auth.getSession();
         const token = sessionData.session?.access_token;
 
         const headers: Record<string, string> = {

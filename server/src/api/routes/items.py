@@ -4,12 +4,11 @@ from fastapi import APIRouter, Depends, File, Form, UploadFile, status
 from src.services.item_service import ItemService
 from src.schemas.venue import VenueRead
 from src.api.dependencies import get_current_user, get_item_service, get_owned_venue
-from src.schemas.menu import ItemCreate, ItemRead
+from src.schemas.menu import ItemCreate, ItemRead, ItemUpdate
 
 
 router = APIRouter(prefix="/venues/{venue_id}/menus/{menu_id}/categories/{category_id}/items", tags=["Items"])
 
-# 
 @router.post("/", response_model=list[ItemRead], status_code=status.HTTP_201_CREATED)
 async def create_item(
     venue_id: str, 
@@ -21,4 +20,31 @@ async def create_item(
     itemS: ItemService = Depends(get_item_service),
 ):
     await itemS.create_item(data, category_id)
+    return await itemS.get_items_by_category(category_id)
+
+@router.delete("/{item_id}", response_model=list[ItemRead], status_code=status.HTTP_202_ACCEPTED)
+async def delete_item(
+    venue_id: str, 
+    menu_id: str, 
+    category_id: str,
+    item_id: str,
+    current_user: dict = Depends(get_current_user),
+    venue: VenueRead = Depends(get_owned_venue),
+    itemS: ItemService = Depends(get_item_service),
+):
+    await itemS.delete_item(category_id, item_id)
+    return await itemS.get_items_by_category(category_id)
+
+@router.patch("/{item_id}", response_model=list[ItemRead], status_code=status.HTTP_206_PARTIAL_CONTENT)
+async def update_item(
+    venue_id: str,
+    menu_id: str,
+    category_id: str,
+    item_id: str,
+    data: ItemUpdate = Form(),
+    current_user: dict = Depends(get_current_user),
+    venue: VenueRead = Depends(get_owned_venue),
+    itemS: ItemService = Depends(get_item_service),
+):
+    await itemS.update_item(data, category_id, item_id)
     return await itemS.get_items_by_category(category_id)

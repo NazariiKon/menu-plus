@@ -45,16 +45,16 @@ export function MenuSubmenuTabs({
         })
     }, [menus])
 
-    const firstMenu = React.useMemo(() => {
-        return sortedMenus.find(menu => (menu.position ?? 0) === 1)
+    const firstMenuId = React.useMemo(() => {
+        return sortedMenus[0]?.id
     }, [sortedMenus])
 
     React.useEffect(() => {
-        if (!controlled && internalValue === undefined && firstMenu) {
-            onValueChange?.(firstMenu.id)
-            setInternalValue(firstMenu.id)
+        if (!controlled && internalValue === undefined && firstMenuId) {
+            onValueChange?.(firstMenuId)
+            setInternalValue(firstMenuId)
         }
-    }, [controlled, internalValue, firstMenu, onValueChange])
+    }, [controlled, internalValue, firstMenuId, onValueChange])
 
     const activeId = controlled ? value : internalValue
 

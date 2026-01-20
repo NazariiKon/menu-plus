@@ -26,11 +26,7 @@ class VenueBase(BaseModel):
     logo: str = "default.png"
     background: str = "defaultBG.png"
 
-class VenueCreateResponse(BaseModel):
-    venue: VenueRead
-    menus: List[MenuRead]
-    categories: List[CategoryRead]
-    items: List[ItemRead]
+
 
 class VenueUpdate(BaseModel):
     model_config = ConfigDict(from_attributes=True)
@@ -64,5 +60,11 @@ class ApiResponse(BaseModel):
     success: bool
     data: List[VenueRead] = []
     total: int
+
+class VenueCreateResponse(BaseModel):
+    venue: VenueRead
+    menus: List[MenuRead]
+    categories: List[CategoryRead]
+    items: List[ItemRead]
 
 VenueRead.model_rebuild()

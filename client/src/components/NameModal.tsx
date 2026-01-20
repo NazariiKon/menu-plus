@@ -16,23 +16,23 @@ import { Loader2 } from "lucide-react";
 import {
     Form,
     FormControl,
-    FormDescription,
     FormField,
     FormItem,
     FormLabel,
     FormMessage,
 } from "@/components/ui/form";
 import { supabase } from "@/lib/supabase";
-import type { MenuRead } from "@/types/types";
+import type { ItemRead } from "@/types/types";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
 
 const formSchema = z.object({
     name: z.string().trim().min(1, "Name is required."),
     image: z.instanceof(File).nullable().optional(),
     menuId: z.string().optional(),
+    category_id: z.string().optional(),
     desc: z.string().optional(),
-    price: z.number().min(0, "Price must be positive.").optional(),
-    weight_g: z.number().min(10, "Wight must be positive").optional(),
+    price: z.string().optional(),
+    weight_g: z.string().optional(),
 });
 
 export type FormValues = z.infer<typeof formSchema>;
@@ -47,14 +47,16 @@ export type NameModalProps = {
     submitLabel?: string;
     placeholder?: string;
     showImage?: boolean;
-    isItem?: boolean
-    currentMenu?: string;
+    isItem?: boolean;
+    currentId?: string;
     showDropList?: boolean;
-    dropListData?: MenuRead[] | null;
+    dropListData?: any[] | null;
     imagePreview?: string | null;
     onImageChange?: (file: File | null) => void;
     accept?: string;
+    dropDataLabel?: string;
     maxSizeMB?: number;
+    defaultItem?: ItemRead;
 };
 
 export function NameModal({
@@ -70,33 +72,51 @@ export function NameModal({
     isItem = false,
     showDropList = false,
     dropListData = [],
-    currentMenu,
+    currentId,
     imagePreview,
     onImageChange,
     accept = "image/*",
     maxSizeMB = 5,
+    defaultItem,
+    dropDataLabel,
 }: NameModalProps) {
     const [localPreview, setLocalPreview] = React.useState<string | null>(null);
 
     const form = useForm<FormValues>({
         resolver: zodResolver(formSchema),
-        defaultValues: { name: initialName, image: null, menuId: currentMenu || "" },
+        defaultValues: {
+            name: initialName || defaultItem?.name,
+            image: null,
+            menuId: currentId || "",
+            category_id: currentId || "",
+            desc: defaultItem?.desc || "",
+            price: defaultItem?.price?.toString() || undefined,
+            weight_g: defaultItem?.weight_g?.toString() || undefined
+        },
         mode: "onSubmit",
     });
 
+    React.useEffect(() => {
+        if (!open) {
+            setLocalPreview(null);
+        }
+    }, [open]);
 
     React.useEffect(() => {
         if (open) {
             form.reset({
-                name: initialName,
+                name: initialName || defaultItem?.name,
                 image: null,
-                menuId: currentMenu || ""
+                menuId: currentId || "",
+                category_id: currentId || "",
+                desc: defaultItem?.desc || "",
+                price: defaultItem?.price?.toString() || undefined,
+                weight_g: defaultItem?.weight_g?.toString() || undefined
             });
             form.clearErrors();
             setLocalPreview(null);
         }
-    }, [open, initialName, currentMenu, form]);
-
+    }, [open, initialName, currentId, form]);
 
     React.useEffect(() => {
         return () => {
@@ -162,10 +182,10 @@ export function NameModal({
                                 name="menuId"
                                 render={({ field }) => (
                                     <FormItem className="w-full">
-                                        <FormLabel>Menu:</FormLabel>
+                                        <FormLabel>{dropDataLabel}:</FormLabel>
                                         <Select
                                             onValueChange={field.onChange}
-                                            defaultValue={currentMenu || ""}
+                                            defaultValue={currentId || ""}
                                         >
                                             <FormControl>
                                                 <SelectTrigger className="w-full">
@@ -173,27 +193,64 @@ export function NameModal({
                                                 </SelectTrigger>
                                             </FormControl>
                                             <SelectContent>
-                                                {dropListData.map((menu) => (
+                                                {dropListData.map((obj) => (
                                                     <SelectItem
-                                                        key={menu.id}
-                                                        value={menu.id}
+                                                        key={obj.id}
+                                                        value={obj.id}
                                                     >
-                                                        {menu.name}
+                                                        {obj.name}
                                                     </SelectItem>
                                                 ))}
                                             </SelectContent>
                                         </Select>
-                                        <FormDescription>
-                                            Change which menu this category belongs to.
-                                        </FormDescription>
                                         <FormMessage />
                                     </FormItem>
                                 )}
                             />
                         )}
-
-
-
+                        {isItem && (
+                            <>
+                                <FormField
+                                    control={form.control}
+                                    name="desc"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel>Description</FormLabel>
+                                            <FormControl>
+                                                <Input {...field} placeholder="Enter item description" />
+                                            </FormControl>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+                                <FormField
+                                    control={form.control}
+                                    name="price"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel>Price</FormLabel>
+                                            <FormControl>
+                                                <Input type="number" {...field} placeholder="0.00" />
+                                            </FormControl>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+                                <FormField
+                                    control={form.control}
+                                    name="weight_g"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel>Weight (g)</FormLabel>
+                                            <FormControl>
+                                                <Input type="number" {...field} placeholder="10" />
+                                            </FormControl>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+                            </>
+                        )}
                         {showImage && (
                             <FormField
                                 control={form.control}
@@ -223,8 +280,6 @@ export function NameModal({
                                 )}
                             />
                         )}
-
-
                         <DialogFooter className="gap-2">
                             <Button
                                 type="button"
@@ -248,7 +303,6 @@ export function NameModal({
                                     submitLabel
                                 )}
                             </Button>
-
                         </DialogFooter>
                     </form>
                 </Form>
