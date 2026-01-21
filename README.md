@@ -16,6 +16,10 @@
 [![TailwindCSS](https://img.shields.io/badge/TailwindCSS-38B2AC.svg?logo=tailwindcss&logoColor=white)](https://tailwindcss.com)
 [![Python](https://img.shields.io/badge/Python-3776AB.svg?logo=python&logoColor=white)](https://python.org)
 
+## 🌐 Live Demo
+- **Frontend:** https://menu-plus-client.vercel.app/
+- **Backend:** https://menu-plus-server.onrender.com/docs
+
 ## 🎯 The Problem It Solves
 
 | ❌ Paper Menus | ✅ Menu+ |
@@ -113,10 +117,6 @@ npm run dev
 **Client:** `http://localhost:5173`
 
 **Prerequisites:** Python 3.12+, Node.js 18+, Supabase account
-
-## 🌐 Live Demo
-- **Frontend:** https://menu-plus-client.vercel.app/
-- **Backend:** https://menu-plus-server.onrender.com/docs
 
 ## 🤝 Contributing
 1. Fork repo
