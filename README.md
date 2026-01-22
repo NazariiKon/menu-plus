@@ -9,7 +9,6 @@
 
 [![React](https://img.shields.io/badge/React-61DAFB.svg?logo=react&logoColor=black)](https://reactjs.org)
 [![FastAPI](https://img.shields.io/badge/FastAPI-005571.svg?logo=fastapi)](https://fastapi.tiangolo.com)
-[![Node.js](https://img.shields.io/badge/Node.js-43853D.svg?logo=node.js&logoColor=white)](https://nodejs.org)
 [![Supabase](https://img.shields.io/badge/Supabase-F03D2F.svg?logo=supabase&logoColor=white)](https://supabase.com)
 [![shadcn/ui](https://img.shields.io/badge/shadcn--ui-0EA5E9.svg?logo=shadcn&logoColor=white)](https://ui.shadcn.com)
 [![Next.js](https://img.shields.io/badge/Next.js-000000.svg?logo=next.js&logoColor=white)](https://nextjs.org)
@@ -116,7 +115,7 @@ npm run dev
 ```
 **Client:** `http://localhost:5173`
 
-**Prerequisites:** Python 3.12+, Node.js 18+, Supabase account
+**Prerequisites:** Python 3.12+, Supabase account
 
 ## 🤝 Contributing
 1. Fork repo

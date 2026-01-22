@@ -68,5 +68,5 @@ async def patch_venue(
     if not updated:
         raise HTTPException(status.HTTP_404_NOT_FOUND, "Venue not found")
 
-    return await venue
+    return venue
 

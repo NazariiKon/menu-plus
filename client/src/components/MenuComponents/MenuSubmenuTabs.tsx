@@ -85,7 +85,7 @@ export function MenuSubmenuTabs({
                         return (
                             <div key={m.id} className="flex items-start gap-2 shrink-0">
                                 <div className="flex flex-col items-center gap-1 shrink-0">
-                                    <button
+                                    <Button
                                         type="button"
                                         onClick={() => setActive(m.id)}
                                         className={cn(
@@ -97,7 +97,7 @@ export function MenuSubmenuTabs({
                                         )}
                                     >
                                         {m.name}
-                                    </button>
+                                    </Button>
 
                                     {isAdmin && (
                                         <div className="flex items-center gap-1 rounded-xl bg-black p-0.5">
@@ -201,7 +201,7 @@ function IconActionButton({
     children: React.ReactNode;
 }) {
     return (
-        <button
+        <Button
             type="button"
             onClick={(e) => {
                 e.stopPropagation();
@@ -209,9 +209,9 @@ function IconActionButton({
             }}
             aria-label={ariaLabel}
             title={ariaLabel}
-            className="group grid h-8 w-7 place-items-center rounded-md bg-black hover:bg-white/20 transition-all"
+            className="cursor-pointer group grid h-8 w-7 place-items-center rounded-md bg-black hover:bg-white/20 transition-all"
         >
             {children}
-        </button>
+        </Button>
     );
 }

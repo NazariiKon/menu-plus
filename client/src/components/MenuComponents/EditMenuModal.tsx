@@ -139,6 +139,9 @@ export default function EditVenueModal({
         onOpenChange(false)
     })
 
+    const selectedLogo = form.watch("logoFile");
+    const selectedBG = form.watch("backgroundFile");
+
     return (
         <Dialog
             open={open}
@@ -175,7 +178,7 @@ export default function EditVenueModal({
                                     <FormField
                                         control={form.control}
                                         name="logoFile"
-                                        render={({ field: { onChange, ref } }) => (
+                                        render={({ field: { onChange, value, ref } }) => (
                                             <FormItem className="col-span-1">
                                                 <FormLabel className="text-sm">Logo</FormLabel>
                                                 <FormControl>
@@ -185,11 +188,28 @@ export default function EditVenueModal({
                                                             type="file"
                                                             accept="image/*"
                                                             className="sr-only"
-                                                            onChange={(e) => onChange(e.target.files?.[0])}
+                                                            onChange={(e) => {
+                                                                const file = e.target.files?.[0];
+                                                                if (file) onChange(file);
+                                                            }}
                                                         />
-                                                        <div className="relative z-10 rounded-xl bg-white/85 px-3 py-2 text-xs font-semibold text-black shadow">
-                                                            Upload logo
-                                                        </div>
+
+                                                        {value ? (
+                                                            <div className="relative h-full w-full">
+                                                                <img
+                                                                    src={URL.createObjectURL(value as File)}
+                                                                    alt="Preview"
+                                                                    className="h-full w-full object-cover"
+                                                                />
+                                                                <div className="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity">
+                                                                    <span className="text-xs font-medium text-white">Change logo</span>
+                                                                </div>
+                                                            </div>
+                                                        ) : (
+                                                            <div className="relative z-10 rounded-xl bg-white/85 px-3 py-2 text-xs font-semibold text-black shadow">
+                                                                Upload logo
+                                                            </div>
+                                                        )}
                                                     </label>
                                                 </FormControl>
                                                 <FormMessage />
@@ -197,10 +217,11 @@ export default function EditVenueModal({
                                         )}
                                     />
 
+
                                     <FormField
                                         control={form.control}
                                         name="backgroundFile"
-                                        render={({ field: { onChange, ref } }) => (
+                                        render={({ field: { onChange, value, ref } }) => (
                                             <FormItem className="col-span-1">
                                                 <FormLabel className="text-sm">Background</FormLabel>
                                                 <FormControl>
@@ -210,17 +231,35 @@ export default function EditVenueModal({
                                                             type="file"
                                                             accept="image/*"
                                                             className="sr-only"
-                                                            onChange={(e) => onChange(e.target.files?.[0])}
+                                                            onChange={(e) => {
+                                                                const file = e.target.files?.[0];
+                                                                if (file) onChange(file);
+                                                            }}
                                                         />
-                                                        <div className="relative z-10 rounded-xl bg-white/85 px-3 py-2 text-xs font-semibold text-black shadow">
-                                                            Upload BG
-                                                        </div>
+
+                                                        {value ? (
+                                                            <div className="relative h-full w-full">
+                                                                <img
+                                                                    src={URL.createObjectURL(value as File)}
+                                                                    alt="Background Preview"
+                                                                    className="h-full w-full object-cover"
+                                                                />
+                                                                <div className="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity">
+                                                                    <span className="text-xs font-medium text-white">Change BG</span>
+                                                                </div>
+                                                            </div>
+                                                        ) : (
+                                                            <div className="relative z-10 rounded-xl bg-white/85 px-3 py-2 text-xs font-semibold text-black shadow">
+                                                                Upload BG
+                                                            </div>
+                                                        )}
                                                     </label>
                                                 </FormControl>
                                                 <FormMessage />
                                             </FormItem>
                                         )}
                                     />
+
                                 </div>
 
                                 <div className="grid grid-cols-2 gap-3">

@@ -100,7 +100,6 @@ export const useMenus = (menus: MenuRead[] | null | undefined, venueId: string |
 
     const [insertAfterMenu, setInsertAfterMenu] = useState(0);
     const handleAddMenuBetween = useCallback((position: number) => {
-        console.log(position);
         setInsertAfterMenu(position);
         setMenuCreateOpen(true);
     }, []);

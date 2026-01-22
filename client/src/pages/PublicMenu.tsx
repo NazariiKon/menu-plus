@@ -13,6 +13,7 @@ import { useCategories } from "@/hooks/useCategories";
 import { ItemsList } from "../components/MenuComponents/ItemsList";
 import type { AdminCallbacksCategories, AdminCallbacksItems } from "@/types/types";
 import { useItem } from "@/hooks/useItem";
+import PanelFooter from "@/components/PanelComponents/PanelFooter";
 
 export default function PublicMenu() {
     const { slug } = useParams<{ slug: string }>();
@@ -149,7 +150,7 @@ export default function PublicMenu() {
     }
 
     return (
-        <div className="min-h-dvh max-w-md mx-auto w-full max-w-[450px] bg-background text-foreground">
+        <div className="min-h-dvh max-w-md mx-auto w-full max-w-[500px] bg-background text-foreground">
             <Header venue={venue} onEdit={openVenueEdit} isAdmin={isAdminMode} />
             <Details venue={venue} />
 
@@ -342,6 +343,8 @@ export default function PublicMenu() {
                 venue={venue}
                 onSave={handleVenueSubmit}
             />
+
+            {isAdminMode && <PanelFooter></PanelFooter>}
         </div>
     );
 }

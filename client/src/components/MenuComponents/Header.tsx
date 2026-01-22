@@ -29,7 +29,7 @@ export default function Header({ venue, onEdit, isAdmin = false }: HeaderProps) 
                         variant="default"
                         size="sm"
                         className="absolute left-3 top-3 z-20"
-                        onClick={() => navigate(-1)}
+                        onClick={() => navigate("/admin")}
                     >
                         <ArrowLeft />
                     </Button>

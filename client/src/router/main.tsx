@@ -12,6 +12,8 @@ import { useDispatch } from 'react-redux';
 import AuthGuard from '@/components/AuthGuard'
 import AdminHome from '@/pages/AdminHome'
 import PublicMenu from '@/pages/PublicMenu'
+import QRCode from '@/components/PanelComponents/QRCode'
+import MenuPanel from '@/components/PanelComponents/MenuPanel'
 
 export default function AppRouter() {
     const dispatch = useDispatch<AppDispatch>();
@@ -75,10 +77,8 @@ export default function AppRouter() {
                 } />
 
                 <Route path="/p/:slug" element={<PublicMenu />} />
+                <Route path="/panel/:slug/qr-code" element={<MenuPanel />} />
                 <Route path="/auth/callback" element={<AuthCallback />} />
-
-
-
             </Routes>
         </BrowserRouter>
     )
