@@ -3,6 +3,7 @@ import type { VenueRead } from "@/types/types"
 import { Button } from "../ui/button"
 import { useNavigate } from "react-router-dom"
 import { ArrowLeft } from "lucide-react"
+import React from "react"
 
 type HeaderProps = {
     venue: VenueRead
@@ -12,14 +13,16 @@ type HeaderProps = {
 
 export default function Header({ venue, onEdit, isAdmin = false }: HeaderProps) {
     const navigate = useNavigate()
+    const cacheBuster = React.useMemo(() => Date.now(), [venue]);
+
     const bgPath = venue?.background ?? "logos/defaultBG.png"
     const logoPath = venue?.logo ?? "logos/default.png"
 
     const { data: bgData } = supabase.storage.from("images").getPublicUrl(bgPath)
     const { data: logoData } = supabase.storage.from("images").getPublicUrl(logoPath)
 
-    const bgUrl = bgData.publicUrl
-    const logoUrl = logoData.publicUrl
+    const bgUrl = `${bgData.publicUrl}?t=${cacheBuster}`
+    const logoUrl = `${logoData.publicUrl}?t=${cacheBuster}`
     return (
         <div className="sm:w-full">
             <header className="relative overflow-hidden rounded-b-3xl">

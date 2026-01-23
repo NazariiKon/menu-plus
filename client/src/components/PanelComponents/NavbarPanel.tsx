@@ -1,4 +1,4 @@
-import { X, UserCircle, Settings } from "lucide-react";
+import { X, UserCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
@@ -7,7 +7,7 @@ export const NavbarPanel = ({ title = "QR Code Settings" }) => {
     const navigate = useNavigate();
 
     return (
-        <div className="sticky top-2 z-50 px-4 py-2"> {/* Отступы создают эффект парения */}
+        <div className="sticky top-2 z-50 px-4 py-2">
             <nav className="h-14 bg-white/90 backdrop-blur-lg border border-white/20 shadow-[0_8px_30px_rgb(0,0,0,0.12)] rounded-2xl flex items-center px-3">
                 <div className="flex w-full items-center">
                     <Button

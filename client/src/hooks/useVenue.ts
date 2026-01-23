@@ -28,13 +28,34 @@ export const useVenueBySlug = (slug: string) => {
         async (updatedData: Partial<VenueUpdate>) => {
             if (!venue) return;
             try {
-                const updatedVenue = await editVenue(updatedData, venue.id);
-                if (updatedVenue.data) setVenue(updatedVenue.data);
-            } catch { }
-            setVenueEditOpen(false);
+                const response = await editVenue(updatedData, venue.id);
+
+                if (response && response.data) {
+                    const newData = response.data;
+
+                    setVenue(prev => {
+                        if (!prev) return newData;
+
+                        return {
+                            ...prev,
+                            ...newData,
+                            menus: (newData.menus && newData.menus.length > 0)
+                                ? newData.menus
+                                : prev.menus
+                        };
+                    });
+
+                    setVenueEditOpen(false);
+                }
+            } catch (error) {
+                console.error("Update failed", error);
+            }
         },
-        [venue]
+        [venue, setVenue]
     );
+
+
+
 
     const openVenueEdit = useCallback(() => {
         if (venue) setVenueEditOpen(true);

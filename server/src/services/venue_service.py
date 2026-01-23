@@ -1,8 +1,11 @@
+import base64
 import re
+import uuid
 from realtime import Optional
 from supabase import Client
-from typing import Any, Tuple, List
+from typing import Tuple, List
 
+from src.utils.image_handler import ImageHandler
 from src.schemas.venue import VenueBase, VenueRead
 
 
@@ -60,6 +63,26 @@ class VenueService:
     
     
     async def update_venue(self, venue_id: str, owner_id: str, patch: dict) -> dict:
+        if "logo" in patch:
+            logo_bytes = base64.b64decode(patch.pop("logo")) if patch["logo"] else None
+            if logo_bytes:
+                logo_path = await ImageHandler(self.supabase).upload_image(
+                    logo_bytes, 
+                    f"venues/{venue_id}/logos/{venue_id}.jpg"
+                )
+                if logo_path:
+                    patch["logo"] = logo_path
+
+        if "background" in patch:
+            bg_bytes = base64.b64decode(patch.pop("background")) if patch["background"] else None
+            if bg_bytes:
+                bg_path = await ImageHandler(self.supabase).upload_image(
+                    bg_bytes, 
+                    f"venues/{venue_id}/backgrounds/{venue_id}.jpg"
+                )
+                if bg_path:
+                    patch["background"] = bg_path
+
         response = (
             self.supabase
             .table("venues")
@@ -68,7 +91,9 @@ class VenueService:
             .eq("owner_id", owner_id)
             .execute()
         )
+
         return response.data[0] if response.data else {}
+
 
     
     async def create_venue(self, owner_id: str, data: VenueBase) -> dict:

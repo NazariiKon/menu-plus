@@ -4,7 +4,6 @@ import { z } from "zod"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 
-import { supabase } from "@/lib/supabase"
 import type { VenueRead, VenueUpdate } from "@/types/types"
 
 import {
@@ -26,15 +25,16 @@ import {
 } from "@/components/ui/form"
 
 const schema = z.object({
-    name: z.string().trim().min(1, "Name is required"),
-    desc: z.string().trim().optional().or(z.literal("")),
-    phone: z.string().trim().optional().or(z.literal("")),
-    wifiPassword: z.string().trim().optional().or(z.literal("")),
-    address: z.string().trim().optional().or(z.literal("")),
-    google_maps_link: z.string().trim().optional().or(z.literal("")),
-    inst_link: z.string().trim().optional().or(z.literal("")),
-    facebook_link: z.string().trim().optional().or(z.literal("")),
-    tiktok_link: z.string().trim().optional().or(z.literal("")),
+    name: z.string().trim().min(1, "Name is required").max(80, "Name is too long (max 80)"),
+    desc: z.string().trim().max(150, "Description is too long (max 150)").optional().or(z.literal("")),
+    phone: z.string().trim().max(20, "Phone is too long (max 20)").optional().or(z.literal("")),
+    wifiPassword: z.string().trim().max(20, "Password is too long (max 20)").optional().or(z.literal("")),
+    address: z.string().trim().max(30, "Address is too long (max 30)").optional().or(z.literal("")),
+    google_maps_link: z.string().trim().max(255, "Link is too long").optional().or(z.literal("")),
+    inst_link: z.string().trim().max(255, "Link is too long").optional().or(z.literal("")),
+    facebook_link: z.string().trim().max(255, "Link is too long").optional().or(z.literal("")),
+    tiktok_link: z.string().trim().max(255, "Link is too long").optional().or(z.literal("")),
+
     logoFile: z.instanceof(File).optional(),
     backgroundFile: z.instanceof(File).optional(),
 })
@@ -57,19 +57,6 @@ function strOrEmpty(v: string | null | undefined) {
 function emptyToNull(v: string | undefined) {
     const s = (v ?? "").trim()
     return s === "" ? null : s
-}
-function extFromFile(file: File) {
-    const parts = file.name.split(".")
-    return parts.length > 1 ? parts.pop()!.toLowerCase() : "bin"
-}
-
-async function uploadToImagesBucket(file: File, folder: string) {
-    const ext = extFromFile(file)
-    const path = `${folder}/${crypto.randomUUID()}.${ext}`
-
-    const { error } = await supabase.storage.from("images").upload(path, file, { upsert: true })
-    if (error) throw error
-    return path
 }
 
 export default function EditVenueModal({
@@ -114,14 +101,28 @@ export default function EditVenueModal({
         form.clearErrors()
     }, [open, venue, form])
 
+    async function _getBytes(image: File | undefined) {
+        let imageBytes: string | null = null;
+
+        if (image) {
+            imageBytes = await new Promise<string>((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = () => {
+                    const result = reader.result as string;
+                    resolve(result.split(',')[1]);
+                };
+                reader.onerror = () => reject(new Error('Something wrong with your file'));
+                reader.readAsDataURL(image!);
+            });
+        }
+        return imageBytes
+    }
+
     const handleSubmit = form.handleSubmit(async (values) => {
-        let logoPath: string | undefined
-        let backgroundPath: string | undefined
+        const logoBytes = await _getBytes(values.logoFile)
+        const backgroundBytes = await _getBytes(values.backgroundFile)
 
-        if (values.logoFile) logoPath = await uploadToImagesBucket(values.logoFile, "logos")
-        if (values.backgroundFile) backgroundPath = await uploadToImagesBucket(values.backgroundFile, "backgrounds")
-
-        const patch: Partial<VenueUpdate> = {
+        const rawPatch: Partial<VenueUpdate> = {
             name: values.name.trim(),
             desc: emptyToNull(values.desc),
             wifiPassword: emptyToNull(values.wifiPassword),
@@ -131,16 +132,17 @@ export default function EditVenueModal({
             inst_link: emptyToNull(values.inst_link),
             facebook_link: emptyToNull(values.facebook_link),
             tiktok_link: emptyToNull(values.tiktok_link),
-            ...(logoPath ? { logo: logoPath } : {}),
-            ...(backgroundPath ? { background: backgroundPath } : {}),
+            logo: logoBytes,
+            background: backgroundBytes
         }
+
+        const patch = Object.fromEntries(
+            Object.entries(rawPatch).filter(([_, v]) => v !== null && v !== undefined)
+        );
 
         await onSave(patch)
         onOpenChange(false)
     })
-
-    const selectedLogo = form.watch("logoFile");
-    const selectedBG = form.watch("backgroundFile");
 
     return (
         <Dialog

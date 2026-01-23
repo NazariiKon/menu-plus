@@ -54,7 +54,7 @@ class VenueRead(VenueBase):
     owner_id: UUID
     created_at: datetime
     is_editable: Optional[bool] = False
-    menus: list["MenuRead"] = Field(default_factory=list)
+    menus: Optional[list["MenuRead"]] = None 
 
 class ApiResponse(BaseModel):
     success: bool

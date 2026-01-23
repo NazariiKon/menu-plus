@@ -12,7 +12,6 @@ import { useDispatch } from 'react-redux';
 import AuthGuard from '@/components/AuthGuard'
 import AdminHome from '@/pages/AdminHome'
 import PublicMenu from '@/pages/PublicMenu'
-import QRCode from '@/components/PanelComponents/QRCode'
 import MenuPanel from '@/components/PanelComponents/MenuPanel'
 
 export default function AppRouter() {
