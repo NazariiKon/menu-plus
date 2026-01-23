@@ -26,7 +26,7 @@ import {
 
 const schema = z.object({
     name: z.string().trim().min(1, "Name is required").max(80, "Name is too long (max 80)"),
-    desc: z.string().trim().max(150, "Description is too long (max 150)").optional().or(z.literal("")),
+    desc: z.string().trim().max(250, "Description is too long (max 250)").optional().or(z.literal("")),
     phone: z.string().trim().max(20, "Phone is too long (max 20)").optional().or(z.literal("")),
     wifiPassword: z.string().trim().max(20, "Password is too long (max 20)").optional().or(z.literal("")),
     address: z.string().trim().max(30, "Address is too long (max 30)").optional().or(z.literal("")),

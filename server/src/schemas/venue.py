@@ -8,8 +8,8 @@ from src.schemas.menu import CategoryRead, ItemRead, MenuRead
 class VenueBase(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
-    name: str = Field(default="Jopa Caffe", max_length=100)
-    desc: Optional[str] = Field(default=None, max_length=100)
+    name: str = Field(max_length=100)
+    desc: Optional[str] = Field(default=None, max_length=250)
 
     phone: Optional[str] = Field(default="353079644297", max_length=20)
     wifiPassword: Optional[str] = Field(default="strongPassword", max_length=20)
@@ -34,7 +34,7 @@ class VenueUpdate(BaseModel):
     name: Optional[str] = Field(default=None, max_length=100)
     phone: Optional[str] = Field(default=None, max_length=20)
     wifiPassword: Optional[str] = Field(default=None, max_length=20)
-    desc: Optional[str] = Field(default=None, max_length=100)
+    desc: Optional[str] = Field(default=None, max_length=250)
     address: Optional[str] = Field(default=None, max_length=255)
     google_maps_link: Optional[str] = Field(default=None, max_length=300)
     inst_link: Optional[str] = Field(default=None, max_length=300)

@@ -12,7 +12,7 @@ class ItemRead(ORMBase):
     id: UUID
     category_id: UUID
     name: str = Field(max_length=50)
-    desc: Optional[str] = Field(default=None, max_length=255)
+    desc: Optional[str] = Field(default=None, max_length=200)
     image: Optional[str] = Field(default=None, max_length=255)
     price: Optional[Decimal] = None
     weight_g: Optional[int] = None
@@ -37,7 +37,7 @@ class MenuRead(ORMBase):
 
 class ItemCreate(ORMBase):
     name: Annotated[str, Field(max_length=50)]
-    desc: Annotated[Optional[str], Field(None, max_length=100)]
+    desc: Annotated[Optional[str], Field(None, max_length=200)]
     price: Annotated[Optional[Decimal], Field(None)]
     weight_g: Annotated[Optional[int], Field(None)]
     position: Annotated[Optional[int], Field(None)]
@@ -45,7 +45,7 @@ class ItemCreate(ORMBase):
 
 class ItemUpdate(BaseModel):
     name: Optional[str] = Field(None, max_length=50)
-    desc: Optional[str] = Field(None, max_length=100)
+    desc: Optional[str] = Field(None, max_length=200)
     price: Optional[Decimal] = Field(None)
     weight_g: Optional[int] = Field(None)
     position: Optional[int] = Field(None)

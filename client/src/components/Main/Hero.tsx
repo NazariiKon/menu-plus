@@ -1,11 +1,76 @@
 import { Button } from "@/components/ui/button"
-import { Smartphone, Zap, DollarSign, BarChart3 } from 'lucide-react'
+import { Smartphone, Zap, DollarSign, BarChart3, Code2, PlayCircle, ArrowRight, Mail, Lock } from 'lucide-react'
 import { Link } from "react-router-dom"
 
 export default function Hero() {
     return (
-        <section className="py-20 md:py-32 px-4 flex items-center justify-center overflow-hidden">
-            <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 items-center relative z-10">
+        <section className="py-16 md:py-24 px-4 flex flex-col items-center justify-center overflow-hidden relative">
+            {/* DEVELOPER DEMO — TOP OF HERO */}
+            <div className="w-full max-w-2xl mb-12 p-6 bg-gradient-to-br from-amber-50/95 via-slate-50 to-indigo-50/80 border-2 border-dashed border-amber-200/70 backdrop-blur-md rounded-3xl shadow-2xl ring-2 ring-amber-100/50 hover:ring-amber-200 hover:shadow-3xl transition-all duration-500 z-30 mx-auto">
+                <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
+                    <div className="bg-gradient-to-r from-amber-500 to-orange-600 px-5 py-1.5 rounded-full text-xs font-bold text-white shadow-lg flex items-center gap-1.5">
+                        <PlayCircle className="w-4 h-4" />
+                        <span>PORTFOLIO DEMO</span>
+                    </div>
+                </div>
+
+                <div className="flex items-start gap-3 mb-2 pt-2">
+                    <div className="w-2.5 h-2.5 bg-amber-500 rounded-full mt-1.5 animate-ping flex-shrink-0"></div>
+                    <Code2 className="w-5 h-5 text-slate-700 flex-shrink-0" />
+                    <h4 className="text-sm font-bold text-slate-900 tracking-tight uppercase ">Try My Fullstack Skills</h4>
+                </div>
+
+                <p className="text-xs text-slate-600 mb-2">
+                    To test my website & skills, use this demo account:
+                </p>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-5">
+                    <div className="bg-gradient-to-b from-slate-50 to-slate-100 p-3 rounded-xl border border-slate-200/60 shadow-sm text-xs">
+                        <div className="flex items-center gap-1 text-slate-500 mb-1">
+                            <Mail className="w-3.5 h-3.5" />
+                            <span className="font-medium">Email</span>
+                        </div>
+                        <p className="font-mono text-sm text-slate-900 font-semibold text-center">
+                            nazar.konechniy2@gmail.com
+                        </p>
+                    </div>
+                    <div className="bg-gradient-to-b from-slate-50 to-slate-100 p-3 rounded-xl border border-slate-200/60 shadow-sm text-xs">
+                        <div className="flex items-center gap-1 text-slate-500 mb-1">
+                            <Lock className="w-3.5 h-3.5" />
+                            <span className="font-medium">Password</span>
+                        </div>
+                        <p className="font-mono text-sm text-slate-900 font-semibold text-center">
+                            hireMe
+                        </p>
+                    </div>
+                </div>
+
+                <p className="text-xs text-slate-600 mb-4 leading-tight">
+                    For a realistic test, I recommend creating your own account to see the full email confirmation flow.
+                </p>
+
+                <Button
+                    size="sm"
+                    className="w-full bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-700 hover:to-orange-700 text-white font-bold text-sm shadow-xl hover:shadow-2xl border-0 px-6 py-3 transform hover:-translate-y-1 transition-all duration-300 group"
+                    asChild
+                >
+                    <Link state={{
+                        demo: true,
+                        email: "nazar.konechniy2@gmail.com",
+                        password: "hireMe",
+                    }} to="/login" className="flex items-center gap-2">
+                        Launch Interactive Demo
+                        <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                    </Link>
+                </Button>
+
+                <p className="text-xs text-slate-500 mt-3 text-center italic leading-tight px-1">
+                    *Temporary showcase feature (removed in production)
+                </p>
+            </div>
+
+            {/* MAIN HERO CONTENT */}
+            <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 items-center w-full">
                 <div className="space-y-8 text-center lg:text-left">
                     <h1 className="text-5xl md:text-7xl lg:text-7xl font-black bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 bg-clip-text text-transparent leading-tight">
                         QR Menu in <span className="text-6xl md:text-8xl">2</span> Minutes

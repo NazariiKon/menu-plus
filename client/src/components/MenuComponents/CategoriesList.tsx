@@ -65,7 +65,7 @@ export const CategoriesList: React.FC<CategoriesListProps> = ({
                 </div>
             )}
 
-            {isAdmin && onAdminActions && (
+            {isAdmin && onAdminActions?.onAddCategory && (
                 <Button
                     onClick={() => onAdminActions.onAddCategory(0)}
                     className="w-full h-auto text-3xl border-3 rounded-md bg-black text-white transition-all"

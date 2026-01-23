@@ -90,8 +90,8 @@ export function NameModal({
             menuId: currentId || "",
             category_id: currentId || "",
             desc: defaultItem?.desc || "",
-            price: defaultItem?.price?.toString() || undefined,
-            weight_g: defaultItem?.weight_g?.toString() || undefined
+            price: defaultItem?.price?.toString() || "",
+            weight_g: defaultItem?.weight_g?.toString() || ""
         },
         mode: "onSubmit",
     });
@@ -105,13 +105,13 @@ export function NameModal({
     React.useEffect(() => {
         if (open) {
             form.reset({
-                name: initialName || defaultItem?.name,
+                name: initialName || defaultItem?.name || "",
                 image: null,
                 menuId: currentId || "",
                 category_id: currentId || "",
                 desc: defaultItem?.desc || "",
-                price: defaultItem?.price?.toString() || undefined,
-                weight_g: defaultItem?.weight_g?.toString() || undefined
+                price: defaultItem?.price?.toString() || "",
+                weight_g: defaultItem?.weight_g?.toString() || "",
             });
             form.clearErrors();
             setLocalPreview(null);

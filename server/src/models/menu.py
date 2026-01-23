@@ -69,7 +69,7 @@ class Item(Base):
     )
 
     name: Mapped[str] = mapped_column(String(50), nullable=False)
-    desc: Mapped[Optional[str]] = mapped_column(String(100), nullable=True)
+    desc: Mapped[Optional[str]] = mapped_column(String(200), nullable=True)
     price: Mapped[Optional[Decimal]] = mapped_column(Numeric(10, 2), nullable=True)
     weight_g: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
     image: Mapped[Optional[str]] = mapped_column(String(255), nullable=True)

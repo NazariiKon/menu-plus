@@ -1,8 +1,8 @@
-import Features from "@/components/Features";
-import FinalCTA from "@/components/FinalCTA";
-import Hero from "@/components/Hero";
-import ProblemSolution from "@/components/ProblemAndSolution";
-import Testimonials from "@/components/Testimonial";
+import Features from "@/components/Main/Features";
+import FinalCTA from "@/components/Main/FinalCTA";
+import Hero from "@/components/Main/Hero";
+import ProblemSolution from "@/components/Main/ProblemAndSolution";
+import Testimonials from "@/components/Main/Testimonial";
 
 export default function Home() {
     return (

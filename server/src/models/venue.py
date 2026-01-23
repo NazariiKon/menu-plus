@@ -19,7 +19,7 @@ class Venue(Base):
     )
     slug: Mapped[str] = mapped_column(String(50), unique=True, index=True, nullable=False)
     name: Mapped[str] = mapped_column(String(80), unique=True, nullable=False)
-    desc: Mapped[Optional[str]] = mapped_column(String(150), nullable=True)
+    desc: Mapped[Optional[str]] = mapped_column(String(250), nullable=True)
     phone: Mapped[Optional[str]] = mapped_column(String(20), nullable=True)
     wifiPassword: Mapped[Optional[str]] = mapped_column(String(20), nullable=True)
     address: Mapped[Optional[str]] = mapped_column(String(30), nullable=True)

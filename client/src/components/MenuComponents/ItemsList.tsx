@@ -94,17 +94,18 @@ export const ItemsList: React.FC<ItemsListProps> = ({
                 </div>
             </div>
 
-            {isAdmin && onAdminActions && (
+            {isAdmin && onAdminActions?.onAddItem && (
                 <Button
                     onClick={() => onAdminActions.onAddItem(0)}
-                    className="w-full h-auto text-3xl border-3 rounded-md bg-black text-white transition-all"
+                    className="w-full h-auto text-3xl border-3 mb-2 rounded-md bg-black text-white transition-all"
                     variant="outline"
                     size="lg"
                 >
                     +
                 </Button>
             )}
-            <div className="grid grid-row-1 gap-6 w-fullgap-6 w-full">
+
+            <div className="grid grid-row-1 gap-6 w-full pb-20">
                 {sortedItems.map((item, index) => {
                     const imageUrl = item.image
                         ? `${supabase.storage.from("images/").getPublicUrl(item.image).data.publicUrl}?t=${updatedItems.has(item.id) ? Date.now() : 0}`

@@ -1,15 +1,27 @@
-import { ArrowRight, Loader2 } from "lucide-react";
+import { useLocation, useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { useNavigate } from 'react-router-dom';
 import { FormRootError } from "@/components/ui/form-root-error";
 import { useSignin } from "@/hooks/useSignin";
+import { useEffect } from 'react';
+import { ArrowRight, Loader2 } from 'lucide-react';
 
 export default function SignIn() {
     const navigate = useNavigate();
+    const location = useLocation();
     const { form, loading, onSubmit } = useSignin();
+
+    // Когда компонент смонтирован, подставляем demo-данные, если есть state
+    useEffect(() => {
+        if (location.state?.demo) {
+            form.reset({
+                email: location.state.email,
+                password: location.state.password || '',
+            });
+        }
+    }, [location.state, form]);
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 flex items-center justify-center p-8">
@@ -67,9 +79,13 @@ export default function SignIn() {
                             </Button>
                         </form>
                     </Form>
+
                     <div className="text-center text-sm text-slate-500 pt-4 border-t">
                         Don't have an account? {" "}
-                        <button onClick={() => navigate("/signup")} className="text-blue-600 hover:underline font-medium">
+                        <button
+                            onClick={() => navigate("/signup")}
+                            className="text-blue-600 hover:underline font-medium"
+                        >
                             Sign up
                         </button>
                     </div>
