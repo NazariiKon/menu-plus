@@ -13,6 +13,7 @@ import AuthGuard from '@/components/AuthGuard'
 import AdminHome from '@/pages/AdminHome'
 import PublicMenu from '@/pages/PublicMenu'
 import MenuPanel from '@/components/PanelComponents/MenuPanel'
+import Pricing from '@/components/Main/Pricing'
 
 export default function AppRouter() {
     const dispatch = useDispatch<AppDispatch>();
@@ -63,6 +64,7 @@ export default function AppRouter() {
                 <Route element={<WithNavbarLayout />}>
                     <Route path="/" element={<Home />} />
                     <Route path="/admin" element={<AdminHome />} />
+                    <Route path="/pricing" element={<Pricing />} />
                 </Route>
                 <Route path="/login" element={
                     <AuthGuard>

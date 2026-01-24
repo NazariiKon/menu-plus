@@ -15,7 +15,10 @@ export default function Home() {
 
                 <Hero />
                 <ProblemSolution />
-                <Features />
+                <div id="features-section">
+                    <Features />
+                </div>
+
                 <Testimonials />
 
                 <FinalCTA />

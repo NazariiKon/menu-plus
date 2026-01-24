@@ -26,23 +26,34 @@ export default function Navbar() {
         navigate("/");
     }
 
+    const handleScroll = (e: React.MouseEvent<HTMLAnchorElement>, path: string) => {
+        if (path.startsWith('/#')) {
+            const id = path.split('#')[1];
+            const element = document.getElementById(id);
+
+            if (location.pathname === '/') {
+                e.preventDefault();
+                element?.scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+    };
+
     const navItems = [
         { path: '/', label: 'Home', icon: Home, hiden: false },
-        { path: '/features', label: 'Features', icon: Sparkles, hiden: false },
+        { path: '/#features-section', label: 'Features', icon: Sparkles, hiden: false },
         { path: '/pricing', label: 'Pricing', icon: DollarSign, hiden: false },
         { path: '/login', label: 'Sign In', icon: LogIn, hiden: true },
         { path: '/', label: 'Log out', icon: LogOut, onClick: onClickLogout, hiden: true },
     ]
 
-    { currentUser && <span>{currentUser?.email}</span> }
-
     return (
-        <header className="z-50 w-full border-b border-slate-200 bg-white/95 backdrop-blur-xl supports-[backdrop-filter:blur(20px)]:bg-white/80 shadow-sm">
+        <header className="z-50 w-full border-b border-slate-200 bg-white/95 backdrop-blur-xl supports-[backdrop-filter:blur(20px)]:bg-white/80 shadow-sm sticky top-0">
             <div className="flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6 lg:px-8 mx-auto w-full">
                 <div className="flex items-center gap-2">
                     <Link to="/" className="flex items-center space-x-2 font-bold text-xl bg-gradient-to-r from-blue-600 via-blue-600 to-slate-700 bg-clip-text text-transparent transition-all hover:scale-105">
                         Menu+
                     </Link>
+
                     <Sheet>
                         <SheetTrigger asChild>
                             <Button
@@ -53,7 +64,6 @@ export default function Navbar() {
                                 <Menu className="h-5 w-5" />
                                 <span className="sr-only">Toggle Menu</span>
                             </Button>
-
                         </SheetTrigger>
                         <SheetContent side="left" className="w-72 border-r-slate-200 p-0 sm:w-80">
                             <SheetTitle className="sr-only">Navigation Menu</SheetTitle>
@@ -70,14 +80,18 @@ export default function Navbar() {
                                 </Link>
 
                                 {navItems.map((item) => {
-                                    if (item.label === "Log out" && !currentUser || item.label === "Sign In" && currentUser) return;
+                                    if ((item.label === "Log out" && !currentUser) || (item.label === "Sign In" && currentUser)) return null;
                                     const Icon = item.icon
                                     const isActive = location.pathname === item.path && !item.hiden
+
                                     return (
                                         <Link
                                             key={item.label}
                                             to={item.path}
-                                            onClick={item.onClick}
+                                            onClick={(e) => {
+                                                handleScroll(e, item.path);
+                                                if (item.onClick) item.onClick();
+                                            }}
                                             className={`group flex items-center space-x-3 rounded-xl p-3 font-medium transition-all duration-200 ${isActive
                                                 ? 'bg-blue-50 text-blue-700 border border-blue-200 shadow-sm'
                                                 : 'text-slate-700 hover:bg-slate-100/80 hover:text-slate-900 hover:shadow-md'
@@ -93,15 +107,17 @@ export default function Navbar() {
                     </Sheet>
                 </div>
 
+                {/* Desktop Navigation */}
                 <div className="hidden items-center gap-2 md:flex lg:gap-4">
                     {navItems.map((item) => {
-                        if (item.hiden) return;
+                        if (item.hiden) return null;
                         const Icon = item.icon
                         const isActive = location.pathname === item.path
                         return (
                             <Link
                                 key={item.label}
                                 to={item.path}
+                                onClick={(e) => handleScroll(e, item.path)}
                                 className={`inline-flex items-center space-x-1 rounded-full px-4 py-2 font-medium transition-all duration-200 ${isActive
                                     ? 'bg-blue-100 text-blue-700 shadow-md'
                                     : 'text-slate-700 hover:bg-slate-100 hover:text-slate-900'
@@ -118,8 +134,11 @@ export default function Navbar() {
                     <div className="flex items-center gap-2 flex-wrap">
                         {currentUser ? (
                             <>
+                                <span className="hidden lg:inline-block text-xs text-slate-500 mr-2 max-w-[150px] truncate">
+                                    {currentUser.email?.split("@")[0]}
+                                </span>
                                 <Button
-                                    onClick={() => { onClickLogout() }}
+                                    onClick={onClickLogout}
                                     variant="ghost"
                                     className="min-[400px]:flex hidden h-10 px-6 text-slate-700 hover:text-slate-900 font-medium transition-all duration-200 hover:shadow-sm"
                                 >

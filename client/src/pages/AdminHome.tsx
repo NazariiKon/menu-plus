@@ -13,6 +13,7 @@ import { get_my_venues } from "@/api/profile";
 import { NameModal, type FormValues } from "@/components/NameModal";
 import { createVenue, deleteVenue } from "@/api/venue";
 import { Alert } from "@/components/Alert";
+import { supabase } from "@/lib/supabase";
 
 
 export default function Admin() {
@@ -136,11 +137,11 @@ export default function Admin() {
                                 <CardContent className="p-0">
                                     <div className="p-6 lg:p-8 flex flex-col lg:flex-row lg:items-center lg:gap-8">
                                         <div className="flex items-start lg:items-center gap-2 flex-1 mb-6 lg:mb-0">
-                                            <div className="w-20 h-20 bg-gradient-to-br from-gray-100 to-gray-200 rounded-2xl flex items-center justify-center p-4 shadow-md group-hover:shadow-xl transition-shadow flex-shrink-0">
+                                            <div className="w-20 h-20 bg-gradient-to-br from-gray-100 to-gray-200 rounded-2xl flex items-center justify-center shadow-md group-hover:shadow-xl transition-shadow flex-shrink-0">
                                                 <img
-                                                    src={`/logos/${venue.logo}`}
+                                                    src={supabase.storage.from("images/").getPublicUrl(venue.logo).data.publicUrl}
                                                     alt={venue.name}
-                                                    className="w-16 h-16 object-cover rounded-xl group-hover:scale-105 transition-transform"
+                                                    className="object-cover rounded-xl group-hover:scale-105 transition-transform"
                                                     onError={(e) => {
                                                         e.currentTarget.src = '/logos/default.png';
                                                     }}
