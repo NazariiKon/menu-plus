@@ -17,6 +17,10 @@ import Pricing from '@/components/Main/Pricing'
 
 export default function AppRouter() {
     const dispatch = useDispatch<AppDispatch>();
+    useEffect(() => {
+        fetch('https://menu-plus-server.onrender.com/ping')
+            .catch(() => console.log("Server waking up..."));
+    }, []);
 
     useEffect(() => {
         dispatch(setLoading(true));
