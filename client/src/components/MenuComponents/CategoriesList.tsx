@@ -56,7 +56,7 @@ export const CategoriesList: React.FC<CategoriesListProps> = ({
     };
 
     return (
-        <div className="w-full space-y-4 px-4 py-6">
+        <div className="w-full space-y-4 px-4 py-6 mb-14">
             {isAdmin && (
                 <div className="flex justify-center pb-6 border-b border-border">
                     <p className="text-lg font-semibold text-foreground tracking-wide">
@@ -85,11 +85,11 @@ export const CategoriesList: React.FC<CategoriesListProps> = ({
                 return (
                     <div key={category.id} className="w-full space-y-2">
                         <Card className="overflow-hidden shadow-sm hover:shadow-md transition-all relative group">
-                            <CardContent className="p-0 relative h-32">
+                            <CardContent className="p-0 relative h-48">
                                 {imageUrl ? (
                                     <img
                                         src={imageUrl}
-                                        alt={category.name}
+                                        alt={category.name.toUpperCase()}
                                         className="w-full h-full object-cover"
                                     />
                                 ) : (
@@ -97,11 +97,11 @@ export const CategoriesList: React.FC<CategoriesListProps> = ({
                                 )}
 
                                 <div
-                                    className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent flex items-end p-4 cursor-pointer hover:bg-black/80 transition-all duration-300"
+                                    className="absolute inset-0 bg-black/40 flex items-center justify-center p-6 cursor-pointer hover:bg-black/60 transition-all duration-300"
                                     onClick={() => handleCategoryClick(category.id)}
                                 >
-                                    <h3 className="text-white font-bold text-lg truncate drop-shadow-lg">
-                                        {category.name}
+                                    <h3 className="text-white font-bold text-3xl text-center drop-shadow-2xl">
+                                        {category.name.toUpperCase()}
                                     </h3>
                                 </div>
 

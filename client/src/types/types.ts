@@ -42,4 +42,5 @@ export interface AdminCallbacksItems {
     onUpdateItem: (itemId: string) => void;
     onMoveUp: (itemId: string, position: number) => void;
     onMoveDown: (itemId: string, position: number) => void;
+    onAddToCart: (item: ItemRead) => void;
 }

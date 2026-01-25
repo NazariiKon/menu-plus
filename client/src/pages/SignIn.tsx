@@ -13,7 +13,6 @@ export default function SignIn() {
     const location = useLocation();
     const { form, loading, onSubmit } = useSignin();
 
-    // Когда компонент смонтирован, подставляем demo-данные, если есть state
     useEffect(() => {
         if (location.state?.demo) {
             form.reset({

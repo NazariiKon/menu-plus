@@ -6,7 +6,8 @@ import {
     ArrowUp,
     ArrowDown,
     Loader2,
-    ArrowLeft
+    ArrowLeft,
+    Plus
 } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import type { AdminCallbacksItems, ItemRead } from "@/types/types";
@@ -15,38 +16,26 @@ import { Alert } from "@/components/Alert";
 
 
 interface ItemsListProps {
-    currency: string;
+    currencySymbol: string;
     items?: ItemRead[];
-    category?: { id: string; name: string };
+    category?: { id: string; name: string } | null;
     onBack: () => void;
     isAdmin?: boolean;
     onAdminActions?: AdminCallbacksItems;
-    onAddToCart?: (item: ItemRead) => void;
 }
 
 
 export const ItemsList: React.FC<ItemsListProps> = ({
-    currency = "EUR",
+    currencySymbol = "EUR",
     items = [],
     category,
     onBack,
     isAdmin = false,
     onAdminActions,
-    onAddToCart,
 }) => {
     const [deleteItemId, setDeleteItemId] = React.useState<string | null>(null);
     const [deletingItemId, setDeletingItemId] = React.useState<string | null>(null);
     const [updatedItems, setUpdatedItems] = React.useState<Set<string>>(new Set());
-
-
-    const getCurrencySymbol = (currencyCode: string): string => {
-        return new Intl.NumberFormat('en-US', {
-            style: 'currency',
-            currency: currencyCode,
-            currencyDisplay: 'symbol'
-        }).formatToParts(1).find(part => part.type === 'currency')?.value || currencyCode;
-    };
-
 
     const handleImageUpdated = React.useCallback((itemId: string) => {
         setUpdatedItems(prev => new Set([...prev, itemId]));
@@ -122,7 +111,7 @@ export const ItemsList: React.FC<ItemsListProps> = ({
                                                 <img
                                                     src={imageUrl}
                                                     alt={item.name}
-                                                    className="w-full h-40 object-cover rounded-lg shadow-md hover:shadow-lg transition-shadow"
+                                                    className="w-full h-70 object-cover rounded-lg shadow-md hover:shadow-lg transition-shadow"
                                                 />
                                             }
 
@@ -203,7 +192,7 @@ export const ItemsList: React.FC<ItemsListProps> = ({
                                             )}
                                         </div>
                                         <div className="flex-1 min-w-0">
-                                            <div className="flex justify-between items-start gap-2">
+                                            <div className="flex justify-between items-start gap-3">
                                                 <div className="flex-1 min-w-0 space-y-2">
                                                     <h3 className="font-bold text-lg leading-tight truncate text-foreground">
                                                         {item.name}
@@ -216,7 +205,7 @@ export const ItemsList: React.FC<ItemsListProps> = ({
                                                     <div className="flex items-baseline gap-3 pt-1">
                                                         {!!item.price && Number(item.price) > 0 && (
                                                             <span className="text-xl font-black text-emerald-600 drop-shadow-sm bg-emerald-50 px-3 py-1 rounded-lg shadow-md">
-                                                                {item.price} {getCurrencySymbol(currency)}
+                                                                {item.price} {currencySymbol}
                                                             </span>
                                                         )}
                                                         {!!item.weight_g && Number(item.weight_g) > 0 && (
@@ -226,14 +215,14 @@ export const ItemsList: React.FC<ItemsListProps> = ({
                                                         )}
                                                     </div>
                                                 </div>
-                                                {onAddToCart && (
+                                                {onAdminActions?.onAddToCart && onAdminActions && (
                                                     <Button
-                                                        size="sm"
-                                                        variant="outline"
-                                                        className="whitespace-nowrap shadow-sm hover:shadow-md transition-shadow font-semibold"
-                                                        onClick={() => onAddToCart(item)}
+                                                        size="icon"
+                                                        className="h-12 mt-14 w-12 rounded-full bg-black text-white hover:bg-black/90 shadow-lg hover:shadow-xl transition-all flex-shrink-0"
+                                                        onClick={() => onAdminActions.onAddToCart(item)}
+                                                        title="Add to cart"
                                                     >
-                                                        Add to cart
+                                                        <Plus className="h-5 w-5" />
                                                     </Button>
                                                 )}
                                             </div>

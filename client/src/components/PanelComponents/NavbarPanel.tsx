@@ -13,7 +13,7 @@ export const NavbarPanel = ({ title = "QR Code Settings" }) => {
                     <Button
                         variant="ghost"
                         size="icon"
-                        onClick={() => navigate("/admin")}
+                        onClick={() => navigate(-1)}
                         className="rounded-xl h-10 w-10 hover:bg-gray-100"
                     >
                         <X className="h-5 w-5 text-gray-500" />

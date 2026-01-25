@@ -30,7 +30,7 @@ export const useSignin = () => {
             const result: ApiResponse<User> = await login(values.email, values.password);
             if (result.success && result.data) {
                 dispatch(setUser(result.data));
-                navigate('/', { replace: true });
+                navigate('/admin', { replace: true });
             } else {
                 form.setError('root', {
                     type: 'server',

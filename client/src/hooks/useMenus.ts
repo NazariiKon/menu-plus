@@ -19,7 +19,6 @@ export const useMenus = (menus: MenuRead[] | null | undefined, venueId: string |
         setLoading(true)
         if (menus !== undefined && menus !== null) {
             setLocalMenus(menus);
-            setActiveMenuId(menus[0].id);
         }
         setLoading(false)
     }, [menus]);

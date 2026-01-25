@@ -26,17 +26,15 @@ export default function Header({ venue, onEdit, isAdmin = false }: HeaderProps) 
     return (
         <div className="sm:w-full">
             <header className="relative overflow-hidden rounded-b-3xl">
-                {isAdmin &&
-                    <Button
-                        type="button"
-                        variant="default"
-                        size="sm"
-                        className="absolute left-3 top-3 z-20"
-                        onClick={() => navigate("/admin")}
-                    >
-                        <ArrowLeft />
-                    </Button>
-                }
+                <Button
+                    type="button"
+                    variant="default"
+                    size="sm"
+                    className="absolute left-3 top-3 z-20"
+                    onClick={() => navigate(-1)}
+                >
+                    <ArrowLeft />
+                </Button>
                 <div
                     className="h-56 w-full bg-cover bg-center"
                     style={{ backgroundImage: `url(${bgUrl})` }}

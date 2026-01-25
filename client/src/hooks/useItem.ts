@@ -1,6 +1,7 @@
 import { useCallback, useState } from "react";
 import type { MenuRead, ItemCreate, ItemRead, CategoryRead, ItemUpdate } from "@/types/types";
 import { createItem, deleteItem, updateItem } from "@/api/item";
+import { useCart } from "@/context/CartContext";
 
 interface UseItemProps {
     venueId: string | undefined;
@@ -20,8 +21,38 @@ export const useItem = ({
     const [previewImage, setPreviewImage] = useState<string | null>(null);
     const [isItemUpdateOpen, setIsItemUpdateOpen] = useState(false);
     const [selectedItem, setSelectedItem] = useState<ItemRead | null>(null);
-
+    const { updateCartForVenue } = useCart();
     const activeCategoryId = category?.id;
+
+    const handleAddToCart = (item: ItemRead, venueId: string | undefined) => {
+        if (!venueId) return;
+
+        const storageKey = `cart_${venueId}`;
+        const currentCart = JSON.parse(localStorage.getItem(storageKey) || '[]');
+
+        const existingItemIndex = currentCart.findIndex(
+            (cartItem: any) => cartItem.id === item.id
+        );
+
+        if (existingItemIndex !== -1) {
+            currentCart[existingItemIndex].quantity += 1;
+        } else {
+            currentCart.push({
+                id: item.id,
+                name: item.name,
+                desc: item.desc,
+                price: item.price,
+                weight_g: item.weight_g,
+                image: item.image,
+                quantity: 1,
+            });
+        }
+
+        localStorage.setItem(storageKey, JSON.stringify(currentCart));
+
+        updateCartForVenue(venueId, currentCart);
+    };
+
 
     const handleCreateItem = useCallback(
         async (values: ItemCreate) => {
@@ -234,5 +265,6 @@ export const useItem = ({
         selectedItem,
         previewImage,
         setPreviewImage,
+        handleAddToCart,
     };
 };

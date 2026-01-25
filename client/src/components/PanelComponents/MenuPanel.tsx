@@ -1,6 +1,6 @@
-import PanelFooter from '@/components/PanelComponents/PanelFooter';
 import QRCode from './QRCode';
 import { NavbarPanel } from './NavbarPanel';
+import PanelFooter from './PanelFooter';
 
 export default function MenuPanel() {
     return (
@@ -9,7 +9,7 @@ export default function MenuPanel() {
             <div className="">
                 <QRCode />
             </div>
-            <PanelFooter />
+            <PanelFooter></PanelFooter>
         </div>
     );
 };

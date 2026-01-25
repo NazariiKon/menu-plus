@@ -21,7 +21,7 @@ export default function Hero() {
                 </div>
 
                 <p className="text-xs text-slate-600 mb-2">
-                    Note: The backend is hosted on a free tier, so the initial request may take up to 45 seconds to spin up.
+                    Note: The backend is hosted on a free tier, so the initial request may take up to 45 seconds to get venues.
                     To test my website & skills, use this demo account:
                 </p>
 

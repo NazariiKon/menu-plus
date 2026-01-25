@@ -11,14 +11,16 @@ import { supabase } from '@/lib/supabase'
 import { useDispatch } from 'react-redux';
 import AuthGuard from '@/components/AuthGuard'
 import AdminHome from '@/pages/AdminHome'
-import PublicMenu from '@/pages/PublicMenu'
 import MenuPanel from '@/components/PanelComponents/MenuPanel'
 import Pricing from '@/components/Main/Pricing'
+import PublicMenuLayout from '@/pages/PublicMenuLayout'
+import PublicMenuContent from '@/pages/PublicMenuContent'
+import Order from '@/components/MenuComponents/Order'
 
 export default function AppRouter() {
     const dispatch = useDispatch<AppDispatch>();
     useEffect(() => {
-        fetch('https://menu-plus-server.onrender.com/ping')
+        fetch('https://menu-plus-server.onrender.com/')
             .catch(() => console.log("Server waking up..."));
     }, []);
 
@@ -81,7 +83,11 @@ export default function AppRouter() {
                     </AuthGuard>
                 } />
 
-                <Route path="/p/:slug" element={<PublicMenu />} />
+                <Route path="/p/:slug" element={<PublicMenuLayout />}>
+                    <Route index element={<PublicMenuContent />} />
+                    <Route path="order" element={<Order />} />
+                </Route>
+
                 <Route path="/panel/:slug/qr-code" element={<MenuPanel />} />
                 <Route path="/auth/callback" element={<AuthCallback />} />
             </Routes>
