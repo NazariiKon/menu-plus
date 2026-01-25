@@ -17,30 +17,28 @@ export default function FooterCart({ currencySymbol, isAdminMode }: FooterProps)
     const totalItems = getTotalItems();
     const totalPrice = getTotalPrice();
     return (
-        <div className={`fixed bottom-0 left-0 ${isAdminMode ? 'mb-12' : ''} z-20 w-full`}>
-            <div className="mx-auto max-w-[500px]">
+        <div className={`fixed bottom-0 left-0 w-full z-20 ${isAdminMode ? "mb-13" : ""} flex justify-center`}>
+            <div className="w-full max-w-[500px]">
                 {totalItems > 0 && location.pathname !== `/p/${slug}/order` && (
-                    <div className="p-2">
-                        <Button
-                            className="w-full h-13 bg-black text-white hover:bg-black/90 rounded-xl flex items-center justify-between px-6 group shadow-xl"
-                            onClick={() => navigate("order")}
-                        >
-                            <div className="flex items-center gap-4">
-                                <div className="relative">
-                                    <ShoppingCart className="!size-7" />
-                                    <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full h-6 w-6 flex items-center justify-center font-bold">
-                                        {totalItems}
-                                    </span>
-                                </div>
-                                <span className="text-base font-semibold">
-                                    Show My Order
+                    <Button
+                        className="w-full h-13 bg-black text-white hover:bg-black/90 rounded-t-xl flex items-center justify-between px-6 group shadow-xl"
+                        onClick={() => navigate("order")}
+                    >
+                        <div className="flex items-center gap-4">
+                            <div className="relative">
+                                <ShoppingCart className="!size-7" />
+                                <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full h-6 w-6 flex items-center justify-center font-bold">
+                                    {totalItems}
                                 </span>
                             </div>
-                            <span className="text-xl font-bold">
-                                {totalPrice.toFixed(2)} {currencySymbol}
+                            <span className="text-base font-semibold">
+                                Show My Order
                             </span>
-                        </Button>
-                    </div>
+                        </div>
+                        <span className="text-xl font-bold">
+                            {totalPrice.toFixed(2)} {currencySymbol}
+                        </span>
+                    </Button>
                 )}
             </div>
         </div>

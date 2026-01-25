@@ -56,7 +56,7 @@ export const CategoriesList: React.FC<CategoriesListProps> = ({
     };
 
     return (
-        <div className="w-full space-y-4 px-4 py-6 mb-14">
+        <div className={`w-full space-y-4 px-4 py-6 ${isAdmin ? "mb-16" : ""}`}>
             {isAdmin && (
                 <div className="flex justify-center pb-6 border-b border-border">
                     <p className="text-lg font-semibold text-foreground tracking-wide">

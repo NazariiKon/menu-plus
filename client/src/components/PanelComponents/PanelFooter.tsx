@@ -8,7 +8,7 @@ export default function PanelFooter() {
 
     return (
         <div className="fixed bottom-0 left-0 z-50 w-full">
-            <div className="mx-auto max-w-[500px]">
+            <div className="mx-auto">
                 <div className="bg-white border-t border-gray-200 shadow-sm">
                     <div className="grid max-w-md grid-cols-2 mx-auto">
                         <Button

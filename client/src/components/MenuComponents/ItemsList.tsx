@@ -94,7 +94,7 @@ export const ItemsList: React.FC<ItemsListProps> = ({
                 </Button>
             )}
 
-            <div className="grid grid-row-1 gap-6 w-full pb-20">
+            <div className={`grid grid-row-1 gap-6 w-full ${isAdmin ? "mb-16" : ""}`}>
                 {sortedItems.map((item, index) => {
                     const imageUrl = item.image
                         ? `${supabase.storage.from("images/").getPublicUrl(item.image).data.publicUrl}?t=${updatedItems.has(item.id) ? Date.now() : 0}`

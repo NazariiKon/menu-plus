@@ -140,13 +140,13 @@ export default function Navbar() {
                                 <Button
                                     onClick={onClickLogout}
                                     variant="ghost"
-                                    className="min-[400px]:flex hidden h-10 px-6 text-slate-700 hover:text-slate-900 font-medium transition-all duration-200 hover:shadow-sm"
+                                    className="min-[400px]:flex hidden rounded-xl h-10 px-6 text-slate-700 hover:text-slate-900 font-medium transition-all duration-200 hover:shadow-sm"
                                 >
                                     Logout
                                 </Button>
                                 {location.pathname !== "/admin" &&
                                     <Link to="/admin">
-                                        <Button className="h-10 px-6 bg-gradient-to-r from-blue-600 to-slate-700 hover:from-blue-700 hover:to-slate-800 text-white font-medium shadow-lg hover:shadow-xl transition-all duration-200">
+                                        <Button className="h-10 px-6 rounded-lg bg-gradient-to-r from-blue-600 to-slate-700 hover:from-blue-700 hover:to-slate-800 text-white font-medium shadow-lg hover:shadow-xl transition-all duration-200">
                                             Admin Panel
                                         </Button>
                                     </Link>
@@ -155,12 +155,12 @@ export default function Navbar() {
                         ) : (
                             <>
                                 <Link to="/login">
-                                    <Button variant="ghost" className="min-[400px]:flex hidden h-10 px-6 text-slate-700 hover:text-slate-900 font-medium transition-all duration-200 hover:shadow-sm">
+                                    <Button variant="ghost" className="min-[400px]:flex rounded-lg hidden h-10 px-6 text-slate-700 hover:text-slate-900 font-medium transition-all duration-200 hover:shadow-sm">
                                         Sign In
                                     </Button>
                                 </Link>
                                 <Link to="/signup">
-                                    <Button className="h-10 px-6 bg-gradient-to-r from-blue-600 to-slate-700 hover:from-blue-700 hover:to-slate-800 text-white font-medium shadow-lg hover:shadow-xl transition-all duration-200">
+                                    <Button className="h-10 px-6 rounded-lg bg-gradient-to-r from-blue-600 to-slate-700 hover:from-blue-700 hover:to-slate-800 text-white font-medium shadow-lg hover:shadow-xl transition-all duration-200">
                                         Get Started <ArrowRight className="ml-2 h-4 w-4" />
                                     </Button>
                                 </Link>
