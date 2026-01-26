@@ -1,7 +1,14 @@
-import { useCart } from "@/context/CartContext";
+import { useCart, type CartItem } from "@/context/CartContext";
 import { Button } from "@/components/ui/button";
+import { useOutletContext } from "react-router-dom";
+import type { PublicMenuContextType } from "@/pages/PublicMenuLayout";
 
 export default function Order() {
+    const {
+        venue,
+        currencySymbol
+    } = useOutletContext<PublicMenuContextType>();
+
     const {
         cart,
         updateQuantity,
@@ -12,9 +19,34 @@ export default function Order() {
     const totalItems = getTotalItems();
     const totalPrice = getTotalPrice();
 
+    const PHONE = venue.phone;
+
+    const buildCartMessage = (cart: CartItem[]) => {
+        if (!cart.length) return "";
+
+        let total = 0;
+        const lines = cart.map((item) => {
+            const price = Number(item.price);
+            const lineTotal = price * item.quantity;
+            total += lineTotal;
+            return `${item.name} x${item.quantity} = ${lineTotal.toFixed(2)}`;
+        });
+
+        return `Hey! I would like to order:\n${lines.join("\n")}\nTotal price: ${total.toFixed(2)} ${currencySymbol}`;
+    };
+
     const goToPayment = () => {
         if (cart.length === 0) return;
+
+        const message = buildCartMessage(cart);
+        const encoded = encodeURIComponent(message);
+
+        const url = `https://wa.me/${PHONE}?text=${encoded}`;
+
+        window.location.href = url;
     };
+
+    if (!venue.show_cart) return;
 
     return (
         <div className="max-w-md mx-auto w-full max-w-[500px] bg-background text-foreground">
@@ -106,15 +138,17 @@ export default function Order() {
                 </div>
 
                 <div className="mt-6 mb-12">
-                    <Button
-                        className="w-full h-12 bg-black text-white hover:bg-black/90 rounded-xl font-bold"
-                        onClick={goToPayment}
-                        disabled={cart.length === 0}
-                    >
-                        {cart.length === 0
-                            ? "Cart is empty"
-                            : `Go to Payment (${totalPrice.toFixed(2)})`}
-                    </Button>
+                    {venue.make_order &&
+                        <Button
+                            className="w-full h-12 bg-black text-white hover:bg-black/90 rounded-xl font-bold"
+                            onClick={goToPayment}
+                            disabled={cart.length === 0}
+                        >
+                            {cart.length === 0
+                                ? "Cart is empty"
+                                : `Go to Payment (${totalPrice.toFixed(2)})`}
+                        </Button>
+                    }
                 </div>
             </div>
         </div>

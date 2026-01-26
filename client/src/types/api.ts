@@ -466,10 +466,7 @@ export interface components {
         };
         /** VenueBase */
         VenueBase: {
-            /**
-             * Name
-             * @default Jopa Caffe
-             */
+            /** Name */
             name: string;
             /** Desc */
             desc?: string | null;
@@ -496,6 +493,16 @@ export interface components {
             facebook_link?: string | null;
             /** Tiktok Link */
             tiktok_link?: string | null;
+            /**
+             * Show Cart
+             * @default true
+             */
+            show_cart: boolean | null;
+            /**
+             * Make Order
+             * @default true
+             */
+            make_order: boolean | null;
             /**
              * Max Tables
              * @default 20
@@ -534,10 +541,7 @@ export interface components {
         };
         /** VenueRead */
         VenueRead: {
-            /**
-             * Name
-             * @default Jopa Caffe
-             */
+            /** Name */
             name: string;
             /** Desc */
             desc?: string | null;
@@ -564,6 +568,16 @@ export interface components {
             facebook_link?: string | null;
             /** Tiktok Link */
             tiktok_link?: string | null;
+            /**
+             * Show Cart
+             * @default true
+             */
+            show_cart: boolean | null;
+            /**
+             * Make Order
+             * @default true
+             */
+            make_order: boolean | null;
             /**
              * Max Tables
              * @default 20
@@ -612,7 +626,7 @@ export interface components {
              */
             is_editable: boolean | null;
             /** Menus */
-            menus?: components["schemas"]["MenuRead"][];
+            menus?: components["schemas"]["MenuRead"][] | null;
         };
         /** VenueUpdate */
         VenueUpdate: {
@@ -634,6 +648,16 @@ export interface components {
             facebook_link?: string | null;
             /** Tiktok Link */
             tiktok_link?: string | null;
+            /**
+             * Show Cart
+             * @default true
+             */
+            show_cart: boolean | null;
+            /**
+             * Make Order
+             * @default true
+             */
+            make_order: boolean | null;
             /** Max Tables */
             max_tables?: number | null;
             /** Currency */

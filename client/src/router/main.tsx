@@ -88,6 +88,7 @@ export default function AppRouter() {
                     <Route path="order" element={<Order />} />
                 </Route>
 
+
                 <Route path="/panel/:slug/qr-code" element={<MenuPanel />} />
                 <Route path="/auth/callback" element={<AuthCallback />} />
             </Routes>

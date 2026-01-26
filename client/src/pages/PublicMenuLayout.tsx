@@ -248,7 +248,7 @@ export default function PublicMenuLayout() {
 
         {/* Footers */}
         {isAdminMode && <PanelFooter />}
-        <FooterCart currencySymbol={getCurrencySymbol(venue.currency)} isAdminMode={isAdminMode}></FooterCart>
+        {venue.show_cart && <FooterCart currencySymbol={getCurrencySymbol(venue.currency)} isAdminMode={isAdminMode}></FooterCart>}
 
 
         {/* ==================== MODALS ==================== */}

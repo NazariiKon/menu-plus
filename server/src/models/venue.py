@@ -27,6 +27,8 @@ class Venue(Base):
     inst_link: Mapped[Optional[str]] = mapped_column(String(255), nullable=True)
     facebook_link: Mapped[Optional[str]] = mapped_column(String(255), nullable=True)
     tiktok_link: Mapped[Optional[str]] = mapped_column(String(255), nullable=True)
+    show_cart: Mapped[Optional[bool]] = mapped_column(bool, nullable=False, default=True)
+    make_order: Mapped[Optional[bool]] = mapped_column(bool, nullable=False, default=True)
     max_tables: Mapped[Optional[int]] = mapped_column(Integer, default=20)
     created_at: Mapped[datetime] = mapped_column(DateTime, server_default=text("now()"))
     currency: Mapped[str] = mapped_column(String(30), default="USD")

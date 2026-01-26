@@ -19,14 +19,13 @@ class VenueBase(BaseModel):
     inst_link: Optional[str] = Field(default=None, max_length=255)
     facebook_link: Optional[str] = Field(default=None, max_length=255)
     tiktok_link: Optional[str] = Field(default=None, max_length=255)
-
+    show_cart: Optional[bool] = True
+    make_order: Optional[bool] = True
     max_tables: Optional[int] = 20
     currency: str = "USD"
     language: str = "English"
     logo: str = "default.png"
     background: str = "defaultBG.png"
-
-
 
 class VenueUpdate(BaseModel):
     model_config = ConfigDict(from_attributes=True)
@@ -40,7 +39,8 @@ class VenueUpdate(BaseModel):
     inst_link: Optional[str] = Field(default=None, max_length=300)
     facebook_link: Optional[str] = Field(default=None, max_length=300)
     tiktok_link: Optional[str] = Field(default=None, max_length=300)
-
+    show_cart: Optional[bool] = True
+    make_order: Optional[bool] = True
     max_tables: Optional[int] = None
     currency: Optional[str] = None
     language: Optional[str] = None

@@ -25,7 +25,7 @@ export const useVenueBySlug = (slug: string) => {
     }, [slug]);
 
     const handleVenueSubmit = useCallback(
-        async (updatedData: Partial<VenueUpdate>) => {
+        async (updatedData: VenueUpdate) => {
             if (!venue) return;
             try {
                 const response = await editVenue(updatedData, venue.id);

@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import type { ItemRead } from '@/types/types';
 
-interface CartItem extends ItemRead {
+export interface CartItem extends ItemRead {
     quantity: number;
     notes?: string;
 }

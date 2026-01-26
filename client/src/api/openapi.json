@@ -1244,7 +1244,7 @@
                                                                                           "anyOf":  [
                                                                                                         {
                                                                                                             "type":  "string",
-                                                                                                            "maxLength":  100
+                                                                                                            "maxLength":  200
                                                                                                         },
                                                                                                         {
                                                                                                             "type":  "null"
@@ -1329,7 +1329,7 @@
                                                                                         "anyOf":  [
                                                                                                       {
                                                                                                           "type":  "string",
-                                                                                                          "maxLength":  255
+                                                                                                          "maxLength":  200
                                                                                                       },
                                                                                                       {
                                                                                                           "type":  "null"
@@ -1404,7 +1404,7 @@
                                                                                           "anyOf":  [
                                                                                                         {
                                                                                                             "type":  "string",
-                                                                                                            "maxLength":  100
+                                                                                                            "maxLength":  200
                                                                                                         },
                                                                                                         {
                                                                                                             "type":  "null"
@@ -1632,14 +1632,13 @@
                                                                             "name":  {
                                                                                          "type":  "string",
                                                                                          "maxLength":  100,
-                                                                                         "title":  "Name",
-                                                                                         "default":  "Jopa Caffe"
+                                                                                         "title":  "Name"
                                                                                      },
                                                                             "desc":  {
                                                                                          "anyOf":  [
                                                                                                        {
                                                                                                            "type":  "string",
-                                                                                                           "maxLength":  100
+                                                                                                           "maxLength":  250
                                                                                                        },
                                                                                                        {
                                                                                                            "type":  "null"
@@ -1734,6 +1733,30 @@
                                                                                                           ],
                                                                                                 "title":  "Tiktok Link"
                                                                                             },
+                                                                            "show_cart":  {
+                                                                                              "anyOf":  [
+                                                                                                            {
+                                                                                                                "type":  "boolean"
+                                                                                                            },
+                                                                                                            {
+                                                                                                                "type":  "null"
+                                                                                                            }
+                                                                                                        ],
+                                                                                              "title":  "Show Cart",
+                                                                                              "default":  true
+                                                                                          },
+                                                                            "make_order":  {
+                                                                                               "anyOf":  [
+                                                                                                             {
+                                                                                                                 "type":  "boolean"
+                                                                                                             },
+                                                                                                             {
+                                                                                                                 "type":  "null"
+                                                                                                             }
+                                                                                                         ],
+                                                                                               "title":  "Make Order",
+                                                                                               "default":  true
+                                                                                           },
                                                                             "max_tables":  {
                                                                                                "anyOf":  [
                                                                                                              {
@@ -1768,6 +1791,9 @@
                                                                                            }
                                                                         },
                                                          "type":  "object",
+                                                         "required":  [
+                                                                          "name"
+                                                                      ],
                                                          "title":  "VenueBase"
                                                      },
                                        "VenueCreateResponse":  {
@@ -1811,14 +1837,13 @@
                                                                             "name":  {
                                                                                          "type":  "string",
                                                                                          "maxLength":  100,
-                                                                                         "title":  "Name",
-                                                                                         "default":  "Jopa Caffe"
+                                                                                         "title":  "Name"
                                                                                      },
                                                                             "desc":  {
                                                                                          "anyOf":  [
                                                                                                        {
                                                                                                            "type":  "string",
-                                                                                                           "maxLength":  100
+                                                                                                           "maxLength":  250
                                                                                                        },
                                                                                                        {
                                                                                                            "type":  "null"
@@ -1913,6 +1938,30 @@
                                                                                                           ],
                                                                                                 "title":  "Tiktok Link"
                                                                                             },
+                                                                            "show_cart":  {
+                                                                                              "anyOf":  [
+                                                                                                            {
+                                                                                                                "type":  "boolean"
+                                                                                                            },
+                                                                                                            {
+                                                                                                                "type":  "null"
+                                                                                                            }
+                                                                                                        ],
+                                                                                              "title":  "Show Cart",
+                                                                                              "default":  true
+                                                                                          },
+                                                                            "make_order":  {
+                                                                                               "anyOf":  [
+                                                                                                             {
+                                                                                                                 "type":  "boolean"
+                                                                                                             },
+                                                                                                             {
+                                                                                                                 "type":  "null"
+                                                                                                             }
+                                                                                                         ],
+                                                                                               "title":  "Make Order",
+                                                                                               "default":  true
+                                                                                           },
                                                                             "max_tables":  {
                                                                                                "anyOf":  [
                                                                                                              {
@@ -1978,15 +2027,23 @@
                                                                                                 "default":  false
                                                                                             },
                                                                             "menus":  {
-                                                                                          "items":  {
-                                                                                                        "$ref":  "#/components/schemas/MenuRead"
-                                                                                                    },
-                                                                                          "type":  "array",
+                                                                                          "anyOf":  [
+                                                                                                        {
+                                                                                                            "items":  {
+                                                                                                                          "$ref":  "#/components/schemas/MenuRead"
+                                                                                                                      },
+                                                                                                            "type":  "array"
+                                                                                                        },
+                                                                                                        {
+                                                                                                            "type":  "null"
+                                                                                                        }
+                                                                                                    ],
                                                                                           "title":  "Menus"
                                                                                       }
                                                                         },
                                                          "type":  "object",
                                                          "required":  [
+                                                                          "name",
                                                                           "id",
                                                                           "slug",
                                                                           "owner_id",
@@ -2036,7 +2093,7 @@
                                                                                            "anyOf":  [
                                                                                                          {
                                                                                                              "type":  "string",
-                                                                                                             "maxLength":  100
+                                                                                                             "maxLength":  250
                                                                                                          },
                                                                                                          {
                                                                                                              "type":  "null"
@@ -2104,6 +2161,30 @@
                                                                                                             ],
                                                                                                   "title":  "Tiktok Link"
                                                                                               },
+                                                                              "show_cart":  {
+                                                                                                "anyOf":  [
+                                                                                                              {
+                                                                                                                  "type":  "boolean"
+                                                                                                              },
+                                                                                                              {
+                                                                                                                  "type":  "null"
+                                                                                                              }
+                                                                                                          ],
+                                                                                                "title":  "Show Cart",
+                                                                                                "default":  true
+                                                                                            },
+                                                                              "make_order":  {
+                                                                                                 "anyOf":  [
+                                                                                                               {
+                                                                                                                   "type":  "boolean"
+                                                                                                               },
+                                                                                                               {
+                                                                                                                   "type":  "null"
+                                                                                                               }
+                                                                                                           ],
+                                                                                                 "title":  "Make Order",
+                                                                                                 "default":  true
+                                                                                             },
                                                                               "max_tables":  {
                                                                                                  "anyOf":  [
                                                                                                                {

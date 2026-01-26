@@ -23,6 +23,7 @@ import {
     FormLabel,
     FormMessage,
 } from "@/components/ui/form"
+import { Switch } from "../ui/switch"
 
 const schema = z.object({
     name: z.string().trim().min(1, "Name is required").max(80, "Name is too long (max 80)"),
@@ -34,7 +35,8 @@ const schema = z.object({
     inst_link: z.string().trim().max(255, "Link is too long").optional().or(z.literal("")),
     facebook_link: z.string().trim().max(255, "Link is too long").optional().or(z.literal("")),
     tiktok_link: z.string().trim().max(255, "Link is too long").optional().or(z.literal("")),
-
+    show_cart: z.boolean(),
+    make_order: z.boolean(),
     logoFile: z.instanceof(File).optional(),
     backgroundFile: z.instanceof(File).optional(),
 })
@@ -45,7 +47,7 @@ export type EditVenueModalProps = {
     open: boolean
     onOpenChange: (open: boolean) => void
     venue: VenueRead
-    onSave: (patch: Partial<VenueUpdate>) => void | Promise<void>
+    onSave: (patch: VenueUpdate) => void | Promise<void>
 }
 
 const SAVE_BTN =
@@ -77,6 +79,8 @@ export default function EditVenueModal({
             inst_link: strOrEmpty(venue.inst_link),
             facebook_link: strOrEmpty(venue.facebook_link),
             tiktok_link: strOrEmpty(venue.tiktok_link),
+            show_cart: venue.show_cart ?? true,
+            make_order: venue.make_order ?? true,
             logoFile: undefined,
             backgroundFile: undefined,
         },
@@ -95,6 +99,8 @@ export default function EditVenueModal({
             inst_link: strOrEmpty(venue.inst_link),
             facebook_link: strOrEmpty(venue.facebook_link),
             tiktok_link: strOrEmpty(venue.tiktok_link),
+            show_cart: !!venue.show_cart,
+            make_order: !!venue.make_order,
             logoFile: undefined,
             backgroundFile: undefined,
         })
@@ -122,7 +128,7 @@ export default function EditVenueModal({
         const logoBytes = await _getBytes(values.logoFile)
         const backgroundBytes = await _getBytes(values.backgroundFile)
 
-        const rawPatch: Partial<VenueUpdate> = {
+        const patch: VenueUpdate = {
             name: values.name.trim(),
             desc: emptyToNull(values.desc),
             wifiPassword: emptyToNull(values.wifiPassword),
@@ -132,13 +138,11 @@ export default function EditVenueModal({
             inst_link: emptyToNull(values.inst_link),
             facebook_link: emptyToNull(values.facebook_link),
             tiktok_link: emptyToNull(values.tiktok_link),
-            logo: logoBytes,
-            background: backgroundBytes
+            show_cart: values.show_cart,
+            make_order: values.make_order,
+            ...(logoBytes && { logo: logoBytes }),
+            ...(backgroundBytes && { background: backgroundBytes }),
         }
-
-        const patch = Object.fromEntries(
-            Object.entries(rawPatch).filter(([_, v]) => v !== null && v !== undefined)
-        );
 
         await onSave(patch)
         onOpenChange(false)
@@ -293,6 +297,49 @@ export default function EditVenueModal({
                                         )}
                                     />
                                 </div>
+                                <div className="grid grid-cols-2 gap-3">
+                                    <FormField
+                                        control={form.control}
+                                        name="show_cart"
+                                        render={({ field }) => (
+                                            <FormItem className="flex flex-row items-center justify-between rounded-xl border px-3 py-2">
+                                                <div className="space-y-0.5">
+                                                    <FormLabel className="text-sm">
+                                                        Show cart
+                                                    </FormLabel>
+                                                </div>
+                                                <FormControl>
+                                                    <Switch
+                                                        className="cursor-pointer"
+                                                        checked={field.value}
+                                                        onCheckedChange={field.onChange}
+                                                    />
+                                                </FormControl>
+                                            </FormItem>
+                                        )}
+                                    />
+                                    <FormField
+                                        control={form.control}
+                                        name="make_order"
+                                        render={({ field }) => (
+                                            <FormItem className="flex flex-row items-center justify-between rounded-xl border px-3 py-2">
+                                                <div className="space-y-0.5">
+                                                    <FormLabel className="text-sm">
+                                                        WhatsApp order
+                                                    </FormLabel>
+                                                </div>
+                                                <FormControl>
+                                                    <Switch
+                                                        className="cursor-pointer"
+                                                        checked={field.value}
+                                                        onCheckedChange={field.onChange}
+                                                    />
+                                                </FormControl>
+                                            </FormItem>
+                                        )}
+                                    />
+                                </div>
+
 
                                 <FormField
                                     control={form.control}
