@@ -2,6 +2,7 @@ import { useCart, type CartItem } from "@/context/CartContext";
 import { Button } from "@/components/ui/button";
 import { useOutletContext } from "react-router-dom";
 import type { PublicMenuContextType } from "@/pages/PublicMenuLayout";
+import { supabase } from "@/lib/supabase";
 
 export default function Order() {
     const {
@@ -68,7 +69,7 @@ export default function Order() {
                                             {item.image && (
                                                 <div className="w-12 h-12 flex-shrink-0">
                                                     <img
-                                                        src={item.image}
+                                                        src={supabase.storage.from("images/").getPublicUrl(item.image).data.publicUrl}
                                                         alt={item.name}
                                                         className="w-full h-full object-cover rounded-md"
                                                     />

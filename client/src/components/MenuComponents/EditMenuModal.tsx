@@ -24,6 +24,8 @@ import {
     FormMessage,
 } from "@/components/ui/form"
 import { Switch } from "../ui/switch"
+import { CropModal } from "../CropModal"
+import { useImageCropping } from "@/hooks/useImageCropping"
 
 const schema = z.object({
     name: z.string().trim().min(1, "Name is required").max(80, "Name is too long (max 80)"),
@@ -87,6 +89,30 @@ export default function EditVenueModal({
         mode: "onSubmit",
     })
 
+    const [cropModalOpen, setCropModalOpen] = React.useState(false);
+    const [cropImageSrc, setCropImageSrc] = React.useState<string | null>(null);
+    const [size, setSize] = React.useState<number>(1);
+    const [currentField, setCurrentField] = React.useState<"logo" | "bg" | null>(null);
+
+    const logoCropper = useImageCropping({
+        maxSizeMB: 10,
+        onCropped: (file) => {
+            form.setValue("logoFile", file);
+        },
+        setIsOpen: setCropModalOpen,
+    });
+
+    const bgCropper = useImageCropping({
+        maxSizeMB: 10,
+        onCropped: (file) => {
+            form.setValue("backgroundFile", file);
+        },
+        setIsOpen: () => {
+            setSize(500 / 220);
+            setCropModalOpen(true);
+        }
+    });
+
     React.useEffect(() => {
         if (!open) return
         form.reset({
@@ -148,135 +174,233 @@ export default function EditVenueModal({
         onOpenChange(false)
     })
 
+    const handleCropComplete = (croppedFile: File) => {
+        if (currentField === "logo") {
+            logoCropper.handleCropComplete(croppedFile);
+        } else if (currentField === "bg") {
+            bgCropper.handleCropComplete(croppedFile);
+        }
+        setCropModalOpen(false);
+    };
+
+    const handleCropCancel = () => {
+        if (currentField === "logo") {
+            logoCropper.handleCropCancel();
+        } else if (currentField === "bg") {
+            bgCropper.handleCropCancel();
+        }
+        setCropModalOpen(false);
+    };
+
+    const handleLogoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+
+        const url = URL.createObjectURL(file);
+        setCropImageSrc(url);
+        setCurrentField("logo");
+        logoCropper.handleFileInputChange(e);
+    };
+
+    const handleBgChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+
+        const url = URL.createObjectURL(file);
+        setCropImageSrc(url);
+        setCurrentField("bg");
+        bgCropper.handleFileInputChange(e);
+    };
+
     return (
-        <Dialog
-            open={open}
-            onOpenChange={(next) => {
-                if (form.formState.isSubmitting) return
-                onOpenChange(next)
-            }}
-        >
-            <DialogContent className="w-[calc(100vw-1.5rem)] sm:max-w-[520px] h-[92dvh] p-0 overflow-hidden bg-white text-black shadow-2xl rounded-2xl">
-                <DialogHeader className="sr-only">
-                    <DialogTitle>Edit venue</DialogTitle>
-                    <DialogDescription>Edit venue</DialogDescription>
-                </DialogHeader>
+        <>
+            {cropModalOpen && cropImageSrc && (
+                <CropModal
+                    imageSrc={cropImageSrc}
+                    onCropComplete={handleCropComplete}
+                    onCancel={handleCropCancel}
+                    size={size}
+                />
+            )}
 
-                <Form {...form}>
-                    <form onSubmit={handleSubmit} className="flex h-full min-h-0 flex-col" noValidate>
-                        <div className="min-h-0 flex-1 overflow-y-auto overflow-x-hidden px-5 py-4">
-                            <div className="space-y-5">
-                                <FormField
-                                    control={form.control}
-                                    name="name"
-                                    render={({ field }) => (
-                                        <FormItem>
-                                            <FormLabel className="text-sm">Name</FormLabel>
-                                            <FormControl>
-                                                <Input {...field} className="h-11 w-full rounded-xl" placeholder="Amazon Bar" />
-                                            </FormControl>
-                                            <FormMessage />
-                                        </FormItem>
-                                    )}
-                                />
+            <Dialog
+                open={open && !cropModalOpen}
+                onOpenChange={(next) => {
+                    if (form.formState.isSubmitting) return;
+                    onOpenChange(next);
+                }}
+            >
+                <DialogContent className="w-[calc(100vw-1.5rem)] sm:max-w-[520px] h-[92dvh] p-0 overflow-hidden bg-white text-black shadow-2xl rounded-2xl">
+                    <DialogHeader className="sr-only">
+                        <DialogTitle>Edit venue</DialogTitle>
+                        <DialogDescription>Edit venue</DialogDescription>
+                    </DialogHeader>
 
-                                <div className="grid grid-cols-2 gap-3">
+                    <Form {...form}>
+                        <form onSubmit={handleSubmit} className="flex h-full min-h-0 flex-col" noValidate>
+                            <div className="min-h-0 flex-1 overflow-y-auto overflow-x-hidden px-5 py-4">
+                                <div className="space-y-5">
                                     <FormField
                                         control={form.control}
-                                        name="logoFile"
-                                        render={({ field: { onChange, value, ref } }) => (
-                                            <FormItem className="col-span-1">
-                                                <FormLabel className="text-sm">Logo</FormLabel>
+                                        name="name"
+                                        render={({ field }) => (
+                                            <FormItem>
+                                                <FormLabel className="text-sm">Name</FormLabel>
                                                 <FormControl>
-                                                    <label className="group relative flex h-32 w-full cursor-pointer items-center justify-center overflow-hidden rounded-2xl border border-dashed bg-muted/20 hover:bg-muted/40 transition">
-                                                        <input
-                                                            ref={ref}
-                                                            type="file"
-                                                            accept="image/*"
-                                                            className="sr-only"
-                                                            onChange={(e) => {
-                                                                const file = e.target.files?.[0];
-                                                                if (file) onChange(file);
-                                                            }}
-                                                        />
+                                                    <Input {...field} className="h-11 w-full rounded-xl" placeholder="Amazon Bar" />
+                                                </FormControl>
+                                                <FormMessage />
+                                            </FormItem>
+                                        )}
+                                    />
 
-                                                        {value ? (
-                                                            <div className="relative h-full w-full">
-                                                                <img
-                                                                    src={URL.createObjectURL(value as File)}
-                                                                    alt="Preview"
-                                                                    className="h-full w-full object-cover"
-                                                                />
-                                                                <div className="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity">
-                                                                    <span className="text-xs font-medium text-white">Change logo</span>
+
+
+                                    <div className="grid grid-cols-2 gap-3">
+                                        <FormField
+                                            control={form.control}
+                                            name="logoFile"
+                                            render={({ field: { value } }) => (
+                                                <FormItem className="col-span-1">
+                                                    <FormLabel className="text-sm">Logo</FormLabel>
+                                                    <FormControl>
+                                                        <label className="group relative flex h-32 w-full cursor-pointer items-center justify-center overflow-hidden rounded-2xl border border-dashed bg-muted/20 hover:bg-muted/40 transition">
+                                                            <input
+                                                                type="file"
+                                                                accept="image/*"
+                                                                className="sr-only"
+                                                                onChange={handleLogoChange}
+                                                            />
+
+                                                            {value ? (
+                                                                <div className="relative h-full w-full">
+                                                                    <img
+                                                                        src={URL.createObjectURL(value as File)}
+                                                                        alt="Preview"
+                                                                        className="h-full w-full object-cover"
+                                                                    />
+                                                                    <div className="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity">
+                                                                        <span className="text-xs font-medium text-white">Change logo</span>
+                                                                    </div>
                                                                 </div>
-                                                            </div>
-                                                        ) : (
-                                                            <div className="relative z-10 rounded-xl bg-white/85 px-3 py-2 text-xs font-semibold text-black shadow">
-                                                                Upload logo
-                                                            </div>
-                                                        )}
-                                                    </label>
-                                                </FormControl>
-                                                <FormMessage />
-                                            </FormItem>
-                                        )}
-                                    />
-
-
-                                    <FormField
-                                        control={form.control}
-                                        name="backgroundFile"
-                                        render={({ field: { onChange, value, ref } }) => (
-                                            <FormItem className="col-span-1">
-                                                <FormLabel className="text-sm">Background</FormLabel>
-                                                <FormControl>
-                                                    <label className="group relative flex h-32 w-full cursor-pointer items-center justify-center overflow-hidden rounded-2xl border border-dashed bg-muted/20 hover:bg-muted/40 transition">
-                                                        <input
-                                                            ref={ref}
-                                                            type="file"
-                                                            accept="image/*"
-                                                            className="sr-only"
-                                                            onChange={(e) => {
-                                                                const file = e.target.files?.[0];
-                                                                if (file) onChange(file);
-                                                            }}
-                                                        />
-
-                                                        {value ? (
-                                                            <div className="relative h-full w-full">
-                                                                <img
-                                                                    src={URL.createObjectURL(value as File)}
-                                                                    alt="Background Preview"
-                                                                    className="h-full w-full object-cover"
-                                                                />
-                                                                <div className="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity">
-                                                                    <span className="text-xs font-medium text-white">Change BG</span>
+                                                            ) : (
+                                                                <div className="relative z-10 rounded-xl bg-white/85 px-3 py-2 text-xs font-semibold text-black shadow">
+                                                                    Upload logo
                                                                 </div>
-                                                            </div>
-                                                        ) : (
-                                                            <div className="relative z-10 rounded-xl bg-white/85 px-3 py-2 text-xs font-semibold text-black shadow">
-                                                                Upload BG
-                                                            </div>
-                                                        )}
-                                                    </label>
+                                                            )}
+                                                        </label>
+                                                    </FormControl>
+                                                    <FormMessage />
+                                                </FormItem>
+                                            )}
+                                        />
+
+                                        <FormField
+                                            control={form.control}
+                                            name="backgroundFile"
+                                            render={({ field: { value } }) => (
+                                                <FormItem className="col-span-1">
+                                                    <FormLabel className="text-sm">Background</FormLabel>
+                                                    <FormControl>
+                                                        <label className="group relative flex h-32 w-full cursor-pointer items-center justify-center overflow-hidden rounded-2xl border border-dashed bg-muted/20 hover:bg-muted/40 transition">
+                                                            <input
+                                                                type="file"
+                                                                accept="image/*"
+                                                                className="sr-only"
+                                                                onChange={handleBgChange}
+                                                            />
+
+                                                            {value ? (
+                                                                <div className="relative h-full w-full">
+                                                                    <img
+                                                                        src={URL.createObjectURL(value as File)}
+                                                                        alt="Background Preview"
+                                                                        className="h-full w-full object-cover"
+                                                                    />
+                                                                    <div className="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity">
+                                                                        <span className="text-xs font-medium text-white">Change BG</span>
+                                                                    </div>
+                                                                </div>
+                                                            ) : (
+                                                                <div className="relative z-10 rounded-xl bg-white/85 px-3 py-2 text-xs font-semibold text-black shadow">
+                                                                    Upload BG
+                                                                </div>
+                                                            )}
+                                                        </label>
+                                                    </FormControl>
+                                                    <FormMessage />
+                                                </FormItem>
+                                            )}
+                                        />
+                                    </div>
+
+
+                                    <div className="grid grid-cols-2 gap-3">
+                                        <FormField
+                                            control={form.control}
+                                            name="show_cart"
+                                            render={({ field }) => (
+                                                <FormItem className="flex flex-row items-center justify-between rounded-xl border px-3 py-2">
+                                                    <div className="space-y-0.5">
+                                                        <FormLabel className="text-sm">
+                                                            Show cart
+                                                        </FormLabel>
+                                                    </div>
+                                                    <FormControl>
+                                                        <Switch
+                                                            className="cursor-pointer"
+                                                            checked={field.value}
+                                                            onCheckedChange={field.onChange}
+                                                        />
+                                                    </FormControl>
+                                                </FormItem>
+                                            )}
+                                        />
+                                        <FormField
+                                            control={form.control}
+                                            name="make_order"
+                                            render={({ field }) => (
+                                                <FormItem className="flex flex-row items-center justify-between rounded-xl border px-3 py-2">
+                                                    <div className="space-y-0.5">
+                                                        <FormLabel className="text-sm">
+                                                            WhatsApp order
+                                                        </FormLabel>
+                                                    </div>
+                                                    <FormControl>
+                                                        <Switch
+                                                            className="cursor-pointer"
+                                                            checked={field.value}
+                                                            onCheckedChange={field.onChange}
+                                                        />
+                                                    </FormControl>
+                                                </FormItem>
+                                            )}
+                                        />
+                                    </div>
+
+
+                                    <FormField
+                                        control={form.control}
+                                        name="address"
+                                        render={({ field }) => (
+                                            <FormItem>
+                                                <FormLabel className="text-sm">Address</FormLabel>
+                                                <FormControl>
+                                                    <Input {...field} className="h-11 w-full rounded-xl" placeholder="70A Hillcreast Park" />
                                                 </FormControl>
                                                 <FormMessage />
                                             </FormItem>
                                         )}
                                     />
 
-                                </div>
-
-                                <div className="grid grid-cols-2 gap-3">
                                     <FormField
                                         control={form.control}
-                                        name="wifiPassword"
+                                        name="google_maps_link"
                                         render={({ field }) => (
-                                            <FormItem className="col-span-1">
-                                                <FormLabel className="text-sm">Wi‑Fi password</FormLabel>
+                                            <FormItem>
+                                                <FormLabel className="text-sm">Google Maps link</FormLabel>
                                                 <FormControl>
-                                                    <Input {...field} className="h-11 w-full rounded-xl" placeholder="••••••••" />
+                                                    <Input {...field} className="h-11 w-full rounded-xl" placeholder="https://maps.google.com/..." />
                                                 </FormControl>
                                                 <FormMessage />
                                             </FormItem>
@@ -285,180 +409,95 @@ export default function EditVenueModal({
 
                                     <FormField
                                         control={form.control}
-                                        name="phone"
+                                        name="inst_link"
                                         render={({ field }) => (
-                                            <FormItem className="col-span-1">
-                                                <FormLabel className="text-sm">Phone</FormLabel>
+                                            <FormItem>
+                                                <FormLabel className="text-sm">Instagram</FormLabel>
                                                 <FormControl>
-                                                    <Input {...field} className="h-11 w-full rounded-xl" type="tel" placeholder="+__________" />
+                                                    <Input {...field} className="h-11 w-full rounded-xl" placeholder="https://instagram.com/..." />
                                                 </FormControl>
                                                 <FormMessage />
                                             </FormItem>
                                         )}
                                     />
-                                </div>
-                                <div className="grid grid-cols-2 gap-3">
+
+                                    <div className="grid grid-cols-2 gap-3">
+                                        <FormField
+                                            control={form.control}
+                                            name="tiktok_link"
+                                            render={({ field }) => (
+                                                <FormItem className="col-span-1">
+                                                    <FormLabel className="text-sm">TikTok</FormLabel>
+                                                    <FormControl>
+                                                        <Input {...field} className="h-11 w-full rounded-xl" placeholder="https://tiktok.com/@..." />
+                                                    </FormControl>
+                                                    <FormMessage />
+                                                </FormItem>
+                                            )}
+                                        />
+                                        <FormField
+                                            control={form.control}
+                                            name="facebook_link"
+                                            render={({ field }) => (
+                                                <FormItem className="col-span-1">
+                                                    <FormLabel className="text-sm">Facebook</FormLabel>
+                                                    <FormControl>
+                                                        <Input {...field} className="h-11 w-full rounded-xl" placeholder="https://facebook.com/..." />
+                                                    </FormControl>
+                                                    <FormMessage />
+                                                </FormItem>
+                                            )}
+                                        />
+                                    </div>
+
                                     <FormField
                                         control={form.control}
-                                        name="show_cart"
+                                        name="desc"
                                         render={({ field }) => (
-                                            <FormItem className="flex flex-row items-center justify-between rounded-xl border px-3 py-2">
-                                                <div className="space-y-0.5">
-                                                    <FormLabel className="text-sm">
-                                                        Show cart
-                                                    </FormLabel>
-                                                </div>
+                                            <FormItem>
+                                                <FormLabel className="text-sm">Description</FormLabel>
                                                 <FormControl>
-                                                    <Switch
-                                                        className="cursor-pointer"
-                                                        checked={field.value}
-                                                        onCheckedChange={field.onChange}
+                                                    <Textarea
+                                                        {...field}
+                                                        value={field.value ?? ""}
+                                                        className="min-h-[110px] w-full rounded-xl"
+                                                        placeholder="Here you can add any additional information about your QR code menu"
                                                     />
                                                 </FormControl>
-                                            </FormItem>
-                                        )}
-                                    />
-                                    <FormField
-                                        control={form.control}
-                                        name="make_order"
-                                        render={({ field }) => (
-                                            <FormItem className="flex flex-row items-center justify-between rounded-xl border px-3 py-2">
-                                                <div className="space-y-0.5">
-                                                    <FormLabel className="text-sm">
-                                                        WhatsApp order
-                                                    </FormLabel>
-                                                </div>
-                                                <FormControl>
-                                                    <Switch
-                                                        className="cursor-pointer"
-                                                        checked={field.value}
-                                                        onCheckedChange={field.onChange}
-                                                    />
-                                                </FormControl>
-                                            </FormItem>
-                                        )}
-                                    />
-                                </div>
-
-
-                                <FormField
-                                    control={form.control}
-                                    name="address"
-                                    render={({ field }) => (
-                                        <FormItem>
-                                            <FormLabel className="text-sm">Address</FormLabel>
-                                            <FormControl>
-                                                <Input {...field} className="h-11 w-full rounded-xl" placeholder="70A Hillcreast Park" />
-                                            </FormControl>
-                                            <FormMessage />
-                                        </FormItem>
-                                    )}
-                                />
-
-                                <FormField
-                                    control={form.control}
-                                    name="google_maps_link"
-                                    render={({ field }) => (
-                                        <FormItem>
-                                            <FormLabel className="text-sm">Google Maps link</FormLabel>
-                                            <FormControl>
-                                                <Input {...field} className="h-11 w-full rounded-xl" placeholder="https://maps.google.com/..." />
-                                            </FormControl>
-                                            <FormMessage />
-                                        </FormItem>
-                                    )}
-                                />
-
-                                <FormField
-                                    control={form.control}
-                                    name="inst_link"
-                                    render={({ field }) => (
-                                        <FormItem>
-                                            <FormLabel className="text-sm">Instagram</FormLabel>
-                                            <FormControl>
-                                                <Input {...field} className="h-11 w-full rounded-xl" placeholder="https://instagram.com/..." />
-                                            </FormControl>
-                                            <FormMessage />
-                                        </FormItem>
-                                    )}
-                                />
-
-                                <div className="grid grid-cols-2 gap-3">
-                                    <FormField
-                                        control={form.control}
-                                        name="tiktok_link"
-                                        render={({ field }) => (
-                                            <FormItem className="col-span-1">
-                                                <FormLabel className="text-sm">TikTok</FormLabel>
-                                                <FormControl>
-                                                    <Input {...field} className="h-11 w-full rounded-xl" placeholder="https://tiktok.com/@..." />
-                                                </FormControl>
-                                                <FormMessage />
-                                            </FormItem>
-                                        )}
-                                    />
-                                    <FormField
-                                        control={form.control}
-                                        name="facebook_link"
-                                        render={({ field }) => (
-                                            <FormItem className="col-span-1">
-                                                <FormLabel className="text-sm">Facebook</FormLabel>
-                                                <FormControl>
-                                                    <Input {...field} className="h-11 w-full rounded-xl" placeholder="https://facebook.com/..." />
-                                                </FormControl>
                                                 <FormMessage />
                                             </FormItem>
                                         )}
                                     />
                                 </div>
-
-                                <FormField
-                                    control={form.control}
-                                    name="desc"
-                                    render={({ field }) => (
-                                        <FormItem>
-                                            <FormLabel className="text-sm">Description</FormLabel>
-                                            <FormControl>
-                                                <Textarea
-                                                    {...field}
-                                                    value={field.value ?? ""}
-                                                    className="min-h-[110px] w-full rounded-xl"
-                                                    placeholder="Here you can add any additional information about your QR code menu"
-                                                />
-                                            </FormControl>
-                                            <FormMessage />
-                                        </FormItem>
-                                    )}
-                                />
                             </div>
-                        </div>
 
-                        <div className="px-5 py-4 border-t bg-white shrink-0">
-                            <div className="mx-auto w-full max-w-[520px] overflow-x-hidden">
-                                <div className="flex flex-col items-stretch justify-center gap-2 sm:flex-row sm:items-center">
-                                    <Button
-                                        type="button"
-                                        variant="outline"
-                                        className="w-full rounded-xl sm:w-auto sm:min-w-[160px]"
-                                        onClick={() => onOpenChange(false)}
-                                        disabled={form.formState.isSubmitting}
-                                    >
-                                        Cancel
-                                    </Button>
+                            <div className="px-5 py-4 border-t bg-white shrink-0">
+                                <div className="mx-auto w-full max-w-[520px] overflow-x-hidden">
+                                    <div className="flex flex-col items-stretch justify-center gap-2 sm:flex-row sm:items-center">
+                                        <Button
+                                            type="button"
+                                            variant="outline"
+                                            className="w-full rounded-xl sm:w-auto sm:min-w-[160px]"
+                                            onClick={() => onOpenChange(false)}
+                                            disabled={form.formState.isSubmitting}
+                                        >
+                                            Cancel
+                                        </Button>
 
-                                    <Button
-                                        type="submit"
-                                        className={`w-full rounded-xl sm:w-auto sm:min-w-[160px] ${SAVE_BTN}`}
-                                        disabled={form.formState.isSubmitting}
-                                    >
-                                        {form.formState.isSubmitting ? "Saving..." : "Save"}
-                                    </Button>
+                                        <Button
+                                            type="submit"
+                                            className={`w-full rounded-xl sm:w-auto sm:min-w-[160px] ${SAVE_BTN}`}
+                                            disabled={form.formState.isSubmitting}
+                                        >
+                                            {form.formState.isSubmitting ? "Saving..." : "Save"}
+                                        </Button>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    </form>
-                </Form>
-            </DialogContent>
-        </Dialog>
+                        </form>
+                    </Form>
+                </DialogContent>
+            </Dialog>
+        </>
     )
 }

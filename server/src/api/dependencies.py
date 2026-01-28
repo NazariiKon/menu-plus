@@ -1,4 +1,5 @@
 from fastapi import Depends, HTTPException, Request, Security, status
+from fastapi.datastructures import FormData
 from fastapi.security import APIKeyHeader, HTTPAuthorizationCredentials, HTTPBearer
 from realtime import Optional
 from supabase import Client, create_client
@@ -50,6 +51,36 @@ def get_supabase_client(request: Request) -> Client:
         client.auth.set_session(access_token=token, refresh_token="") 
     
     return client
+
+
+# dependencies.py
+from fastapi import Request, Depends, HTTPException
+from starlette.datastructures import FormData
+from typing import Annotated, Dict, Any
+
+MAX_PART_SIZE = 10 * 1024 * 1024  # 10 MB
+# dependencies.py
+from fastapi import Request, Depends, HTTPException
+from starlette.datastructures import FormData
+from typing import Dict, Any
+
+MAX_PART_SIZE = 10 * 1024 * 1024  # 10 MB
+async def get_form_data(request: Request) -> Dict[str, Any]:
+    try:
+        form_data: FormData = await request.form(max_part_size=MAX_PART_SIZE)
+    except Exception as e:
+        raise HTTPException(
+            status_code=422,
+            detail=f"Error parsing form data (max 10 MB): {str(e)}",
+        )
+
+    raw_data = dict(form_data)
+
+    for key, value in raw_data.items():
+        if value == "":
+            raw_data[key] = None
+
+    return raw_data
 
 @lru_cache()
 def get_jwks():
