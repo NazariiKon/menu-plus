@@ -14,7 +14,6 @@ class DbSettings(BaseSettings):
     echo: bool = True
 
 class AuthJWT(BaseSettings):
-    jwt_secret: str = os.getenv("SUPABASE_JWT_SECRET")
     algorithm: str = "HS256"
     audience: str = "authenticated"
 
