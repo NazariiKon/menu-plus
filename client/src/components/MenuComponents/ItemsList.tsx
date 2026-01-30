@@ -6,14 +6,13 @@ import {
     ArrowUp,
     ArrowDown,
     Loader2,
-    ArrowLeft,
-    Plus
+    ArrowLeft
 } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import type { AdminCallbacksItems, ItemRead } from "@/types/types";
 import React from "react";
 import { Alert } from "@/components/Alert";
-
+import Item from "../ui/item";
 
 interface ItemsListProps {
     currencySymbol: string;
@@ -22,8 +21,8 @@ interface ItemsListProps {
     onBack: () => void;
     isAdmin?: boolean;
     onAdminActions?: AdminCallbacksItems;
+    isSearch?: boolean;
 }
-
 
 export const ItemsList: React.FC<ItemsListProps> = ({
     currencySymbol = "EUR",
@@ -32,6 +31,8 @@ export const ItemsList: React.FC<ItemsListProps> = ({
     onBack,
     isAdmin = false,
     onAdminActions,
+    isSearch = false,
+
 }) => {
     const [deleteItemId, setDeleteItemId] = React.useState<string | null>(null);
     const [deletingItemId, setDeletingItemId] = React.useState<string | null>(null);
@@ -64,26 +65,27 @@ export const ItemsList: React.FC<ItemsListProps> = ({
         setDeleteItemId(prev => (prev === itemId ? null : itemId));
     };
 
-
     return (
-        <div className="w-full px-4 py-6">
-            <div className="flex items-center gap-2 mb-6 pb-6 border-b border-border">
-                <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={onBack}
-                    className="h-8 w-8 p-0 -ml-1"
-                >
-                    <ArrowLeft className="h-4 w-4" />
-                </Button>
-                <div className="flex justify-center">
-                    <p className="text-xl font-semibold text-foreground tracking-wide">
-                        {category?.name || "Items"}
-                    </p>
+        <div className="w-full py-6">
+            {!isSearch &&
+                <div className="flex items-center gap-2 mb-6 pb-6 border-b border-border">
+                    <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={onBack}
+                        className="h-8 w-8 p-0 -ml-1"
+                    >
+                        <ArrowLeft className="h-4 w-4" />
+                    </Button>
+                    <div className="flex justify-center">
+                        <p className="text-xl font-semibold text-foreground tracking-wide">
+                            {category?.name || "Items"}
+                        </p>
+                    </div>
                 </div>
-            </div>
+            }
 
-            {isAdmin && onAdminActions?.onAddItem && (
+            {!isSearch && isAdmin && onAdminActions?.onAddItem && (
                 <Button
                     onClick={() => onAdminActions.onAddItem(0)}
                     className="w-full h-auto text-3xl border-3 mb-2 rounded-md bg-black text-white transition-all"
@@ -125,7 +127,7 @@ export const ItemsList: React.FC<ItemsListProps> = ({
                                                         onConfirm={async () => {
                                                             setDeletingItemId(item.id);
                                                             try {
-                                                                await onAdminActions.onDeleteItem(item.id);
+                                                                await onAdminActions.onDeleteItem(item);
                                                             } finally {
                                                                 setDeletingItemId(null);
                                                             }
@@ -148,6 +150,7 @@ export const ItemsList: React.FC<ItemsListProps> = ({
                                                             )}
                                                         </Button>
                                                     </Alert>
+
                                                     <Button
                                                         onClick={async () => {
                                                             await onAdminActions.onUpdateItem(item.id);
@@ -160,77 +163,53 @@ export const ItemsList: React.FC<ItemsListProps> = ({
                                                     >
                                                         <Edit3 className="h-4 w-4" />
                                                     </Button>
-                                                    <div className="flex gap-1">
-                                                        {index > 0 && (
-                                                            <Button
-                                                                onClick={() =>
-                                                                    onAdminActions.onMoveUp(item.id, item.position)
-                                                                }
-                                                                variant="ghost"
-                                                                size="sm"
-                                                                className="h-8 w-8 p-0 bg-black text-white hover:bg-black/90 shadow-sm hover:shadow-md border-transparent transition-all"
-                                                                title="Move Up"
-                                                            >
-                                                                <ArrowUp className="h-4 w-4" />
-                                                            </Button>
-                                                        )}
-                                                        {index < sortedItems.length - 1 && (
-                                                            <Button
-                                                                onClick={() =>
-                                                                    onAdminActions.onMoveDown(item.id, item.position)
-                                                                }
-                                                                variant="ghost"
-                                                                size="sm"
-                                                                className="h-8 w-8 p-0 bg-black text-white hover:bg-black/90 shadow-sm hover:shadow-md border-transparent transition-all"
-                                                                title="Move Down"
-                                                            >
-                                                                <ArrowDown className="h-4 w-4" />
-                                                            </Button>
-                                                        )}
-                                                    </div>
+
+                                                    {!isSearch &&
+                                                        <div className="flex gap-1">
+                                                            {index > 0 && (
+                                                                <Button
+                                                                    onClick={() =>
+                                                                        onAdminActions.onMoveUp(item.id, item.position)
+                                                                    }
+                                                                    variant="ghost"
+                                                                    size="sm"
+                                                                    className="h-8 w-8 p-0 bg-black text-white hover:bg-black/90 shadow-sm hover:shadow-md border-transparent transition-all"
+                                                                    title="Move Up"
+                                                                >
+                                                                    <ArrowUp className="h-4 w-4" />
+                                                                </Button>
+                                                            )}
+                                                            {index < sortedItems.length - 1 && (
+                                                                <Button
+                                                                    onClick={() =>
+                                                                        onAdminActions.onMoveDown(item.id, item.position)
+                                                                    }
+                                                                    variant="ghost"
+                                                                    size="sm"
+                                                                    className="h-8 w-8 p-0 bg-black text-white hover:bg-black/90 shadow-sm hover:shadow-md border-transparent transition-all"
+                                                                    title="Move Down"
+                                                                >
+                                                                    <ArrowDown className="h-4 w-4" />
+                                                                </Button>
+                                                            )}
+                                                        </div>
+                                                    }
                                                 </div>
                                             )}
                                         </div>
                                         <div className="flex-1 min-w-0">
-                                            <div className="flex justify-between items-start gap-3">
-                                                <div className="flex-1 min-w-0 space-y-2">
-                                                    <h3 className="font-bold text-lg leading-tight truncate text-foreground">
-                                                        {item.name}
-                                                    </h3>
-                                                    {item.desc && (
-                                                        <p className="text-sm text-muted-foreground leading-relaxed line-clamp-2">
-                                                            {item.desc}
-                                                        </p>
-                                                    )}
-                                                    <div className="flex items-baseline gap-3 pt-1">
-                                                        {!!item.price && Number(item.price) > 0 && (
-                                                            <span className="text-xl font-black text-emerald-600 drop-shadow-sm bg-emerald-50 px-3 py-1 rounded-lg shadow-md">
-                                                                {item.price} {currencySymbol}
-                                                            </span>
-                                                        )}
-                                                        {!!item.weight_g && Number(item.weight_g) > 0 && (
-                                                            <span className="text-sm font-semibold text-gray-700 bg-gray-100 px-3 py-1 rounded-full shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
-                                                                {item.weight_g}g
-                                                            </span>
-                                                        )}
-                                                    </div>
-                                                </div>
-                                                {onAdminActions?.onAddToCart && onAdminActions && (
-                                                    <Button
-                                                        size="icon"
-                                                        className="h-12 mt-14 w-12 rounded-full bg-black text-white hover:bg-black/90 shadow-lg hover:shadow-xl transition-all flex-shrink-0"
-                                                        onClick={() => onAdminActions.onAddToCart(item)}
-                                                        title="Add to cart"
-                                                    >
-                                                        <Plus className="h-5 w-5" />
-                                                    </Button>
-                                                )}
-                                            </div>
+                                            {onAdminActions && onAdminActions?.onAddToCart &&
+                                                <Item
+                                                    item={item}
+                                                    currencySymbol={currencySymbol}
+                                                    onAddToCart={onAdminActions?.onAddToCart}>
+                                                </Item>
+                                            }
                                         </div>
                                     </div>
                                 </CardContent>
                             </Card>
-                            {isAdmin && onAdminActions && (
+                            {!isSearch && isAdmin && onAdminActions && (
                                 <Button
                                     onClick={() => onAdminActions.onAddItem(index + 1)}
                                     className="w-full h-auto text-3xl border-3 rounded-md bg-black text-white transition-all"

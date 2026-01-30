@@ -7,7 +7,7 @@ import { useIsOwner } from "@/hooks/useIsOwner";
 import { useItem } from "@/hooks/useItem";
 import { useMenus } from "@/hooks/useMenus";
 import { useVenueBySlug } from "@/hooks/useVenue";
-import type { AdminCallbacksCategories, AdminCallbacksItems, CategoryRead, MenuRead, VenueRead } from "@/types/types";
+import type { AdminCallbacksCategories, AdminCallbacksItems, CategoryRead, MenuRead, VenueRead, ItemRead } from "@/types/types";
 import { getCurrencySymbol } from "@/utils/currency";
 import { NameModal } from "@/components/NameModal";
 import EditVenueModal from "@/components/MenuComponents/EditMenuModal";
@@ -36,6 +36,7 @@ export type PublicMenuContextType = {
   handleDeleteMenu: (id: string) => void;
   handleAddMenuBetween: (position: number) => void;
   onValueChange: (menuId: string) => void;
+  searchItems: (query: string) => ItemRead[];
 };
 
 export default function PublicMenuLayout() {
@@ -71,6 +72,7 @@ export default function PublicMenuLayout() {
     handleDeleteMenu,
     handleEditMenu,
     handleEditMenuSubmit,
+    searchItems
   } = useMenus(venue?.menus, venue?.id);
 
   const {
@@ -243,6 +245,7 @@ export default function PublicMenuLayout() {
               setActiveMenuId(menuId);
               setActiveCategoryId(null);
             },
+            searchItems,
           } satisfies PublicMenuContextType}
         />
 

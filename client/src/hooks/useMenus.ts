@@ -1,6 +1,6 @@
 import { createMenu, deleteMenu, editMenu } from "@/api/menu";
 import type { FormValues } from "@/components/NameModal";
-import type { MenuRead } from "@/types/types";
+import type { ItemRead, MenuRead } from "@/types/types";
 import { useCallback, useEffect, useState } from "react";
 
 export const useMenus = (menus: MenuRead[] | null | undefined, venueId: string | null | undefined) => {
@@ -120,6 +120,22 @@ export const useMenus = (menus: MenuRead[] | null | undefined, venueId: string |
         [venueId, insertAfterMenu]
     );
 
+    const searchItems = useCallback((query: string): ItemRead[] => {
+        const q = query.trim().toLowerCase();
+
+        if (!q || !localMenus) return [];
+
+        return localMenus
+            .flatMap((menu) => menu.categories ?? [])
+            .flatMap((category) => category.items ?? [])
+            .filter((item) => {
+                const nameOk = item.name.toLowerCase().includes(q);
+                const descOk = item.desc ? item.desc.toLowerCase().includes(q) : false;
+                return nameOk || descOk;
+            });
+    }, [localMenus]);
+
+
     return {
         menus: localMenus,
         loading,
@@ -137,6 +153,7 @@ export const useMenus = (menus: MenuRead[] | null | undefined, venueId: string |
         handleAddMenuBetween,
         handleCreateMenu,
         handleEditMenu,
-        handleEditMenuSubmit
+        handleEditMenuSubmit,
+        searchItems
     };
 };

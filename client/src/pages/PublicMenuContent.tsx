@@ -4,6 +4,8 @@ import { CategoriesList } from "@/components/MenuComponents/CategoriesList";
 import { ItemsList } from "@/components/MenuComponents/ItemsList";
 import { getCurrencySymbol } from "@/utils/currency";
 import type { PublicMenuContextType } from "./PublicMenuLayout";
+import { SearchPanel } from "@/components/SearchPanel";
+import { useCallback, useState } from "react";
 
 export default function PublicMenuContent() {
     const {
@@ -23,10 +25,32 @@ export default function PublicMenuContent() {
         handleDeleteMenu,
         handleAddMenuBetween,
         onValueChange,
+        searchItems
     } = useOutletContext<PublicMenuContextType>();
 
+    const [searchResults, setSearchResults] = useState<any[]>([]);
+    const [isSearching, setIsSearching] = useState(false);
+
+    const handleSearch = useCallback(
+        (query: string) => {
+            if (!query.trim()) {
+                setSearchResults([]);
+                return;
+            }
+
+            setIsSearching(true);
+            try {
+                const foundItems = searchItems(query);
+                setSearchResults(foundItems);
+            } catch (error) {
+                console.error('Search error:', error);
+            } finally {
+                setIsSearching(false);
+            }
+        }, [searchItems, setIsSearching]);
+
     return (
-        <>
+        <div className="p-4">
             {/* Menu Tabs */}
             <MenuSubmenuTabs
                 menus={menus ?? []}
@@ -51,13 +75,37 @@ export default function PublicMenuContent() {
                     onAdminActions={itemsAdminActions}
                 />
             ) : (
-                <CategoriesList
-                    key={activeMenuId}
-                    categories={activeMenu?.categories ?? []}
-                    isAdmin={isAdminMode}
-                    onAdminActions={categoryAdminActions}
-                />
+                <div className="my-6">
+                    <SearchPanel
+                        onSearch={handleSearch}
+                        placeholder="Search"
+                        debounceMs={300}
+                        initialValue=""
+                    />
+                    {isSearching && <div>Loading...</div>}
+
+                    {searchResults.length > 0 &&
+                        <ItemsList
+                            key={activeCategoryId}
+                            currencySymbol={getCurrencySymbol(venue.currency)}
+                            items={searchResults}
+                            onBack={() => setActiveCategoryId(null)}
+                            isAdmin={isAdminMode}
+                            onAdminActions={itemsAdminActions}
+                            isSearch={true}
+                        />
+                    }
+
+                    {searchResults.length == 0 &&
+                        <CategoriesList
+                            key={activeMenuId}
+                            categories={activeMenu?.categories ?? []}
+                            isAdmin={isAdminMode}
+                            onAdminActions={categoryAdminActions}
+                        />
+                    }
+                </div>
             )}
-        </>
+        </div>
     );
 }

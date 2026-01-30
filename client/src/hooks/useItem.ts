@@ -105,11 +105,11 @@ export const useItem = ({
         setIsItemCreateOpen(true);
     }, []);
 
-    const handleDeleteItem = useCallback(async (itemId: string) => {
-        if (!activeMenuId || !venueId || !activeCategoryId || !setMenus) return;
+    const handleDeleteItem = useCallback(async (item: ItemRead) => {
+        if (!activeMenuId || !venueId || !setMenus) return;
 
         try {
-            const res = await deleteItem(venueId, activeMenuId, activeCategoryId, itemId);
+            const res = await deleteItem(venueId, activeMenuId, item.category_id, item.id);
             if (res?.data) {
                 setMenus((prev: MenuRead[] | null): MenuRead[] | null => {
                     if (!prev) return prev;
