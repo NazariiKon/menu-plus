@@ -6,6 +6,7 @@ from typing import Optional, TYPE_CHECKING
 
 if TYPE_CHECKING:
     from src.models import Profile, Menu
+from server.src.models.order import Order
 from src.database import Base
 
 
@@ -41,3 +42,4 @@ class Venue(Base):
 
     owner_id: Mapped[UUID] = mapped_column(ForeignKey("profiles.id"))
     owner: Mapped["Profile"] = relationship("Owner", back_populates="venues")
+    orders: Mapped[list["Order"]] = relationship("Order", back_populates="venue")

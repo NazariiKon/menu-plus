@@ -42,6 +42,8 @@ export default function Order() {
         const message = buildCartMessage(cart);
         const encoded = encodeURIComponent(message);
 
+
+
         const url = `https://wa.me/${PHONE}?text=${encoded}`;
 
         window.location.href = url;
@@ -105,7 +107,7 @@ export default function Order() {
                                                 className="h-8 w-8 p-0 rounded-full text-lg font-bold"
                                                 onClick={() => updateQuantity(item.id, item.quantity - 1)}
                                             >
-                                                −
+                                                -
                                             </Button>
 
                                             <span className="min-w-8 text-center text-sm">

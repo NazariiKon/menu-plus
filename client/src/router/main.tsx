@@ -16,6 +16,7 @@ import Pricing from '@/components/Main/Pricing'
 import PublicMenuLayout from '@/pages/PublicMenuLayout'
 import PublicMenuContent from '@/pages/PublicMenuContent'
 import Order from '@/components/MenuComponents/Order'
+import { Stats } from '@/components/PanelComponents/Stats'
 
 export default function AppRouter() {
     const dispatch = useDispatch<AppDispatch>();
@@ -90,6 +91,7 @@ export default function AppRouter() {
 
 
                 <Route path="/panel/:slug/qr-code" element={<MenuPanel />} />
+                <Route path="/panel/:slug/stats" element={<Stats />} />
                 <Route path="/auth/callback" element={<AuthCallback />} />
             </Routes>
         </BrowserRouter>

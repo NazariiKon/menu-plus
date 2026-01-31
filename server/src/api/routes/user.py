@@ -43,7 +43,7 @@ async def register(
 
 class Login(BaseModel):
     email: EmailStr = "nazar.konechniy2@gmail.com"
-    password: str = "nazar.konechniy2@gmail.com"
+    password: str = "hireMe"
 
 @router.post("/login")
 async def sign_in(login: Login, supabase: Client = Depends(get_supabase_client)):

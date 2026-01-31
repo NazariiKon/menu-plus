@@ -1,12 +1,13 @@
 from fastapi import Depends, HTTPException, Request, Security, status
 from fastapi.datastructures import FormData
-from fastapi.security import APIKeyHeader, HTTPAuthorizationCredentials, HTTPBearer
+from fastapi.security import APIKeyHeader, HTTPBearer
 from realtime import Optional
 from supabase import Client, create_client
 from jose import JWTError, jwt
 import requests
 from functools import lru_cache
 
+from src.services.order_service import OrderService
 from src.services.item_service import ItemService
 from src.schemas.venue import VenueRead
 from src.services.category_service import CategoryService
@@ -122,3 +123,6 @@ async def get_category_service(supabase: Client = Depends(get_supabase_client)):
 
 async def get_item_service(supabase: Client = Depends(get_supabase_client)):
     return ItemService(supabase)
+
+async def get_order_service(supabase: Client = Depends(get_supabase_client)):
+    return OrderService(supabase)
