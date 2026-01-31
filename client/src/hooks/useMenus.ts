@@ -135,7 +135,6 @@ export const useMenus = (menus: MenuRead[] | null | undefined, venueId: string |
             });
     }, [localMenus]);
 
-
     return {
         menus: localMenus,
         loading,

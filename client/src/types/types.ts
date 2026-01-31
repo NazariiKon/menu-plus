@@ -39,7 +39,7 @@ export interface AdminCallbacksCategories {
 export interface AdminCallbacksItems {
     onAddItem: (position: number) => void;
     onDeleteItem: (item: ItemRead) => void;
-    onUpdateItem: (itemId: string) => void;
+    onUpdateItem: (item: ItemRead) => void;
     onMoveUp: (itemId: string, position: number) => void;
     onMoveDown: (itemId: string, position: number) => void;
     onAddToCart: (item: ItemRead) => void;

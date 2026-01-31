@@ -6,6 +6,7 @@ import { getCurrencySymbol } from "@/utils/currency";
 import type { PublicMenuContextType } from "./PublicMenuLayout";
 import { SearchPanel } from "@/components/SearchPanel";
 import { useCallback, useState } from "react";
+import type { ItemRead } from "@/types/types";
 
 export default function PublicMenuContent() {
     const {
@@ -28,7 +29,8 @@ export default function PublicMenuContent() {
         searchItems
     } = useOutletContext<PublicMenuContextType>();
 
-    const [searchResults, setSearchResults] = useState<any[]>([]);
+
+    const [searchResults, setSearchResults] = useState<ItemRead[]>([]);
     const [isSearching, setIsSearching] = useState(false);
 
     const handleSearch = useCallback(
@@ -47,7 +49,10 @@ export default function PublicMenuContent() {
             } finally {
                 setIsSearching(false);
             }
-        }, [searchItems, setIsSearching]);
+        },
+        [searchItems, setIsSearching, menus]
+    );
+
 
     return (
         <div className="p-4">

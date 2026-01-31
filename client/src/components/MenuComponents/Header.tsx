@@ -1,7 +1,7 @@
 import { supabase } from "@/lib/supabase"
 import type { VenueRead } from "@/types/types"
 import { Button } from "../ui/button"
-import { useNavigate } from "react-router-dom"
+import { useLocation, useNavigate } from "react-router-dom"
 import { ArrowLeft } from "lucide-react"
 import React from "react"
 
@@ -13,6 +13,7 @@ type HeaderProps = {
 
 export default function Header({ venue, onEdit, isAdmin = false }: HeaderProps) {
     const navigate = useNavigate()
+    const location = useLocation();
     const cacheBuster = React.useMemo(() => Date.now(), [venue]);
 
     const bgPath = venue?.background ?? "logos/defaultBG.png"
@@ -31,7 +32,14 @@ export default function Header({ venue, onEdit, isAdmin = false }: HeaderProps) 
                     variant="default"
                     size="sm"
                     className="absolute left-3 top-3 z-20"
-                    onClick={() => navigate(-1)}
+
+                    onClick={() => {
+                        if (location.pathname.startsWith('/p') && isAdmin) {
+                            navigate("/admin")
+                        } else {
+                            navigate(-1)
+                        }
+                    }}
                 >
                     <ArrowLeft />
                 </Button>

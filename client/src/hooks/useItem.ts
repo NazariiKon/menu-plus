@@ -53,7 +53,6 @@ export const useItem = ({
         updateCartForVenue(venueId, currentCart);
     };
 
-
     const handleCreateItem = useCallback(
         async (values: ItemCreate) => {
             if (!activeMenuId || !venueId || !activeCategoryId || !setMenus) return;
@@ -116,7 +115,7 @@ export const useItem = ({
                     const menuIndex = prev.findIndex((m) => m.id === activeMenuId!);
                     if (menuIndex === -1) return prev;
 
-                    const categoryIndex = prev[menuIndex].categories?.findIndex((c) => c.id === activeCategoryId!) ?? -1;
+                    const categoryIndex = prev[menuIndex].categories?.findIndex((c) => c.id === item.category_id!) ?? -1;
                     if (categoryIndex === -1) return prev;
 
                     const updatedCategory = {
@@ -178,24 +177,16 @@ export const useItem = ({
         [activeMenuId, venueId, activeCategoryId, setMenus]
     );
 
-    const getItemById = useCallback(
-        (itemId: string): ItemRead | undefined => {
-            return category?.items?.find((item) => item.id === itemId);
-        },
-        [category]
-    );
-
-    const handleUpdateItemModel = useCallback((itemId: string) => {
-        const item = getItemById(itemId);
+    const handleUpdateItemModel = useCallback((item: ItemRead) => {
         if (item) {
             setSelectedItem(item);
             setPreviewImage(item.image || null);
             setIsItemUpdateOpen(true);
         }
-    }, [getItemById]);
+    }, []);
 
     const handleUpdateItem = useCallback(async (values: ItemUpdate) => {
-        if (!activeMenuId || !selectedItem || !venueId || !activeCategoryId || !setMenus) {
+        if (!activeMenuId || !selectedItem || !venueId || !setMenus) {
             setIsItemUpdateOpen(false);
             return;
         }
@@ -214,7 +205,7 @@ export const useItem = ({
             const result = await updateItem(
                 venueId,
                 activeMenuId,
-                activeCategoryId,
+                selectedItem.category_id,
                 selectedItem.id,
                 values
             );
@@ -228,7 +219,7 @@ export const useItem = ({
                             return {
                                 ...menu,
                                 categories: menu.categories?.map(cat =>
-                                    cat.id === activeCategoryId
+                                    cat.id === selectedItem.category_id
                                         ? {
                                             ...cat,
                                             items: result.data || cat.items

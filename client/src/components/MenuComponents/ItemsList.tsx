@@ -153,7 +153,7 @@ export const ItemsList: React.FC<ItemsListProps> = ({
 
                                                     <Button
                                                         onClick={async () => {
-                                                            await onAdminActions.onUpdateItem(item.id);
+                                                            await onAdminActions.onUpdateItem(item);
                                                             handleImageUpdated(item.id);
                                                         }}
                                                         variant="ghost"
