@@ -3,7 +3,7 @@ import uuid
 from fastapi.encoders import jsonable_encoder
 from supabase import Client
 
-from src.schemas.order import CreateOrder, CreateOrderItem, ReadOrder
+from src.schemas.order import CreateOrder, CreateOrderItem, OrderRead
 
 
 class OrderService:
@@ -54,12 +54,14 @@ class OrderService:
         return order
 
 
-    async def get_orders_by_venue(self, venue_id: str) -> List[ReadOrder]:
+    async def get_orders_by_venue(self, venue_id: str):
         response = (
             self.supabase
             .table("orders")
-            .select("*, order_items(*)")
+            .select("*, order_items(product_id, *, items!product_id(name, desc, price))")
             .eq("venue_id", venue_id)
+            .order("created_at", desc=True)
             .execute()
         )
+
         return response.data

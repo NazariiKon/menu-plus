@@ -1,8 +1,8 @@
 ﻿{
     "openapi":  "3.1.0",
     "info":  {
-                 "title":  "Menu+ API",
-                 "version":  "0.1.0"
+                 "title":  "Your API",
+                 "version":  "1.0"
              },
     "paths":  {
                   "/auth/register":  {
@@ -848,16 +848,6 @@
                                                                                                                                             }
                                                                                                                              }
                                                                                                                          ],
-                                                                                                          "requestBody":  {
-                                                                                                                              "required":  true,
-                                                                                                                              "content":  {
-                                                                                                                                              "application/x-www-form-urlencoded":  {
-                                                                                                                                                                                        "schema":  {
-                                                                                                                                                                                                       "$ref":  "#/components/schemas/ItemCreate"
-                                                                                                                                                                                                   }
-                                                                                                                                                                                    }
-                                                                                                                                          }
-                                                                                                                          },
                                                                                                           "responses":  {
                                                                                                                             "201":  {
                                                                                                                                         "description":  "Successful Response",
@@ -1016,16 +1006,6 @@
                                                                                                                                                       }
                                                                                                                                        }
                                                                                                                                    ],
-                                                                                                                    "requestBody":  {
-                                                                                                                                        "required":  true,
-                                                                                                                                        "content":  {
-                                                                                                                                                        "application/x-www-form-urlencoded":  {
-                                                                                                                                                                                                  "schema":  {
-                                                                                                                                                                                                                 "$ref":  "#/components/schemas/ItemUpdate"
-                                                                                                                                                                                                             }
-                                                                                                                                                                                              }
-                                                                                                                                                    }
-                                                                                                                                    },
                                                                                                                     "responses":  {
                                                                                                                                       "206":  {
                                                                                                                                                   "description":  "Successful Response",
@@ -1054,6 +1034,122 @@
                                                                                                                                   }
                                                                                                                 }
                                                                                                   },
+                  "/orders/{venue_id}/":  {
+                                              "post":  {
+                                                           "tags":  [
+                                                                        "Orders"
+                                                                    ],
+                                                           "summary":  "Create Order",
+                                                           "operationId":  "create_order_orders__venue_id___post",
+                                                           "security":  [
+                                                                            {
+                                                                                "APIKeyHeader":  [
+
+                                                                                                 ]
+                                                                            }
+                                                                        ],
+                                                           "parameters":  [
+                                                                              {
+                                                                                  "name":  "venue_id",
+                                                                                  "in":  "path",
+                                                                                  "required":  true,
+                                                                                  "schema":  {
+                                                                                                 "type":  "string",
+                                                                                                 "title":  "Venue Id"
+                                                                                             }
+                                                                              }
+                                                                          ],
+                                                           "requestBody":  {
+                                                                               "required":  true,
+                                                                               "content":  {
+                                                                                               "application/json":  {
+                                                                                                                        "schema":  {
+                                                                                                                                       "type":  "object",
+                                                                                                                                       "additionalProperties":  true,
+                                                                                                                                       "title":  "Data"
+                                                                                                                                   }
+                                                                                                                    }
+                                                                                           }
+                                                                           },
+                                                           "responses":  {
+                                                                             "201":  {
+                                                                                         "description":  "Successful Response",
+                                                                                         "content":  {
+                                                                                                         "application/json":  {
+                                                                                                                                  "schema":  {
+                                                                                                                                                 "type":  "array",
+                                                                                                                                                 "items":  {
+                                                                                                                                                               "$ref":  "#/components/schemas/OrderRead"
+                                                                                                                                                           },
+                                                                                                                                                 "title":  "Response Create Order Orders  Venue Id   Post"
+                                                                                                                                             }
+                                                                                                                              }
+                                                                                                     }
+                                                                                     },
+                                                                             "422":  {
+                                                                                         "description":  "Validation Error",
+                                                                                         "content":  {
+                                                                                                         "application/json":  {
+                                                                                                                                  "schema":  {
+                                                                                                                                                 "$ref":  "#/components/schemas/HTTPValidationError"
+                                                                                                                                             }
+                                                                                                                              }
+                                                                                                     }
+                                                                                     }
+                                                                         }
+                                                       },
+                                              "get":  {
+                                                          "tags":  [
+                                                                       "Orders"
+                                                                   ],
+                                                          "summary":  "Read Orders By Venue",
+                                                          "operationId":  "read_orders_by_venue_orders__venue_id___get",
+                                                          "security":  [
+                                                                           {
+                                                                               "APIKeyHeader":  [
+
+                                                                                                ]
+                                                                           }
+                                                                       ],
+                                                          "parameters":  [
+                                                                             {
+                                                                                 "name":  "venue_id",
+                                                                                 "in":  "path",
+                                                                                 "required":  true,
+                                                                                 "schema":  {
+                                                                                                "type":  "string",
+                                                                                                "title":  "Venue Id"
+                                                                                            }
+                                                                             }
+                                                                         ],
+                                                          "responses":  {
+                                                                            "200":  {
+                                                                                        "description":  "Successful Response",
+                                                                                        "content":  {
+                                                                                                        "application/json":  {
+                                                                                                                                 "schema":  {
+                                                                                                                                                "type":  "array",
+                                                                                                                                                "items":  {
+                                                                                                                                                              "$ref":  "#/components/schemas/OrderRead"
+                                                                                                                                                          },
+                                                                                                                                                "title":  "Response Read Orders By Venue Orders  Venue Id   Get"
+                                                                                                                                            }
+                                                                                                                             }
+                                                                                                    }
+                                                                                    },
+                                                                            "422":  {
+                                                                                        "description":  "Validation Error",
+                                                                                        "content":  {
+                                                                                                        "application/json":  {
+                                                                                                                                 "schema":  {
+                                                                                                                                                "$ref":  "#/components/schemas/HTTPValidationError"
+                                                                                                                                            }
+                                                                                                                             }
+                                                                                                    }
+                                                                                    }
+                                                                        }
+                                                      }
+                                          },
                   "/":  {
                             "get":  {
                                         "summary":  "Root",
@@ -1233,81 +1329,6 @@
                                                                    "type":  "object",
                                                                    "title":  "HTTPValidationError"
                                                                },
-                                       "ItemCreate":  {
-                                                          "properties":  {
-                                                                             "name":  {
-                                                                                          "type":  "string",
-                                                                                          "maxLength":  50,
-                                                                                          "title":  "Name"
-                                                                                      },
-                                                                             "desc":  {
-                                                                                          "anyOf":  [
-                                                                                                        {
-                                                                                                            "type":  "string",
-                                                                                                            "maxLength":  200
-                                                                                                        },
-                                                                                                        {
-                                                                                                            "type":  "null"
-                                                                                                        }
-                                                                                                    ],
-                                                                                          "title":  "Desc"
-                                                                                      },
-                                                                             "price":  {
-                                                                                           "anyOf":  [
-                                                                                                         {
-                                                                                                             "type":  "number"
-                                                                                                         },
-                                                                                                         {
-                                                                                                             "type":  "string",
-                                                                                                             "pattern":  "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$"
-                                                                                                         },
-                                                                                                         {
-                                                                                                             "type":  "null"
-                                                                                                         }
-                                                                                                     ],
-                                                                                           "title":  "Price"
-                                                                                       },
-                                                                             "weight_g":  {
-                                                                                              "anyOf":  [
-                                                                                                            {
-                                                                                                                "type":  "integer"
-                                                                                                            },
-                                                                                                            {
-                                                                                                                "type":  "null"
-                                                                                                            }
-                                                                                                        ],
-                                                                                              "title":  "Weight G"
-                                                                                          },
-                                                                             "position":  {
-                                                                                              "anyOf":  [
-                                                                                                            {
-                                                                                                                "type":  "integer"
-                                                                                                            },
-                                                                                                            {
-                                                                                                                "type":  "null"
-                                                                                                            }
-                                                                                                        ],
-                                                                                              "title":  "Position"
-                                                                                          },
-                                                                             "image_bytes":  {
-                                                                                                 "anyOf":  [
-                                                                                                               {
-                                                                                                                   "type":  "string",
-                                                                                                                   "format":  "binary"
-                                                                                                               },
-                                                                                                               {
-                                                                                                                   "type":  "null"
-                                                                                                               }
-                                                                                                           ],
-                                                                                                 "title":  "Image Bytes"
-                                                                                             }
-                                                                         },
-                                                          "type":  "object",
-                                                          "required":  [
-                                                                           "name"
-                                                                       ],
-                                                          "title":  "ItemCreate"
-                                                      },
                                        "ItemRead":  {
                                                         "properties":  {
                                                                            "id":  {
@@ -1386,85 +1407,6 @@
                                                                      ],
                                                         "title":  "ItemRead"
                                                     },
-                                       "ItemUpdate":  {
-                                                          "properties":  {
-                                                                             "name":  {
-                                                                                          "anyOf":  [
-                                                                                                        {
-                                                                                                            "type":  "string",
-                                                                                                            "maxLength":  50
-                                                                                                        },
-                                                                                                        {
-                                                                                                            "type":  "null"
-                                                                                                        }
-                                                                                                    ],
-                                                                                          "title":  "Name"
-                                                                                      },
-                                                                             "desc":  {
-                                                                                          "anyOf":  [
-                                                                                                        {
-                                                                                                            "type":  "string",
-                                                                                                            "maxLength":  200
-                                                                                                        },
-                                                                                                        {
-                                                                                                            "type":  "null"
-                                                                                                        }
-                                                                                                    ],
-                                                                                          "title":  "Desc"
-                                                                                      },
-                                                                             "price":  {
-                                                                                           "anyOf":  [
-                                                                                                         {
-                                                                                                             "type":  "number"
-                                                                                                         },
-                                                                                                         {
-                                                                                                             "type":  "string",
-                                                                                                             "pattern":  "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$"
-                                                                                                         },
-                                                                                                         {
-                                                                                                             "type":  "null"
-                                                                                                         }
-                                                                                                     ],
-                                                                                           "title":  "Price"
-                                                                                       },
-                                                                             "weight_g":  {
-                                                                                              "anyOf":  [
-                                                                                                            {
-                                                                                                                "type":  "integer"
-                                                                                                            },
-                                                                                                            {
-                                                                                                                "type":  "null"
-                                                                                                            }
-                                                                                                        ],
-                                                                                              "title":  "Weight G"
-                                                                                          },
-                                                                             "position":  {
-                                                                                              "anyOf":  [
-                                                                                                            {
-                                                                                                                "type":  "integer"
-                                                                                                            },
-                                                                                                            {
-                                                                                                                "type":  "null"
-                                                                                                            }
-                                                                                                        ],
-                                                                                              "title":  "Position"
-                                                                                          },
-                                                                             "image_bytes":  {
-                                                                                                 "anyOf":  [
-                                                                                                               {
-                                                                                                                   "type":  "string",
-                                                                                                                   "format":  "binary"
-                                                                                                               },
-                                                                                                               {
-                                                                                                                   "type":  "null"
-                                                                                                               }
-                                                                                                           ],
-                                                                                                 "title":  "Image Bytes"
-                                                                                             }
-                                                                         },
-                                                          "type":  "object",
-                                                          "title":  "ItemUpdate"
-                                                      },
                                        "Login":  {
                                                      "properties":  {
                                                                         "email":  {
@@ -1476,7 +1418,7 @@
                                                                         "password":  {
                                                                                          "type":  "string",
                                                                                          "title":  "Password",
-                                                                                         "default":  "nazar.konechniy2@gmail.com"
+                                                                                         "default":  "hireMe"
                                                                                      }
                                                                     },
                                                      "type":  "object",
@@ -1572,6 +1514,146 @@
                                                                        ],
                                                           "title":  "MenuUpdate"
                                                       },
+                                       "OrderRead":  {
+                                                         "properties":  {
+                                                                            "id":  {
+                                                                                       "type":  "string",
+                                                                                       "format":  "uuid",
+                                                                                       "title":  "Id"
+                                                                                   },
+                                                                            "name":  {
+                                                                                         "type":  "string",
+                                                                                         "title":  "Name"
+                                                                                     },
+                                                                            "desc":  {
+                                                                                         "anyOf":  [
+                                                                                                       {
+                                                                                                           "type":  "string"
+                                                                                                       },
+                                                                                                       {
+                                                                                                           "type":  "null"
+                                                                                                       }
+                                                                                                   ],
+                                                                                         "title":  "Desc"
+                                                                                     },
+                                                                            "price":  {
+                                                                                          "anyOf":  [
+                                                                                                        {
+                                                                                                            "type":  "string",
+                                                                                                            "pattern":  "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$"
+                                                                                                        },
+                                                                                                        {
+                                                                                                            "type":  "null"
+                                                                                                        }
+                                                                                                    ],
+                                                                                          "title":  "Price"
+                                                                                      },
+                                                                            "weight_g":  {
+                                                                                             "anyOf":  [
+                                                                                                           {
+                                                                                                               "type":  "integer"
+                                                                                                           },
+                                                                                                           {
+                                                                                                               "type":  "null"
+                                                                                                           }
+                                                                                                       ],
+                                                                                             "title":  "Weight G"
+                                                                                         },
+                                                                            "venue_id":  {
+                                                                                             "type":  "string",
+                                                                                             "format":  "uuid",
+                                                                                             "title":  "Venue Id"
+                                                                                         },
+                                                                            "items":  {
+                                                                                          "items":  {
+                                                                                                        "$ref":  "#/components/schemas/ReadOrderItem"
+                                                                                                    },
+                                                                                          "type":  "array",
+                                                                                          "title":  "Items"
+                                                                                      },
+                                                                            "created_at":  {
+                                                                                               "type":  "string",
+                                                                                               "format":  "date-time",
+                                                                                               "title":  "Created At"
+                                                                                           },
+                                                                            "updated_at":  {
+                                                                                               "type":  "string",
+                                                                                               "format":  "date-time",
+                                                                                               "title":  "Updated At"
+                                                                                           },
+                                                                            "order_items":  {
+                                                                                                "items":  {
+                                                                                                              "$ref":  "#/components/schemas/ReadOrderItem"
+                                                                                                          },
+                                                                                                "type":  "array",
+                                                                                                "title":  "Order Items"
+                                                                                            }
+                                                                        },
+                                                         "type":  "object",
+                                                         "required":  [
+                                                                          "id",
+                                                                          "name",
+                                                                          "venue_id",
+                                                                          "items",
+                                                                          "created_at",
+                                                                          "updated_at",
+                                                                          "order_items"
+                                                                      ],
+                                                         "title":  "OrderRead"
+                                                     },
+                                       "ReadOrderItem":  {
+                                                             "properties":  {
+                                                                                "id":  {
+                                                                                           "type":  "string",
+                                                                                           "format":  "uuid",
+                                                                                           "title":  "Id"
+                                                                                       },
+                                                                                "product_id":  {
+                                                                                                   "type":  "string",
+                                                                                                   "format":  "uuid",
+                                                                                                   "title":  "Product Id"
+                                                                                               },
+                                                                                "qty":  {
+                                                                                            "type":  "integer",
+                                                                                            "title":  "Qty"
+                                                                                        },
+                                                                                "price_per_item":  {
+                                                                                                       "type":  "string",
+                                                                                                       "pattern":  "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                                                                                                       "title":  "Price Per Item"
+                                                                                                   },
+                                                                                "size":  {
+                                                                                             "anyOf":  [
+                                                                                                           {
+                                                                                                               "type":  "string"
+                                                                                                           },
+                                                                                                           {
+                                                                                                               "type":  "null"
+                                                                                                           }
+                                                                                                       ],
+                                                                                             "title":  "Size"
+                                                                                         },
+                                                                                "note":  {
+                                                                                             "anyOf":  [
+                                                                                                           {
+                                                                                                               "type":  "string"
+                                                                                                           },
+                                                                                                           {
+                                                                                                               "type":  "null"
+                                                                                                           }
+                                                                                                       ],
+                                                                                             "title":  "Note"
+                                                                                         }
+                                                                            },
+                                                             "type":  "object",
+                                                             "required":  [
+                                                                              "id",
+                                                                              "product_id",
+                                                                              "qty",
+                                                                              "price_per_item"
+                                                                          ],
+                                                             "title":  "ReadOrderItem"
+                                                         },
                                        "Register":  {
                                                         "properties":  {
                                                                            "name":  {
@@ -2243,7 +2325,172 @@
                                                                           },
                                                            "type":  "object",
                                                            "title":  "VenueUpdate"
-                                                       }
+                                                       },
+                                       "ItemCreate":  {
+                                                          "properties":  {
+                                                                             "name":  {
+                                                                                          "maxLength":  50,
+                                                                                          "title":  "Name",
+                                                                                          "type":  "string"
+                                                                                      },
+                                                                             "desc":  {
+                                                                                          "anyOf":  [
+                                                                                                        {
+                                                                                                            "maxLength":  200,
+                                                                                                            "type":  "string"
+                                                                                                        },
+                                                                                                        {
+                                                                                                            "type":  "null"
+                                                                                                        }
+                                                                                                    ],
+                                                                                          "default":  null,
+                                                                                          "title":  "Desc"
+                                                                                      },
+                                                                             "price":  {
+                                                                                           "anyOf":  [
+                                                                                                         {
+                                                                                                             "type":  "number"
+                                                                                                         },
+                                                                                                         {
+                                                                                                             "pattern":  "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                                                                                                             "type":  "string"
+                                                                                                         },
+                                                                                                         {
+                                                                                                             "type":  "null"
+                                                                                                         }
+                                                                                                     ],
+                                                                                           "default":  null,
+                                                                                           "title":  "Price"
+                                                                                       },
+                                                                             "weight_g":  {
+                                                                                              "anyOf":  [
+                                                                                                            {
+                                                                                                                "type":  "integer"
+                                                                                                            },
+                                                                                                            {
+                                                                                                                "type":  "null"
+                                                                                                            }
+                                                                                                        ],
+                                                                                              "default":  null,
+                                                                                              "title":  "Weight G"
+                                                                                          },
+                                                                             "position":  {
+                                                                                              "anyOf":  [
+                                                                                                            {
+                                                                                                                "type":  "integer"
+                                                                                                            },
+                                                                                                            {
+                                                                                                                "type":  "null"
+                                                                                                            }
+                                                                                                        ],
+                                                                                              "default":  null,
+                                                                                              "title":  "Position"
+                                                                                          },
+                                                                             "image_bytes":  {
+                                                                                                 "anyOf":  [
+                                                                                                               {
+                                                                                                                   "format":  "binary",
+                                                                                                                   "type":  "string"
+                                                                                                               },
+                                                                                                               {
+                                                                                                                   "type":  "null"
+                                                                                                               }
+                                                                                                           ],
+                                                                                                 "default":  null,
+                                                                                                 "title":  "Image Bytes"
+                                                                                             }
+                                                                         },
+                                                          "required":  [
+                                                                           "name"
+                                                                       ],
+                                                          "title":  "ItemCreate",
+                                                          "type":  "object"
+                                                      },
+                                       "ItemUpdate":  {
+                                                          "properties":  {
+                                                                             "name":  {
+                                                                                          "anyOf":  [
+                                                                                                        {
+                                                                                                            "maxLength":  50,
+                                                                                                            "type":  "string"
+                                                                                                        },
+                                                                                                        {
+                                                                                                            "type":  "null"
+                                                                                                        }
+                                                                                                    ],
+                                                                                          "default":  null,
+                                                                                          "title":  "Name"
+                                                                                      },
+                                                                             "desc":  {
+                                                                                          "anyOf":  [
+                                                                                                        {
+                                                                                                            "maxLength":  200,
+                                                                                                            "type":  "string"
+                                                                                                        },
+                                                                                                        {
+                                                                                                            "type":  "null"
+                                                                                                        }
+                                                                                                    ],
+                                                                                          "default":  null,
+                                                                                          "title":  "Desc"
+                                                                                      },
+                                                                             "price":  {
+                                                                                           "anyOf":  [
+                                                                                                         {
+                                                                                                             "type":  "number"
+                                                                                                         },
+                                                                                                         {
+                                                                                                             "pattern":  "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                                                                                                             "type":  "string"
+                                                                                                         },
+                                                                                                         {
+                                                                                                             "type":  "null"
+                                                                                                         }
+                                                                                                     ],
+                                                                                           "default":  null,
+                                                                                           "title":  "Price"
+                                                                                       },
+                                                                             "weight_g":  {
+                                                                                              "anyOf":  [
+                                                                                                            {
+                                                                                                                "type":  "integer"
+                                                                                                            },
+                                                                                                            {
+                                                                                                                "type":  "null"
+                                                                                                            }
+                                                                                                        ],
+                                                                                              "default":  null,
+                                                                                              "title":  "Weight G"
+                                                                                          },
+                                                                             "position":  {
+                                                                                              "anyOf":  [
+                                                                                                            {
+                                                                                                                "type":  "integer"
+                                                                                                            },
+                                                                                                            {
+                                                                                                                "type":  "null"
+                                                                                                            }
+                                                                                                        ],
+                                                                                              "default":  null,
+                                                                                              "title":  "Position"
+                                                                                          },
+                                                                             "image_bytes":  {
+                                                                                                 "anyOf":  [
+                                                                                                               {
+                                                                                                                   "format":  "binary",
+                                                                                                                   "type":  "string"
+                                                                                                               },
+                                                                                                               {
+                                                                                                                   "type":  "null"
+                                                                                                               }
+                                                                                                           ],
+                                                                                                 "default":  null,
+                                                                                                 "title":  "Image Bytes"
+                                                                                             }
+                                                                         },
+                                                          "title":  "ItemUpdate",
+                                                          "type":  "object"
+                                                      }
                                    },
                        "securitySchemes":  {
                                                "APIKeyHeader":  {

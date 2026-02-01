@@ -6,6 +6,7 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 if TYPE_CHECKING:
     from src.models import Venue
+from server.src.models.orderItem import OrderItem
 from src.database import Base
 
 
@@ -74,5 +75,7 @@ class Item(Base):
     weight_g: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
     image: Mapped[Optional[str]] = mapped_column(String(255), nullable=True)
     position: Mapped[int] = mapped_column(nullable=False)
-
+    is_active: Mapped[bool] = mapped_column(bool, default=True,nullable=False)
+    
+    order_items: Mapped[list["OrderItem"]] = relationship("OrderItem", back_populates="product")
     category: Mapped["Category"] = relationship("Category", back_populates="items")

@@ -98,7 +98,7 @@ export async function updateItem(
     menuId: string,
     categoryId: string,
     itemId: string,
-    item: ItemUpdate
+    item: Partial<ItemUpdate>
 ): Promise<ApiResponse<ItemRead[]>> {
     try {
         const { data: sessionData, error } = await supabase.auth.getSession();

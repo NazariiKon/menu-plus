@@ -18,6 +18,8 @@ export type ItemRead = ApiComponents['schemas']['ItemRead'];
 export type ItemCreate = ApiComponents['schemas']['ItemCreate'];
 export type ItemUpdate = ApiComponents['schemas']['ItemUpdate'];
 
+export type OrderRead = ApiComponents['schemas']['OrderRead'];
+
 export type HTTPValidationError = ApiComponents['schemas']['HTTPValidationError'];
 
 export interface ApiResponse<T> {

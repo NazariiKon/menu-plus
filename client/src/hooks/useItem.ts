@@ -167,7 +167,8 @@ export const useItem = ({
                 const updatedMenu: MenuRead = { ...menu, categories: updatedCategories };
                 return prev.map((m, i) => (i === menuIndex ? updatedMenu : m));
             });
-            const item: ItemUpdate = { position: newPos }
+            const item: Partial<ItemUpdate> = { position: newPos };
+
             try {
                 await updateItem(venueId, activeMenuId, activeCategoryId, itemId, item);
             } catch (e) {

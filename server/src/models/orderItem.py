@@ -5,7 +5,8 @@ from uuid import UUID
 from sqlalchemy import UUID as SQL_UUID, ForeignKey, String, Numeric, Integer, func
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 
-from server.src.models.order import Order
+from src.models.menu import Item
+from src.models.order import Order
 
 class OrderItem(Base):
     __tablename__ = "order_items"
@@ -22,12 +23,13 @@ class OrderItem(Base):
         nullable=False
     )
 
-    product_id: Mapped[UUID] = mapped_column(SQL_UUID(as_uuid=True), nullable=False)
+    item_id: Mapped[UUID] = mapped_column(
+        SQL_UUID(as_uuid=True),
+        ForeignKey("items.id"),
+        nullable=False
+    )
 
     qty: Mapped[int] = mapped_column(Integer, nullable=False)
-
     price_per_item: Mapped[Decimal] = mapped_column(Numeric(10, 2), nullable=False)
-
-    size: Mapped[Optional[str]] = mapped_column(String(20))
-
     order: Mapped["Order"] = relationship("Order", back_populates="items")
+    item: Mapped["Item"] = relationship("Product", back_populates="order_items")

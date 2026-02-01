@@ -7,7 +7,7 @@ import { useIsOwner } from "@/hooks/useIsOwner";
 import { useItem } from "@/hooks/useItem";
 import { useMenus } from "@/hooks/useMenus";
 import { useVenueBySlug } from "@/hooks/useVenue";
-import type { AdminCallbacksCategories, AdminCallbacksItems, CategoryRead, MenuRead, VenueRead, ItemRead } from "@/types/types";
+import type { AdminCallbacksCategories, AdminCallbacksItems, CategoryRead, MenuRead, VenueRead, ItemRead, ItemCreate, ItemUpdate } from "@/types/types";
 import { getCurrencySymbol } from "@/utils/currency";
 import { NameModal } from "@/components/NameModal";
 import EditVenueModal from "@/components/MenuComponents/EditMenuModal";
@@ -266,19 +266,22 @@ export default function PublicMenuLayout() {
           onSubmit={async (values) => {
             if (!selectedItem) return;
 
-            const imageBytes = values.image
-              ? await convertImageToBase64(values.image)
-              : null;
+            const imageBytes = values.image ? await convertImageToBase64(values.image) : null;
 
-            const itemData = {
-              ...values,
-              price: values.price ? parseFloat(values.price) : null,
+            const { image, menuId, category_id, ...cleanValues } = values;
+
+            const itemData: ItemUpdate = {
+              name: cleanValues.name ?? null,
+              desc: cleanValues.desc ?? null,
+              price: values.price ? values.price.toString() : null,
               weight_g: values.weight_g ? parseInt(values.weight_g, 10) : null,
+              position: null,
               image_bytes: imageBytes,
             };
 
             await handleUpdateItem(itemData);
           }}
+
           title="Edit the item"
           description="Enter the new item's name and optionally add an image."
           submitLabel="Save"
@@ -301,19 +304,22 @@ export default function PublicMenuLayout() {
             if (!open) handleImageChange(null);
           }}
           onSubmit={async (values) => {
-            const imageBytes = values.image
-              ? await convertImageToBase64(values.image)
-              : null;
+            const imageBytes = values.image ? await convertImageToBase64(values.image) : null;
 
-            const itemData = {
-              ...values,
-              price: values.price ? parseFloat(values.price) : null,
+            const { image, menuId, category_id, ...cleanValues } = values;
+
+            const itemData: ItemCreate = {
+              ...cleanValues,
+              desc: cleanValues.desc ?? null,
+              price: values.price ? values.price.toString() : null,
               weight_g: values.weight_g ? parseInt(values.weight_g, 10) : null,
               image_bytes: imageBytes,
+              position: null,
             };
 
             await handleCreateItem(itemData);
           }}
+
           title="Create a new item"
           description="Enter an item's name and optionally add an image."
           submitLabel="Create"

@@ -246,6 +246,24 @@ export interface paths {
         patch: operations["update_item_venues__venue_id__menus__menu_id__categories__category_id__items__item_id__patch"];
         trace?: never;
     };
+    "/orders/{venue_id}/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Read Orders By Venue */
+        get: operations["read_orders_by_venue_orders__venue_id___get"];
+        put?: never;
+        /** Create Order */
+        post: operations["create_order_orders__venue_id___post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/": {
         parameters: {
             query?: never;
@@ -334,21 +352,6 @@ export interface components {
             /** Detail */
             detail?: components["schemas"]["ValidationError"][];
         };
-        /** ItemCreate */
-        ItemCreate: {
-            /** Name */
-            name: string;
-            /** Desc */
-            desc?: string | null;
-            /** Price */
-            price?: number | string | null;
-            /** Weight G */
-            weight_g?: number | null;
-            /** Position */
-            position?: number | null;
-            /** Image Bytes */
-            image_bytes?: string | null;
-        };
         /** ItemRead */
         ItemRead: {
             /**
@@ -374,21 +377,6 @@ export interface components {
             /** Position */
             position: number;
         };
-        /** ItemUpdate */
-        ItemUpdate: {
-            /** Name */
-            name?: string | null;
-            /** Desc */
-            desc?: string | null;
-            /** Price */
-            price?: number | string | null;
-            /** Weight G */
-            weight_g?: number | null;
-            /** Position */
-            position?: number | null;
-            /** Image Bytes */
-            image_bytes?: string | null;
-        };
         /** Login */
         Login: {
             /**
@@ -399,7 +387,7 @@ export interface components {
             email: string;
             /**
              * Password
-             * @default nazar.konechniy2@gmail.com
+             * @default hireMe
              */
             password: string;
         };
@@ -435,6 +423,62 @@ export interface components {
             name: string | null;
             /** Position */
             position: number | null;
+        };
+        /** OrderRead */
+        OrderRead: {
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /** Name */
+            name: string;
+            /** Desc */
+            desc?: string | null;
+            /** Price */
+            price?: string | null;
+            /** Weight G */
+            weight_g?: number | null;
+            /**
+             * Venue Id
+             * Format: uuid
+             */
+            venue_id: string;
+            /** Items */
+            items: components["schemas"]["ReadOrderItem"][];
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            /**
+             * Updated At
+             * Format: date-time
+             */
+            updated_at: string;
+            /** Order Items */
+            order_items: components["schemas"]["ReadOrderItem"][];
+        };
+        /** ReadOrderItem */
+        ReadOrderItem: {
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /**
+             * Product Id
+             * Format: uuid
+             */
+            product_id: string;
+            /** Qty */
+            qty: number;
+            /** Price Per Item */
+            price_per_item: string;
+            /** Size */
+            size?: string | null;
+            /** Note */
+            note?: string | null;
         };
         /** Register */
         Register: {
@@ -668,6 +712,69 @@ export interface components {
             logo?: string | null;
             /** Background */
             background?: string | null;
+        };
+        /** ItemCreate */
+        ItemCreate: {
+            /** Name */
+            name: string;
+            /**
+             * Desc
+             * @default null
+             */
+            desc: string | null;
+            /**
+             * Price
+             * @default null
+             */
+            price: number | string | null;
+            /**
+             * Weight G
+             * @default null
+             */
+            weight_g: number | null;
+            /**
+             * Position
+             * @default null
+             */
+            position: number | null;
+            /**
+             * Image Bytes
+             * @default null
+             */
+            image_bytes: string | null;
+        };
+        /** ItemUpdate */
+        ItemUpdate: {
+            /**
+             * Name
+             * @default null
+             */
+            name: string | null;
+            /**
+             * Desc
+             * @default null
+             */
+            desc: string | null;
+            /**
+             * Price
+             * @default null
+             */
+            price: number | string | null;
+            /**
+             * Weight G
+             * @default null
+             */
+            weight_g: number | null;
+            /**
+             * Position
+             * @default null
+             */
+            position: number | null;
+            /**
+             * Image Bytes
+             * @default null
+             */
+            image_bytes: string | null;
         };
     };
     responses: never;
@@ -1172,11 +1279,7 @@ export interface operations {
             };
             cookie?: never;
         };
-        requestBody: {
-            content: {
-                "application/x-www-form-urlencoded": components["schemas"]["ItemCreate"];
-            };
-        };
+        requestBody?: never;
         responses: {
             /** @description Successful Response */
             201: {
@@ -1244,11 +1347,7 @@ export interface operations {
             };
             cookie?: never;
         };
-        requestBody: {
-            content: {
-                "application/x-www-form-urlencoded": components["schemas"]["ItemUpdate"];
-            };
-        };
+        requestBody?: never;
         responses: {
             /** @description Successful Response */
             206: {
@@ -1257,6 +1356,74 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["ItemRead"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    read_orders_by_venue_orders__venue_id___get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                venue_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OrderRead"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    create_order_orders__venue_id___post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                venue_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    [key: string]: unknown;
+                };
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OrderRead"][];
                 };
             };
             /** @description Validation Error */

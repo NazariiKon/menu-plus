@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 
-export const NavbarPanel = ({ title = "QR Code Settings" }) => {
+export const NavbarPanel = ({ title = "Venue Settings" }) => {
     const navigate = useNavigate();
 
     return (

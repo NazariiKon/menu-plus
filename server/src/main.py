@@ -1,8 +1,9 @@
 from fastapi import FastAPI
-from pydantic import BaseModel
 import uvicorn
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.openapi.utils import get_openapi
 
+from src.schemas.menu import ItemCreate, ItemUpdate
 from src.api.main import api_router
 
 app = FastAPI(title="Menu+ API")
@@ -19,12 +20,23 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-class Dish(BaseModel):
-    name: str
-    price: int
-    description: str = ""
+def override_openapi():
+    if app.openapi_schema:
+        return app.openapi_schema  
+    
+    openapi_schema = get_openapi(
+        title="Your API", 
+        version="1.0", 
+        routes=app.routes
+    )
+    
+    openapi_schema["components"]["schemas"]["ItemCreate"] = ItemCreate.model_json_schema()
+    openapi_schema["components"]["schemas"]["ItemUpdate"] = ItemUpdate.model_json_schema()
+    
+    app.openapi_schema = openapi_schema
+    return app.openapi_schema
 
-cafes = {}
+app.openapi = override_openapi
 
 @app.get("/")
 async def root():

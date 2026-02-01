@@ -17,6 +17,7 @@ import PublicMenuLayout from '@/pages/PublicMenuLayout'
 import PublicMenuContent from '@/pages/PublicMenuContent'
 import Order from '@/components/MenuComponents/Order'
 import { Stats } from '@/components/PanelComponents/Stats'
+import PanelLayout from '@/components/PanelComponents/PanelLayout'
 
 export default function AppRouter() {
     const dispatch = useDispatch<AppDispatch>();
@@ -89,9 +90,12 @@ export default function AppRouter() {
                     <Route path="order" element={<Order />} />
                 </Route>
 
+                <Route path="/panel/:slug" element={<PanelLayout />}>
+                    <Route path="qr-code" element={<MenuPanel />} />
+                    <Route path="/panel/:slug/stats" element={<Stats />} />
+                </Route>
 
-                <Route path="/panel/:slug/qr-code" element={<MenuPanel />} />
-                <Route path="/panel/:slug/stats" element={<Stats />} />
+
                 <Route path="/auth/callback" element={<AuthCallback />} />
             </Routes>
         </BrowserRouter>
