@@ -10,7 +10,7 @@ import {
 import { supabase } from "@/lib/supabase";
 import type { AdminCallbacksCategories, CategoryRead } from "@/types/types";
 import React from "react";
-import { Alert } from "../Alert";
+import { MyAlert } from "../MyAlert";
 
 interface CategoriesListProps {
     categories?: CategoryRead[];
@@ -107,7 +107,7 @@ export const CategoriesList: React.FC<CategoriesListProps> = ({
 
                                 {isAdmin && onAdminActions && (
                                     <div className="absolute top-3 right-3 flex space-x-1 bg-black/95 backdrop-blur-sm rounded-xl p-1.5 shadow-2xl border border-black/50">
-                                        <Alert
+                                        <MyAlert
                                             description="This action cannot be undone. This will permanently delete your category."
                                             open={deleteCategoryId === category.id}
                                             onOpenChange={() => toggleDeleteAlert(category.id)}
@@ -138,7 +138,7 @@ export const CategoriesList: React.FC<CategoriesListProps> = ({
                                                     <Trash2 className="h-4 w-4" />
                                                 )}
                                             </Button>
-                                        </Alert>
+                                        </MyAlert>
 
                                         <Button
                                             onClick={(e) => {

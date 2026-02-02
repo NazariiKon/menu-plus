@@ -1,6 +1,6 @@
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import Home from '../pages/Home'
-import AuthCallback from '@/pages/AuthCallback'
+import AuthCallback from '@/pages/Auth/AuthCallback'
 import WithNavbarLayout from '@/layout/WithNavbar'
 import { useEffect } from "react";
 import type { AppDispatch } from '@/store/store'
@@ -8,7 +8,7 @@ import { setUser, setLoading } from '@/store/userSlice'
 import { supabase } from '@/lib/supabase'
 import { useDispatch } from 'react-redux';
 import AuthGuard from '@/components/AuthGuard'
-import AdminHome from '@/pages/AdminHome'
+import AdminHome from '@/pages/Auth/AdminHome'
 import MenuPanel from '@/components/PanelComponents/MenuPanel'
 import Pricing from '@/components/Main/Pricing'
 import PublicMenuLayout from '@/pages/PublicMenuLayout'
@@ -16,7 +16,10 @@ import PublicMenuContent from '@/pages/PublicMenuContent'
 import Order from '@/components/MenuComponents/Order'
 import { Stats } from '@/components/PanelComponents/Stats'
 import PanelLayout from '@/components/PanelComponents/PanelLayout'
-import AuthForm from '@/pages/AuthForm'
+import AuthForm from '@/pages/Auth/AuthForm'
+import Profile from '@/pages/Profile';
+import ForgotPasswordPage from '@/pages/Auth/ForgotPassword';
+import UpdatePasswordPage from '@/pages/Auth/UpdatePassword';
 
 export default function AppRouter() {
     const dispatch = useDispatch<AppDispatch>();
@@ -72,6 +75,7 @@ export default function AppRouter() {
                     <Route path="/" element={<Home />} />
                     <Route path="/admin" element={<AdminHome />} />
                     <Route path="/pricing" element={<Pricing />} />
+                    <Route path="/profile" element={<Profile />} />
                 </Route>
                 <Route path="/login" element={
                     <AuthGuard>
@@ -83,6 +87,18 @@ export default function AppRouter() {
                         <AuthForm />
                     </AuthGuard>
                 } />
+                <Route path="/forgot-password" element={
+                    <AuthGuard>
+                        <ForgotPasswordPage />
+                    </AuthGuard>
+                } />
+                <Route path="/update-password" element={
+                    <AuthGuard>
+                        <UpdatePasswordPage />
+                    </AuthGuard>
+                } />
+
+
 
                 <Route path="/p/:slug" element={<PublicMenuLayout />}>
                     <Route index element={<PublicMenuContent />} />

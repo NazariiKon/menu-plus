@@ -2,7 +2,7 @@ import { useSelector } from "react-redux";
 import type { RootState } from "@/store/store";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Building2, ChevronRight, Trash } from "lucide-react";
+import { Building2, ChevronRight, Trash, User as UserLogo } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -11,7 +11,7 @@ import Verification from "@/components/ui/verification";
 import type { VenueRead } from "@/types/types";
 import { NameModal, type FormValues } from "@/components/NameModal";
 import { createVenue, deleteVenue, get_my_venues } from "@/api/venue";
-import { Alert } from "@/components/Alert";
+import { MyAlert } from "@/components/MyAlert";
 import { supabase } from "@/lib/supabase";
 
 
@@ -84,7 +84,16 @@ export default function Admin() {
                     </div>
                 </div>
 
-                <div className="flex justify-end mb-8">
+                <div className="flex justify-end mb-8 space-x-3">
+                    <Link to={"/profile"}>
+                        <Button
+                            size="lg"
+                            className="px-8 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white shadow-xl hover:shadow-2xl transition-all font-semibold rounded-xl"
+                        >
+                            <UserLogo className="w-5 h-5 mr-2" />
+                            Your profile
+                        </Button>
+                    </Link>
                     <Button
                         size="lg"
                         className="px-8 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white shadow-xl hover:shadow-2xl transition-all font-semibold rounded-xl"
@@ -160,7 +169,7 @@ export default function Admin() {
                                         </div>
 
                                         <div className="grid min-[350px]:grid-cols-[auto_1fr_auto] grid-cols-1 items-center gap-2 ml-auto lg:ml-0">
-                                            <Alert
+                                            <MyAlert
                                                 description="This action cannot be undone. This will permanently delete your venue and remove your venue's data from our servers."
                                                 open={openDelete}
                                                 onOpenChange={setOpenDelete}
@@ -174,7 +183,7 @@ export default function Admin() {
                                                 >
                                                     <Trash className="h-5 w-5" />
                                                 </Button>
-                                            </Alert>
+                                            </MyAlert>
 
 
                                             <Button

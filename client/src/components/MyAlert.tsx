@@ -23,7 +23,7 @@ export type VenueAlertProps = {
     children: React.ReactNode
 }
 
-export function Alert({
+export function MyAlert({
     open,
     onOpenChange,
     onConfirm,

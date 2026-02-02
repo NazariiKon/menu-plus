@@ -3,7 +3,7 @@ import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import type { MenuRead } from "@/types/types"
 import { Plus, ArrowLeft, ArrowRight, Pencil, Trash2 } from "lucide-react"
-import { Alert } from "../Alert"
+import { MyAlert } from "../MyAlert"
 
 type Props = {
     menus: MenuRead[]
@@ -126,7 +126,7 @@ export function MenuSubmenuTabs({
                                                 <Pencil className="h-3 w-3 text-white" />
                                             </IconActionButton>
 
-                                            <Alert
+                                            <MyAlert
                                                 key={`delete-${m.id}`}
                                                 description="This action cannot be undone. This will permanently delete your submenu."
                                                 open={isDeleteOpen}
@@ -147,7 +147,7 @@ export function MenuSubmenuTabs({
                                                 >
                                                     <Trash2 className="h-3 w-3 text-white" />
                                                 </IconActionButton>
-                                            </Alert>
+                                            </MyAlert>
                                         </div>
                                     )}
                                 </div>

@@ -11,7 +11,7 @@ import {
 import { supabase } from "@/lib/supabase";
 import type { AdminCallbacksItems, ItemRead } from "@/types/types";
 import React from "react";
-import { Alert } from "@/components/Alert";
+import { MyAlert } from "@/components/MyAlert";
 import Item from "../ui/item";
 
 interface ItemsListProps {
@@ -120,7 +120,7 @@ export const ItemsList: React.FC<ItemsListProps> = ({
 
                                             {isAdmin && onAdminActions && (
                                                 <div className="absolute top-2 right-2 flex gap-1 z-10">
-                                                    <Alert
+                                                    <MyAlert
                                                         description="This action cannot be undone. This will permanently delete your item."
                                                         open={deleteItemId === item.id}
                                                         onOpenChange={() => toggleDeleteAlert(item.id)}
@@ -149,7 +149,7 @@ export const ItemsList: React.FC<ItemsListProps> = ({
                                                                 <Trash2 className="h-4 w-4" />
                                                             )}
                                                         </Button>
-                                                    </Alert>
+                                                    </MyAlert>
 
                                                     <Button
                                                         onClick={async () => {

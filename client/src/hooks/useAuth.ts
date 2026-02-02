@@ -22,6 +22,8 @@ interface UseAuthReturn {
     toggleMode: () => void;
     onSubmit: () => Promise<void>;
     signInWithGoogle: () => Promise<void>;
+    forgotPassword: (email: string) => Promise<void>;
+    updateUserPassword: (password: string) => Promise<any>;
 }
 
 const signupSchema = z.object({
@@ -53,23 +55,43 @@ export const useAuth = (initialMode: 'signin' | 'signup' = 'signin'): UseAuthRet
     };
 
     useEffect(() => {
-        // Автологин после редиректа
         supabase.auth.getSession().then(({ data: { session } }) => {
             if (session?.user) {
                 dispatch(setUser(session.user));
-                navigate(isSignup ? '/create-cafe' : '/admin', { replace: true });
             }
         });
 
         const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
             if (event === 'SIGNED_IN' && session?.user) {
                 dispatch(setUser(session.user));
-                navigate(isSignup ? '/create-cafe' : '/admin', { replace: true });
             }
         });
 
         return () => subscription.unsubscribe();
     }, [dispatch, navigate, isSignup]);
+
+    async function forgotPassword(email: string) {
+        console.log('redirectTo:', `${window.location.origin}/update-password`);
+        const { error } = await supabase.auth.resetPasswordForEmail(email, {
+            redirectTo: `${window.location.origin}/update-password`,
+        });
+
+        if (error) {
+            throw error;
+        }
+    }
+
+    async function updateUserPassword(password: string) {
+        const { data, error } = await supabase.auth.updateUser({
+            password,
+        });
+
+        if (error) {
+            throw error;
+        }
+
+        return data;
+    }
 
     const onSubmit = async () => {
         const values = form.getValues();
@@ -118,6 +140,8 @@ export const useAuth = (initialMode: 'signin' | 'signup' = 'signin'): UseAuthRet
         googleLoading,
         toggleMode,
         onSubmit,
-        signInWithGoogle
+        signInWithGoogle,
+        forgotPassword,
+        updateUserPassword
     };
 };

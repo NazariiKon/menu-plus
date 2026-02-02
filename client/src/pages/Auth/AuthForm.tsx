@@ -6,10 +6,11 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { FormRootError } from "@/components/ui/form-root-error";
 import { useAuth } from "@/hooks/useAuth";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 
 export default function AuthForm() {
+    const navigate = useNavigate();
     const location = useLocation();
     const {
         form,
@@ -132,6 +133,17 @@ export default function AuthForm() {
                                     </FormItem>
                                 )}
                             />
+
+                            {!isSignup && (
+                                <Button
+                                    type="button"
+                                    variant="link"
+                                    className="w-full text-slate-500 text-sm hover:text-destructive/80 p-0 h-auto justify-start"
+                                    onClick={() => navigate('/forgot-password')}
+                                >
+                                    Forgot your password?
+                                </Button>
+                            )}
 
                             <FormRootError />
 
