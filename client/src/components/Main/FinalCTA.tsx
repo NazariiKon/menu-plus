@@ -3,7 +3,7 @@ import { Link } from "react-router-dom"
 
 export default function FinalCTA() {
     return (
-        <section className="py-32 px-4 md:px-8 bg-gradient-to-t from-indigo-900/95 to-purple-900/95 text-white relative z-10 overflow-hidden">
+        <section className="py-20 px-4 md:px-8 bg-gradient-to-t from-indigo-900/95 to-purple-900/95 text-white relative z-10">
             <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/20 via-transparent to-indigo-500/20 blur-3xl animate-pulse" />
 
             <div className="max-w-4xl mx-auto text-center relative z-20">
@@ -24,7 +24,6 @@ export default function FinalCTA() {
                         </Button>
                     </Link>
                 </div>
-
             </div>
         </section>
     )

@@ -1,8 +1,6 @@
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import Home from '../pages/Home'
-import SignUp from '../pages/SignUp'
 import AuthCallback from '@/pages/AuthCallback'
-import SignIn from '@/pages/SignIn'
 import WithNavbarLayout from '@/layout/WithNavbar'
 import { useEffect } from "react";
 import type { AppDispatch } from '@/store/store'
@@ -18,6 +16,7 @@ import PublicMenuContent from '@/pages/PublicMenuContent'
 import Order from '@/components/MenuComponents/Order'
 import { Stats } from '@/components/PanelComponents/Stats'
 import PanelLayout from '@/components/PanelComponents/PanelLayout'
+import AuthForm from '@/pages/AuthForm'
 
 export default function AppRouter() {
     const dispatch = useDispatch<AppDispatch>();
@@ -76,12 +75,12 @@ export default function AppRouter() {
                 </Route>
                 <Route path="/login" element={
                     <AuthGuard>
-                        <SignIn />
+                        <AuthForm />
                     </AuthGuard>
                 } />
                 <Route path="/signup" element={
                     <AuthGuard>
-                        <SignUp />
+                        <AuthForm />
                     </AuthGuard>
                 } />
 

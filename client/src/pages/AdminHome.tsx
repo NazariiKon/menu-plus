@@ -9,9 +9,8 @@ import { Skeleton } from "@/components/ui/skeleton";
 import type { User } from "@supabase/supabase-js";
 import Verification from "@/components/ui/verification";
 import type { VenueRead } from "@/types/types";
-import { get_my_venues } from "@/api/profile";
 import { NameModal, type FormValues } from "@/components/NameModal";
-import { createVenue, deleteVenue } from "@/api/venue";
+import { createVenue, deleteVenue, get_my_venues } from "@/api/venue";
 import { Alert } from "@/components/Alert";
 import { supabase } from "@/lib/supabase";
 
@@ -64,7 +63,7 @@ export default function Admin() {
 
     if (!currentUser || error) return <div className="min-h-screen flex items-center justify-center">Loading...</div>;
 
-    if (!currentUser.confirmed_at && currentUser.email) {
+    if (!currentUser.email_confirmed_at && currentUser.email) {
         return <Verification email={currentUser.email} />
     }
 

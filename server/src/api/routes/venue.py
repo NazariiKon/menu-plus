@@ -2,12 +2,21 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from realtime import Optional
 
-from src.schemas.venue import VenueBase, VenueCreateResponse, VenueRead, VenueUpdate
+from src.schemas.venue import ApiResponse, VenueBase, VenueCreateResponse, VenueRead, VenueUpdate
 from src.api.dependencies import get_current_user, get_current_user_optional, get_owned_venue, get_venue_service
 from src.services.venue_service import VenueService
 
 
 router = APIRouter(prefix="/venues", tags=["Venue"])
+
+@router.get("/", response_model=ApiResponse)
+async def get_my_venues(
+    current_user: dict = Depends(get_current_user),
+    vs: VenueService = Depends(get_venue_service)
+):
+    venues, total = await vs.get_my_venues(current_user["sub"])
+
+    return {"success": True, "data": venues, "total": total} 
 
 @router.post("/", response_model=VenueCreateResponse)
 async def create_venue(

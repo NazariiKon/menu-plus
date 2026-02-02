@@ -4,8 +4,10 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 from datetime import datetime
 from typing import Optional, TYPE_CHECKING
 
+from supabase_auth import User
+
 if TYPE_CHECKING:
-    from src.models import Profile, Menu
+    from src.models import Menu
 from server.src.models.order import Order
 from src.database import Base
 
@@ -40,6 +42,13 @@ class Venue(Base):
     
     menus: Mapped[list["Menu"]] = relationship("Menu", back_populates="venue")
 
-    owner_id: Mapped[UUID] = mapped_column(ForeignKey("profiles.id"))
-    owner: Mapped["Profile"] = relationship("Owner", back_populates="venues")
+    owner_id: Mapped[UUID] = mapped_column(
+        ForeignKey("auth.users.id", ondelete="CASCADE"), 
+        nullable=False
+    )
+    owner: Mapped["User"] = relationship(
+        "User",
+        foreign_keys=[owner_id],
+        viewonly=True
+    )
     orders: Mapped[list["Order"]] = relationship("Order", back_populates="venue")

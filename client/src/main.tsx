@@ -10,6 +10,6 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
   <CartProvider>
     <Provider store={store}>
       <AppRouter />
-    </Provider>,
+    </Provider>
   </CartProvider>
 )

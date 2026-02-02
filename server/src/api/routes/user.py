@@ -2,36 +2,33 @@ from fastapi import APIRouter, HTTPException, Depends, status
 from pydantic import BaseModel, EmailStr
 from supabase import AuthApiError, Client
 
-from src.services.profile_service import ProfileService
-from src.api.dependencies import get_profile_service, get_supabase_client
+from src.api.dependencies import get_supabase_client
 
 
 router = APIRouter(prefix="/auth", tags=["Auth"])
 
 class Register(BaseModel):
     name: str = "Nazarii"
-    email: EmailStr = "nazar.konechniy2@gmail.com"
-    password: str = "nazar.konechniy2@gmail.com"
+    email: EmailStr = "youremail@gmail.com"
+    password: str = "youremail@gmail.com"
 
 @router.post("/register")
-async def register(
-    reg: Register, 
-    supabase: Client = Depends(get_supabase_client), 
-    ps: ProfileService = Depends(get_profile_service)):
+async def register(reg: Register, supabase: Client = Depends(get_supabase_client)):
     try:
         signup_res = supabase.auth.sign_up({
             "email": reg.email,
             "password": reg.password,
+            "options": {
+                "data": {
+                    "full_name": reg.name,
+                }
+            }
         })
-        profile = await ps.create_profile(user_id=signup_res.user.id, name=reg.name)
-        
-        
+
         return {
             "success": True,
-            "user": signup_res.user,
-            "profile": profile
+            "user": signup_res.user
         }
-        
     except AuthApiError as e:
         error_msg = str(e).lower()
         if "already registered" in error_msg or "already exists" in error_msg:
@@ -39,6 +36,7 @@ async def register(
         if "too many requests" in error_msg or "rate limit" in error_msg:
             raise HTTPException(status.HTTP_429_TOO_MANY_REQUESTS, "Too many requests. Wait 60 seconds")
         raise HTTPException(status.HTTP_400_BAD_REQUEST, str(e))
+
 
 
 class Login(BaseModel):

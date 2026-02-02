@@ -1,11 +1,10 @@
 import { Button } from "@/components/ui/button"
-import { Smartphone, Zap, DollarSign, BarChart3, Code2, PlayCircle, ArrowRight, Mail, Lock } from 'lucide-react'
+import { Smartphone, Zap, DollarSign, BarChart3, Code2, PlayCircle, ArrowRight, Mail, Lock } from "lucide-react"
 import { Link } from "react-router-dom"
 
 export default function Hero() {
     return (
         <section className="py-16 md:py-24 px-4 flex flex-col items-center justify-center overflow-hidden relative">
-            {/* DEVELOPER DEMO — TOP OF HERO */}
             <div className="w-full max-w-2xl mb-12 p-6 bg-gradient-to-br from-amber-50/95 via-slate-50 to-indigo-50/80 border-2 border-dashed border-amber-200/70 backdrop-blur-md rounded-3xl shadow-2xl ring-2 ring-amber-100/50 hover:ring-amber-200 hover:shadow-3xl transition-all duration-500 z-30 mx-auto">
                 <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
                     <div className="bg-gradient-to-r from-amber-500 to-orange-600 px-5 py-1.5 rounded-full text-xs font-bold text-white shadow-lg flex items-center gap-1.5">
@@ -17,12 +16,14 @@ export default function Hero() {
                 <div className="flex items-start gap-3 mb-2 pt-2">
                     <div className="w-2.5 h-2.5 bg-amber-500 rounded-full mt-1.5 animate-ping flex-shrink-0"></div>
                     <Code2 className="w-5 h-5 text-slate-700 flex-shrink-0" />
-                    <h4 className="text-sm font-bold text-slate-900 tracking-tight uppercase ">Try My Fullstack Skills</h4>
+                    <h4 className="text-sm font-bold text-slate-900 tracking-tight uppercase ">
+                        Try My Fullstack Skills
+                    </h4>
                 </div>
 
                 <p className="text-xs text-slate-600 mb-2">
-                    Note: The backend is hosted on a free tier, so the initial request may take up to 45 seconds to get venues.
-                    To test my website & skills, use this demo account:
+                    Note: The backend is hosted on a free tier, so the initial request may take up to 45 seconds to
+                    get venues. To test my website & skills, use this demo account:
                 </p>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-5">
@@ -40,14 +41,13 @@ export default function Hero() {
                             <Lock className="w-3.5 h-3.5" />
                             <span className="font-medium">Password</span>
                         </div>
-                        <p className="font-mono text-sm text-slate-900 font-semibold text-center">
-                            hireMe
-                        </p>
+                        <p className="font-mono text-sm text-slate-900 font-semibold text-center">hireMe</p>
                     </div>
                 </div>
 
                 <p className="text-xs text-slate-600 mb-4 leading-tight">
-                    For a realistic test, I recommend creating your own account to see the full email confirmation flow.
+                    For a realistic test, I recommend creating your own account to see the full email confirmation
+                    flow.
                 </p>
 
                 <Button
@@ -55,11 +55,15 @@ export default function Hero() {
                     className="w-full bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-700 hover:to-orange-700 text-white font-bold text-sm shadow-xl hover:shadow-2xl border-0 px-6 py-3 transform hover:-translate-y-1 transition-all duration-300 group"
                     asChild
                 >
-                    <Link state={{
-                        demo: true,
-                        email: "nazar.konechniy2@gmail.com",
-                        password: "hireMe",
-                    }} to="/login" className="flex items-center gap-2">
+                    <Link
+                        state={{
+                            demo: true,
+                            email: "nazar.konechniy2@gmail.com",
+                            password: "hireMe",
+                        }}
+                        to="/login"
+                        className="flex items-center gap-2"
+                    >
                         Launch Interactive Demo
                         <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                     </Link>
@@ -70,15 +74,14 @@ export default function Hero() {
                 </p>
             </div>
 
-            {/* MAIN HERO CONTENT */}
-            <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 items-center w-full">
+            <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 items-center w-full relative z-10">
                 <div className="space-y-8 text-center lg:text-left">
                     <h1 className="text-5xl md:text-7xl lg:text-7xl font-black bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 bg-clip-text text-transparent leading-tight">
                         QR Menu in <span className="text-6xl md:text-8xl">2</span> Minutes
                     </h1>
                     <p className="text-xl md:text-2xl text-gray-600 max-w-2xl mx-auto lg:mx-0 leading-relaxed">
-                        Ditch paper menus. Create beautiful digital QR menus for your restaurant, cafe or bar.
-                        Edit online, track what customers view, boost orders instantly.
+                        Ditch paper menus. Create beautiful digital QR menus for your restaurant, cafe or bar. Edit
+                        online, track what customers view, boost orders instantly.
                     </p>
 
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-12">
@@ -101,16 +104,21 @@ export default function Hero() {
                     </div>
 
                     <div className="flex flex-col sm:flex-row gap-4 pt-8">
-                        <Link to={"/signup"}>
-                            <Button size="lg" className="text-xl px-8 py-6 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 shadow-2xl hover:shadow-3xl transition-all duration-300 font-semibold">
-                                Create Free Menu Now
-                            </Button>
-                        </Link>
-                        <Link to={"/"}>
-                            <Button variant="outline" size="lg" className="text-xl px-8 py-6 border-2 border-gray-200 hover:bg-gray-50 shadow-lg font-semibold">
-                                Watch Examples
-                            </Button>
-                        </Link>
+                        <Button
+                            size="lg"
+                            className="text-xl px-8 py-6 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 shadow-2xl hover:shadow-3xl transition-all duration-300 font-semibold"
+                            asChild
+                        >
+                            <Link to="/signup">Create Free Menu Now</Link>
+                        </Button>
+                        <Button
+                            variant="outline"
+                            size="lg"
+                            className="text-xl px-8 py-6 border-2 border-gray-200 hover:bg-gray-50 shadow-lg font-semibold"
+                            asChild
+                        >
+                            <Link to="/">Watch Examples</Link>
+                        </Button>
                     </div>
                 </div>
 
@@ -133,7 +141,7 @@ export default function Hero() {
                                             left: `${20 + i * 15}%`,
                                             top: `${10 + i * 10}%`,
                                             animationDelay: `${i * 0.2}s`,
-                                            animationDuration: `${1.5 + i * 0.2}s`
+                                            animationDuration: `${1.5 + i * 0.2}s`,
                                         }}
                                     />
                                 ))}
@@ -143,8 +151,8 @@ export default function Hero() {
                 </div>
             </div>
 
-            <div className="absolute top-1/4 left-10 w-72 h-72 bg-indigo-300/10 rounded-full blur-3xl animate-pulse" />
-            <div className="absolute bottom-1/4 right-10 w-96 h-96 bg-purple-300/10 rounded-full blur-3xl animate-pulse delay-1000" />
+            <div className="absolute top-1/4 left-10 w-72 h-72 bg-indigo-300/10 rounded-full blur-3xl animate-pulse -z-10 pointer-events-none" />
+            <div className="absolute bottom-1/4 right-10 w-96 h-96 bg-purple-300/10 rounded-full blur-3xl animate-pulse delay-1000 -z-10 pointer-events-none" />
         </section>
     )
 }

@@ -12,7 +12,6 @@ from src.services.item_service import ItemService
 from src.schemas.venue import VenueRead
 from src.services.category_service import CategoryService
 from src.services.menu_service import MenuService
-from src.services.profile_service import ProfileService
 from src.services.venue_service import VenueService
 from src.core.config import settings
 
@@ -112,9 +111,6 @@ async def get_owned_venue(
         raise HTTPException(status.HTTP_403_FORBIDDEN, "This venue is not yours")
     return venue 
     
-async def get_profile_service(supabase: Client = Depends(get_supabase_client)):
-    return ProfileService(supabase)
-
 async def get_menu_service(supabase: Client = Depends(get_supabase_client)):
     return MenuService(supabase)
 

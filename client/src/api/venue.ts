@@ -2,6 +2,32 @@ import { supabase } from "@/lib/supabase";
 import type { ApiResponse, VenueBase, VenueRead, VenueUpdate } from "@/types/types";
 export type VenueCreateInput = Pick<VenueBase, "name">;
 
+export async function get_my_venues(): Promise<ApiResponse<VenueRead[]>> {
+    try {
+        const { data: sessionData, error } = await supabase.auth.getSession();
+        const token = sessionData.session?.access_token;
+
+        if (error || !token) return { success: false, error: "Not authenticated" };
+
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/venues`, {
+            headers: {
+                "Authorization": `Bearer ${token}`,
+                "Content-Type": "application/json"
+            }
+        });
+
+        const result = await response.json();
+
+        if (response.ok) {
+            return { success: true, data: result.data };
+        } else {
+            return { success: false, error: result.error || "Unknown error" };
+        }
+    } catch (error) {
+        return { success: false, error: "Network error" };
+    }
+}
+
 export async function createVenue(data: VenueCreateInput): Promise<ApiResponse<VenueRead>> {
     try {
         const { data: sessionData, error } = await supabase.auth.getSession();
