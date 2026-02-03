@@ -51,39 +51,46 @@
 
 ## 📱 Screenshots
 
-### 1. Landing Page  
+### Landing Page  
 <img src="images/home.png" width="250" style="height:auto;" alt="Landing Page">  
 Marketing landing page showing QR menu benefits, key features, and primary call-to-action buttons to create a free digital menu.
 
-### 2. Sign Up & Email Verification  
+### Sign Up & Email Verification  
 <img src="images/signup.png" width="250" style="height:auto;" alt="Sign Up"><img src="images/verify.png" width="250" style="height:auto;" alt="Email Verification">  
 Registration form and email confirmation screen.
 
-### 3. Empty Venues & Venues List  
+### Empty Venues & Venues List  
 <img src="images/venues-empty.png" width="250" style="height:auto;" alt="Empty Venues"><img src="images/venues.png" width="250" style="height:auto;" alt="Venues List">  
 Venues dashboard states: empty and with locations.
 
-### 4. Edit Venue & Menu Overview  
+### Edit Venue & Menu Overview  
 <img src="images/edit-venue.png" width="250" style="height:auto;" alt="Edit Venue"><img src="images/menu.png" width="250" style="height:auto;" alt="Menu Overview">  
 Venue editing modal and public menu page for Georgian restaurant.
 
-### 5. Categories Overview, Edit Category & Menu Item  
+### Categories Overview, Edit Category & Menu Item  
 <img src="images/categories.png" width="250" style="height:auto;" alt="Categories Overview"><img src="images/edit-category.png" width="250" style="height:auto;" alt="Edit Category"><img src="images/item.png" width="250" style="height:auto;" alt="Menu Item">  
 Admin category management, editing, and individual dish editor.
 
-### 6. QR Code Settings  
+### QR Code Settings  
 <img src="images/qr-code.png" width="250" style="height:auto;" alt="QR Code Settings">  
 QR code settings page that generates a scannable code linked to the menu and allows downloading it as a PNG file.
 
 ## Client Side Experience
 
-### 7. Public Menu & Shopping Cart  
+### Public Menu & Shopping Cart  
 <img src="images/public-menu.png" width="250" style="height:auto;" alt="Public Menu"><img src="images/cart.png" width="250" style="height:auto;" alt="Shopping Cart">  
 Customer views full menu categories and adds items to cart with totals.
 
-### 8. Order Summary & WhatsApp Integration  
+### Order Summary & WhatsApp Integration  
 <img src="images/order.png" width="250" style="height:auto;" alt="Order Summary"><img src="images/whatsapp.png" width="250" style="height:auto;" alt="WhatsApp Order">  
 Order confirmation screen and seamless WhatsApp order sharing/download.
+
+### Order Stats Page
+<img src="images/stats1.png" width="250" style="height:auto;" alt="Stats page 1st part"><img src="images/stats2.png" width="250" style="height:auto;" alt="Stats Page 2nd part">  
+
+### Profile Settings
+<img src="images/profile.png" width="250" style="height:auto;" alt="Profile page">
+
 
 **Flow:** Landing → Sign Up → Create Venue → Edit Details → Build Menu → Print QR → Done!
 

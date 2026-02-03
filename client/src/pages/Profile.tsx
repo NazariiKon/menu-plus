@@ -12,6 +12,7 @@ import { supabase } from '@/lib/supabase';
 import type { RootState } from '@/store/store';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { useAuth } from '@/hooks/useAuth';
+import { toast } from 'sonner';
 
 const profileSchema = z.object({
     name: z.string().min(1),
@@ -72,6 +73,10 @@ export default function Profile() {
                 data: { full_name: data.name },
             });
             if (error) throw error;
+            else toast.success("Account updated successfully", {
+                description: "Your profile information has been saved. Changes will be reflected immediately.",
+                position: "top-center"
+            })
         } catch (error: any) {
             console.error('Profile update failed', error.message);
         } finally {
