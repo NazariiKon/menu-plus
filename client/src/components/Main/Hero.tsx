@@ -21,11 +21,6 @@ export default function Hero() {
                     </h4>
                 </div>
 
-                <p className="text-xs text-slate-600 mb-2">
-                    Note: The backend is hosted on a free tier, so the initial request may take up to 45 seconds to
-                    get venues. To test my website & skills, use this demo account:
-                </p>
-
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-5">
                     <div className="bg-gradient-to-b from-slate-50 to-slate-100 p-3 rounded-xl border border-slate-200/60 shadow-sm text-xs">
                         <div className="flex items-center gap-1 text-slate-500 mb-1">

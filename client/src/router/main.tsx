@@ -23,10 +23,6 @@ import UpdatePasswordPage from '@/pages/Auth/UpdatePassword';
 
 export default function AppRouter() {
     const dispatch = useDispatch<AppDispatch>();
-    useEffect(() => {
-        fetch('https://menu-plus-server.onrender.com/')
-            .catch(() => console.log("Server waking up..."));
-    }, []);
 
     useEffect(() => {
         dispatch(setLoading(true));
@@ -98,8 +94,6 @@ export default function AppRouter() {
                     </AuthGuard>
                 } />
 
-
-
                 <Route path="/p/:slug" element={<PublicMenuLayout />}>
                     <Route index element={<PublicMenuContent />} />
                     <Route path="order" element={<Order />} />
@@ -109,7 +103,6 @@ export default function AppRouter() {
                     <Route path="qr-code" element={<MenuPanel />} />
                     <Route path="/panel/:slug/stats" element={<Stats />} />
                 </Route>
-
 
                 <Route path="/auth/callback" element={<AuthCallback />} />
             </Routes>

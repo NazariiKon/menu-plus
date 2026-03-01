@@ -1,4 +1,4 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Response, status
 import uvicorn
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.openapi.utils import get_openapi
@@ -40,7 +40,11 @@ app.openapi = override_openapi
 
 @app.get("/")
 async def root():
-    return {"message": "Menu+ API. Add /docs to the link at the top. 🚀"}
+    return { "message": "Menu+ API. Add /docs to the link at the top. 🚀" }
+
+@app.head("/")
+async def root_head():
+    return Response(status_code=status.HTTP_200_OK) 
 
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=8000)
