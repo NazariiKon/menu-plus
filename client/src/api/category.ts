@@ -22,7 +22,7 @@ export async function createCategory(
             formData.append('image_file', image);
         }
 
-        const response = await fetch(`${import.meta.env.VITE_API_URL}/venues/${venueId}/menus/${menuId}/categories`, {
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/venues/${venueId}/menus/${menuId}/categories/`, {
             method: "POST",
             headers: { "Authorization": `Bearer ${token}` },
             body: formData

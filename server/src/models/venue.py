@@ -1,4 +1,4 @@
-from sqlalchemy import ForeignKey, String, Integer, DateTime, text
+from sqlalchemy import Column, ForeignKey, String, Integer, DateTime, text
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from datetime import datetime
@@ -8,9 +8,13 @@ from supabase_auth import User
 
 if TYPE_CHECKING:
     from src.models import Menu
-from server.src.models.order import Order
+    from src.models.order import Order
 from src.database import Base
 
+class AuthUser(Base):
+    __tablename__ = "users"
+    __table_args__ = {"schema": "auth"}
+    id = Column(UUID, primary_key=True)
 
 class Venue(Base):
     __tablename__ = "venues"
@@ -30,8 +34,8 @@ class Venue(Base):
     inst_link: Mapped[Optional[str]] = mapped_column(String(255), nullable=True)
     facebook_link: Mapped[Optional[str]] = mapped_column(String(255), nullable=True)
     tiktok_link: Mapped[Optional[str]] = mapped_column(String(255), nullable=True)
-    show_cart: Mapped[Optional[bool]] = mapped_column(bool, nullable=False, default=True)
-    make_order: Mapped[Optional[bool]] = mapped_column(bool, nullable=False, default=True)
+    show_cart: Mapped[Optional[bool]] = mapped_column(nullable=False, default=True)
+    make_order: Mapped[Optional[bool]] = mapped_column(nullable=False, default=True)
     max_tables: Mapped[Optional[int]] = mapped_column(Integer, default=20)
     created_at: Mapped[datetime] = mapped_column(DateTime, server_default=text("now()"))
     currency: Mapped[str] = mapped_column(String(30), default="USD")

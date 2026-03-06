@@ -56,10 +56,10 @@ export default function Admin() {
             return;
         }
 
-        if (currentUser.confirmed_at) {
+        if (currentUser.email_confirmed_at) {
             getVenues();
         }
-    }, [currentUser]);
+    }, [currentUser?.id, currentUser?.email_confirmed_at]);
 
     if (!currentUser || error) return <div className="min-h-screen flex items-center justify-center">Loading...</div>;
 

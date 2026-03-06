@@ -28,7 +28,7 @@ export async function createOrder(
         }
 
         const response = await fetch(
-            `${import.meta.env.VITE_API_URL}/orders/${venueId}`,
+            `${import.meta.env.VITE_API_URL}/orders/${venueId}/`,
             {
                 method: "POST",
                 headers: {
@@ -56,7 +56,7 @@ export async function getOrdersByVenue(venueId: string,): Promise<ApiResponse<Or
         if (error || !token) return { success: false, error: "Not authenticated" };
 
         const response = await fetch(
-            `${import.meta.env.VITE_API_URL}/orders/${venueId}`,
+            `${import.meta.env.VITE_API_URL}/orders/${venueId}/`,
             {
                 headers: {
                     "Authorization": `Bearer ${token}`,

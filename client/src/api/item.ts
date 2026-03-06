@@ -22,7 +22,7 @@ export async function createItem(
 
         if (itemData.image_bytes) formData.append('image_bytes', itemData.image_bytes);
 
-        const response = await fetch(`${import.meta.env.VITE_API_URL}/venues/${venueId}/menus/${menuId}/categories/${categoryId}/items`, {
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/venues/${venueId}/menus/${menuId}/categories/${categoryId}/items/`, {
             method: "POST",
             headers: { "Authorization": `Bearer ${token}` },
             body: formData

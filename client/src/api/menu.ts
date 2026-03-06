@@ -13,7 +13,7 @@ export async function createMenu(venueId: string, name: string, position: number
             "position": position,
         }
 
-        const response = await fetch(`${import.meta.env.VITE_API_URL}/venues/${venueId}/menus`, {
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/venues/${venueId}/menus/`, {
             method: "POST",
             headers: { "Authorization": `Bearer ${token}`, "Content-Type": "application/json" },
             body: JSON.stringify(data)

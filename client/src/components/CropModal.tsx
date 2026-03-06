@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { createPortal } from "react-dom";
 import Cropper from "react-easy-crop";
 import { Button } from "@/components/ui/button";
@@ -26,6 +26,22 @@ export function CropModal({ imageSrc, onCropComplete, onCancel, size }: CropModa
     const [crop, setCrop] = useState<Crop>({ x: 0, y: 0 });
     const [zoom, setZoom] = useState(1);
     const [croppedAreaPixels, setCroppedAreaPixels] = useState<Area | null>(null);
+
+    // Lock body scroll while modal is open
+    useEffect(() => {
+        const prev = document.body.style.overflow;
+        document.body.style.overflow = "hidden";
+        return () => { document.body.style.overflow = prev; };
+    }, []);
+
+    // Close on Escape key
+    useEffect(() => {
+        const handleKey = (e: KeyboardEvent) => {
+            if (e.key === "Escape") onCancel();
+        };
+        window.addEventListener("keydown", handleKey);
+        return () => window.removeEventListener("keydown", handleKey);
+    }, [onCancel]);
 
     const onCropAreaChange = useCallback(
         (_: Area, croppedAreaPixels: Area) => {
@@ -88,15 +104,20 @@ export function CropModal({ imageSrc, onCropComplete, onCancel, size }: CropModa
     }, [imageSrc, croppedAreaPixels, createCropImage, onCropComplete]);
 
     return createPortal(
-        <div
-            className="fixed inset-0 z-99 bg-black bg-opacity-80 flex items-center justify-center p-4"
-            onClick={onCancel}
-        >
+        <div className="fixed inset-0 z-50 flex items-center justify-center">
+            {/* Backdrop */}
             <div
-                className="bg-white rounded-lg overflow-hidden max-w-lg w-full"
-                onClick={(e) => e.stopPropagation()}
-            >
-                <div className="relative h-64 md:h-80 bg-gray-100">
+                className="absolute inset-0 bg-black/50 animate-in fade-in-0"
+                onClick={onCancel}
+            />
+
+            {/* Modal */}
+            <div className="relative z-10 w-[calc(100vw-2rem)] max-w-[600px] h-[80vh] max-h-[600px] flex flex-col bg-white shadow-2xl rounded-2xl overflow-hidden animate-in fade-in-0 zoom-in-95">
+                {/* Cropper area — no native drag interference */}
+                <div
+                    className="relative flex-1 bg-black/5 w-full"
+                    style={{ userSelect: "none", WebkitUserSelect: "none" }}
+                >
                     <Cropper
                         image={imageSrc}
                         crop={crop}
@@ -105,11 +126,15 @@ export function CropModal({ imageSrc, onCropComplete, onCancel, size }: CropModa
                         onCropChange={setCrop}
                         onCropAreaChange={onCropAreaChange}
                         onZoomChange={setZoom}
+                        mediaProps={{ draggable: false } as React.MediaHTMLAttributes<HTMLImageElement>}
+                        style={{ containerStyle: { touchAction: "none" } }}
                     />
                 </div>
-                <div className="p-4 border-t flex flex-col sm:flex-row sm:justify-between gap-2">
-                    <div className="flex items-center">
-                        <label className="text-sm text-gray-600 mr-2">Zoom:</label>
+
+                {/* Controls */}
+                <div className="p-4 bg-white border-t flex flex-col sm:flex-row sm:justify-between gap-4 shrink-0">
+                    <div className="flex items-center justify-center sm:justify-start">
+                        <label className="text-sm font-medium text-gray-700 mr-3">Zoom:</label>
                         <input
                             type="range"
                             value={zoom}
@@ -117,22 +142,22 @@ export function CropModal({ imageSrc, onCropComplete, onCancel, size }: CropModa
                             max={3}
                             step={0.1}
                             onChange={(e) => setZoom(parseFloat(e.target.value))}
-                            className="w-24"
+                            className="w-32 accent-indigo-600 cursor-pointer"
                         />
                     </div>
-                    <div className="flex gap-2">
+                    <div className="flex gap-2 justify-end">
                         <Button
                             type="button"
                             variant="outline"
                             onClick={onCancel}
-                            className="rounded-lg text-sm"
+                            className="rounded-lg text-sm min-w-[100px]"
                         >
                             Cancel
                         </Button>
                         <Button
                             type="button"
                             onClick={handleSaveCrop}
-                            className="rounded-lg bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white shadow-xl hover:shadow-2xl transition-all"
+                            className="rounded-lg min-w-[120px] bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white shadow-lg hover:shadow-xl transition-all font-semibold"
                         >
                             Save Crop
                         </Button>

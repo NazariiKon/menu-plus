@@ -1,5 +1,5 @@
 from decimal import Decimal
-from typing import Optional, List
+from typing import TYPE_CHECKING, Optional, List
 from unittest.mock import Base
 from uuid import UUID
 from sqlalchemy import (
@@ -13,9 +13,9 @@ from sqlalchemy import (
 )
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-
-from server.src.models.orderItem import OrderItem
-from server.src.models.venue import Venue
+if TYPE_CHECKING:
+    from src.models.orderItem import OrderItem
+from src.models.venue import Venue
 
 
 class Order(Base):

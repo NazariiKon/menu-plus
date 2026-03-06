@@ -9,7 +9,7 @@ export async function get_my_venues(): Promise<ApiResponse<VenueRead[]>> {
 
         if (error || !token) return { success: false, error: "Not authenticated" };
 
-        const response = await fetch(`${import.meta.env.VITE_API_URL}/venues`, {
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/venues/`, {
             headers: {
                 "Authorization": `Bearer ${token}`,
                 "Content-Type": "application/json"
