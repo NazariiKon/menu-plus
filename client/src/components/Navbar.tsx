@@ -40,7 +40,7 @@ export default function Navbar() {
 
     const navItems = [
         { path: '/', label: 'Home', icon: Home, hiden: false },
-        { path: '/#features-section', label: 'Features', icon: Sparkles, hiden: false },
+        { path: '/p/georgian-restaurant', label: 'Example', icon: Sparkles, hiden: false },
         { path: '/pricing', label: 'Pricing', icon: DollarSign, hiden: false },
         { path: '/login', label: 'Sign In', icon: LogIn, hiden: true },
         { path: '/', label: 'Log out', icon: LogOut, onClick: onClickLogout, hiden: true },

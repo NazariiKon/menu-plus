@@ -57,17 +57,18 @@ export function CropModal({ imageSrc, onCropComplete, onCancel, size }: CropModa
 
             if (!ctx) throw new Error("2D context not available");
 
-            const scaleX = image.naturalWidth / image.width;
-            const scaleY = image.naturalHeight / image.height;
+            // croppedAreaPixels from react-easy-crop are already relative to the NATURAL image size
             canvas.width = crop.width;
             canvas.height = crop.height;
 
+            // Important: we want a high-quality crop. 
+            // We disable image smoothing for a sharper cut if needed, but default is fine.
             ctx.drawImage(
                 image,
-                crop.x * scaleX,
-                crop.y * scaleY,
-                crop.width * scaleX,
-                crop.height * scaleY,
+                crop.x,
+                crop.y,
+                crop.width,
+                crop.height,
                 0,
                 0,
                 crop.width,
