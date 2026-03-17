@@ -110,6 +110,15 @@ async def get_owned_venue(
     if not venue:
         raise HTTPException(status.HTTP_403_FORBIDDEN, "This venue is not yours")
     return venue 
+
+async def get_public_venue(
+    venue_id: str,
+    vs: VenueService = Depends(get_venue_service)
+) -> VenueRead:
+    venue = await vs.get_venue_by_id(venue_id)
+    if not venue:
+        raise HTTPException(status.HTTP_404_NOT_FOUND, "This venue doesnt exist")
+    return venue 
     
 async def get_menu_service(supabase: Client = Depends(get_supabase_client)):
     return MenuService(supabase)

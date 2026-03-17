@@ -48,7 +48,6 @@ class VenueService:
         venue_dict = response.data[0]
         
         return VenueRead.model_validate(venue_dict) 
-
     
     async def get_venue_by_id_for_owner(self, venue_id: str, owner_id: str) -> VenueRead:
         response = (
@@ -59,6 +58,10 @@ class VenueService:
             .eq("id", venue_id)
             .execute()
         )
+        return response.data[0]
+    
+    async def get_venue_by_id(self, venue_id: str) -> VenueRead:
+        response = (self.supabase.table("venues").select("*").eq("id", venue_id).execute())
         return response.data[0]
     
     
@@ -94,8 +97,6 @@ class VenueService:
 
         return response.data[0] if response.data else {}
 
-
-    
     async def create_venue(self, owner_id: str, data: VenueBase) -> dict:
         payload = data.model_dump(exclude_none=True)
         payload["owner_id"] = owner_id

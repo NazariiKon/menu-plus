@@ -7,7 +7,7 @@ import { createOrder, type CreateOrderRequest } from "@/api/order";
 
 export default function Order() {
     const { venue, currencySymbol } = useOutletContext<PublicMenuContextType>();
-    const { cart, updateQuantity, getTotalItems, getTotalPrice } = useCart();
+    const { cart, updateQuantity, getTotalItems, getTotalPrice, clearCart } = useCart();
     const totalItems = getTotalItems();
     const totalPrice = getTotalPrice();
     const PHONE = venue.phone;
@@ -44,6 +44,7 @@ export default function Order() {
             }
 
             const message = buildWhatsAppMessage(cart, result.data[0]?.id);
+            clearCart();
             window.location.href = `https://wa.me/${PHONE}?text=${encodeURIComponent(message)}`;
         } catch (error) {
             console.error("Order failed:", error);

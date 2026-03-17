@@ -20,19 +20,11 @@ export async function createOrder(
     orderData: CreateOrderRequest
 ): Promise<ApiResponse<OrderRead[]>> {
     try {
-        const { data: sessionData, error } = await supabase.auth.getSession();
-        const token = sessionData.session?.access_token;
-
-        if (error || !token) {
-            return { success: false, error: "Not authenticated" };
-        }
-
         const response = await fetch(
             `${import.meta.env.VITE_API_URL}/orders/${venueId}/`,
             {
                 method: "POST",
                 headers: {
-                    "Authorization": `Bearer ${token}`,
                     "Content-Type": "application/json",
                 },
                 body: JSON.stringify(orderData),
@@ -40,9 +32,9 @@ export async function createOrder(
         );
 
         const result = await response.json();
-        return response.ok && response.status === 201
-            ? { success: true, data: result }
-            : { success: false, error: result.detail || `HTTP ${response.status}` };
+        return response.ok ?
+            { success: true, data: result } :
+            { success: false, error: result.detail || `HTTP ${response.status}` };
     } catch (error) {
         return { success: false, error: "Network error" };
     }
