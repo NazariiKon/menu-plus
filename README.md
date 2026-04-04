@@ -6,7 +6,6 @@
 [![FastAPI](https://img.shields.io/badge/FastAPI-005571.svg?logo=fastapi)](https://fastapi.tiangolo.com)
 [![Supabase](https://img.shields.io/badge/Supabase-F03D2F.svg?logo=supabase&logoColor=white)](https://supabase.com)
 [![shadcn/ui](https://img.shields.io/badge/shadcn--ui-0EA5E9.svg?logo=shadcn&logoColor=white)](https://ui.shadcn.com)
-[![Next.js](https://img.shields.io/badge/Next.js-000000.svg?logo=next.js&logoColor=white)](https://nextjs.org)
 [![TailwindCSS](https://img.shields.io/badge/TailwindCSS-38B2AC.svg?logo=tailwindcss&logoColor=white)](https://tailwindcss.com)
 [![Python](https://img.shields.io/badge/Python-3776AB.svg?logo=python&logoColor=white)](https://python.org)
 
