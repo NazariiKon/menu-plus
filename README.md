@@ -12,7 +12,7 @@
 
 ## 🌐 Live Demo
 - **Frontend:** [https://menu-plus-client.vercel.app/](https://menu-plus-client.vercel.app/)
-- **Backend:** [https://menu-plus-server.onrender.com/docs](https://menu-plus-server.onrender.com/docs)
+- **Backend:** [https://menu-plus-server.onrender.com/docs](https://server--menu-plus--4x9pscs9yhhk.code.run/docs)
 
 ## 🎯 The Problem It Solves
 
